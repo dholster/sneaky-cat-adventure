@@ -457,6 +457,7 @@ export class TextureGenerator {
     const dogBrown = '#8B5A3C'
     const dogDark = '#654321'
     const dogLight = '#A67C52'
+    const dogHighlight = '#C4916A'
     const black = '#222222'
     const white = '#FFFFFF'
     const pink = '#FFB6C1'
@@ -467,8 +468,12 @@ export class TextureGenerator {
       const centerX = x + frameSize / 2
       const centerY = y + frameSize / 2 + 2
 
-      // Tail (behind body) - wagging
-      ctx.strokeStyle = dogBrown
+      // Tail (behind body) - wagging with gradient
+      const tailGradient = ctx.createLinearGradient(centerX - 10, centerY + 1, centerX - 14, centerY - 3 + tailWag)
+      tailGradient.addColorStop(0, dogDark)
+      tailGradient.addColorStop(0.5, dogBrown)
+      tailGradient.addColorStop(1, dogLight)
+      ctx.strokeStyle = tailGradient
       ctx.lineWidth = 4
       ctx.lineCap = 'round'
       ctx.beginPath()
@@ -476,11 +481,33 @@ export class TextureGenerator {
       ctx.lineTo(centerX - 14, centerY - 3 + tailWag)
       ctx.stroke()
 
-      // Body (elongated, dog-like)
-      ctx.fillStyle = dogBrown
+      // Tail tip highlight
+      ctx.fillStyle = dogLight
+      ctx.beginPath()
+      ctx.arc(centerX - 14, centerY - 3 + tailWag, 2, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Body (elongated, dog-like) with gradient for depth
+      const bodyGradient = ctx.createRadialGradient(centerX - 3, centerY - 1, 2, centerX - 3, centerY + 2, 10)
+      bodyGradient.addColorStop(0, dogHighlight)
+      bodyGradient.addColorStop(0.5, dogBrown)
+      bodyGradient.addColorStop(1, dogDark)
+      ctx.fillStyle = bodyGradient
       ctx.beginPath()
       ctx.ellipse(centerX - 3, centerY + 1, 10, 5, 0, 0, Math.PI * 2)
       ctx.fill()
+
+      // Body fur texture (subtle stripes)
+      ctx.strokeStyle = dogDark
+      ctx.lineWidth = 1
+      ctx.globalAlpha = 0.2
+      for (let i = 0; i < 4; i++) {
+        ctx.beginPath()
+        ctx.moveTo(centerX - 10 + i * 3, centerY - 2)
+        ctx.lineTo(centerX - 8 + i * 3, centerY + 4)
+        ctx.stroke()
+      }
+      ctx.globalAlpha = 1.0
 
       // Back legs
       ctx.fillStyle = dogDark
