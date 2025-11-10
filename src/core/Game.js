@@ -54,7 +54,7 @@ export class Game {
     this.setupCamera()
     this.setupRenderer()
     this.setupPlayer()
-    this.setupStealth Systems()
+    this.setupStealthSystems()
     this.setupEnvironment()
     this.setupEventListeners()
 
