@@ -118,7 +118,12 @@ export class DetectionSystem {
 
     // Apply detection
     const detectionAmount = detectionSpeed * deltaTime
-    enemy.onPlayerSpotted(this.player, detectionAmount)
+    const fullyDetected = enemy.onPlayerSpotted(this.player, detectionAmount)
+
+    // If player was just fully detected, trigger callback
+    if (fullyDetected && this.onDetectionCallback) {
+      this.onDetectionCallback(enemy)
+    }
   }
 
   checkLineOfSight(enemy, player) {

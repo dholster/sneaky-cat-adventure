@@ -169,12 +169,20 @@ export class Human extends Entity {
     this.detectionLevel = Math.min(1, this.detectionLevel + detectionAmount)
 
     if (this.detectionLevel >= Config.DETECTION.DETECTION_THRESHOLD) {
-      this.detectionState = 'alert'
-      this.chaseTarget = player
-      console.log('🚨 Human fully detected player! ALERT!')
+      if (this.detectionState !== 'alert') {
+        // Just became alert - trigger detection event
+        this.detectionState = 'alert'
+        this.chaseTarget = player
+        console.log('🚨 Human fully detected player! ALERT!')
+
+        // Return true to signal full detection
+        return true
+      }
     } else if (this.detectionLevel > 0.3) {
       this.detectionState = 'suspicious'
     }
+
+    return false
   }
 
   // Called when hearing a sound
