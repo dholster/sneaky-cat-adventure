@@ -89,11 +89,9 @@ export class Player extends Entity {
     this.position.x += this.velocity.x * deltaTime
     this.position.y += this.velocity.y * deltaTime
 
-    // Temporary ground collision (y = 0)
-    if (this.position.y <= 0) {
-      this.position.y = 0
-      this.velocity.y = 0
-      this.isGrounded = true
+    // Reset grounded state (will be set by collision detection)
+    if (this.velocity.y < -0.1) {
+      this.isGrounded = false
     }
 
     // Call parent update to sync sprite
