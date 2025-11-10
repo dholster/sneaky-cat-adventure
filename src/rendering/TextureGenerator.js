@@ -1560,55 +1560,183 @@ export class TextureGenerator {
 
     const frameGold = '#FFD700'
     const frameDark = '#B8860B'
+    const frameLight = '#FFED4E'
     const picture = '#87CEEB'
     const pictureDark = '#4682B4'
+    const pictureLight = '#B0E0E6'
+    const white = '#FFFFFF'
 
-    // Frame outer border (ornate gold)
-    ctx.fillStyle = frameGold
+    // Frame shadow (behind)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
+    ctx.fillRect(10, 10, 48, 48)
+
+    // Frame outer border (ornate gold) with gradient
+    const outerFrameGradient = ctx.createRadialGradient(32, 32, 15, 32, 32, 30)
+    outerFrameGradient.addColorStop(0, frameLight)
+    outerFrameGradient.addColorStop(0.5, frameGold)
+    outerFrameGradient.addColorStop(1, frameDark)
+    ctx.fillStyle = outerFrameGradient
     ctx.fillRect(8, 8, 48, 48)
 
-    // Frame inner (darker)
+    // Frame 3D effect (beveled edges)
+    // Top bevel
+    ctx.fillStyle = frameLight
+    ctx.beginPath()
+    ctx.moveTo(8, 8)
+    ctx.lineTo(56, 8)
+    ctx.lineTo(52, 12)
+    ctx.lineTo(12, 12)
+    ctx.fill()
+
+    // Left bevel
+    ctx.beginPath()
+    ctx.moveTo(8, 8)
+    ctx.lineTo(12, 12)
+    ctx.lineTo(12, 52)
+    ctx.lineTo(8, 56)
+    ctx.fill()
+
+    // Bottom bevel (darker)
     ctx.fillStyle = frameDark
+    ctx.beginPath()
+    ctx.moveTo(8, 56)
+    ctx.lineTo(56, 56)
+    ctx.lineTo(52, 52)
+    ctx.lineTo(12, 52)
+    ctx.fill()
+
+    // Right bevel (darker)
+    ctx.beginPath()
+    ctx.moveTo(56, 8)
+    ctx.lineTo(56, 56)
+    ctx.lineTo(52, 52)
+    ctx.lineTo(52, 12)
+    ctx.fill()
+
+    // Frame inner (darker)
+    const innerFrameGradient = ctx.createRadialGradient(32, 32, 10, 32, 32, 20)
+    innerFrameGradient.addColorStop(0, frameDark)
+    innerFrameGradient.addColorStop(1, frameGold)
+    ctx.fillStyle = innerFrameGradient
     ctx.fillRect(10, 10, 44, 44)
 
-    // Frame decorative corners
-    ctx.fillStyle = frameGold
+    // Frame decorative corners with highlights
+    // Top-left corner ornament
+    ctx.fillStyle = frameLight
     ctx.beginPath()
     ctx.arc(12, 12, 3, 0, Math.PI * 2)
     ctx.fill()
+    ctx.fillStyle = frameGold
+    ctx.beginPath()
+    ctx.arc(12, 12, 2, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Top-right corner
+    ctx.fillStyle = frameLight
     ctx.beginPath()
     ctx.arc(52, 12, 3, 0, Math.PI * 2)
     ctx.fill()
+    ctx.fillStyle = frameGold
+    ctx.beginPath()
+    ctx.arc(52, 12, 2, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Bottom-left corner
+    ctx.fillStyle = frameLight
     ctx.beginPath()
     ctx.arc(12, 52, 3, 0, Math.PI * 2)
     ctx.fill()
+    ctx.fillStyle = frameGold
+    ctx.beginPath()
+    ctx.arc(12, 52, 2, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Bottom-right corner
+    ctx.fillStyle = frameLight
     ctx.beginPath()
     ctx.arc(52, 52, 3, 0, Math.PI * 2)
     ctx.fill()
+    ctx.fillStyle = frameGold
+    ctx.beginPath()
+    ctx.arc(52, 52, 2, 0, Math.PI * 2)
+    ctx.fill()
 
-    // Picture inside (simple landscape)
-    ctx.fillStyle = picture
+    // Picture inside (landscape with gradient sky)
+    const skyGradient = ctx.createLinearGradient(14, 14, 14, 50)
+    skyGradient.addColorStop(0, pictureLight)
+    skyGradient.addColorStop(0.5, picture)
+    skyGradient.addColorStop(1, pictureDark)
+    ctx.fillStyle = skyGradient
     ctx.fillRect(14, 14, 36, 36)
 
-    // Simple picture content (mountains)
+    // Mountains with shading
+    // Back mountain (darker)
     ctx.fillStyle = pictureDark
+    ctx.globalAlpha = 0.7
     ctx.beginPath()
     ctx.moveTo(14, 42)
     ctx.lineTo(26, 24)
     ctx.lineTo(38, 42)
     ctx.fill()
+    ctx.globalAlpha = 1.0
 
+    // Mountain highlight
+    ctx.fillStyle = picture
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.moveTo(24, 28)
+    ctx.lineTo(26, 24)
+    ctx.lineTo(28, 30)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Front mountain
+    ctx.fillStyle = pictureDark
     ctx.beginPath()
     ctx.moveTo(28, 42)
     ctx.lineTo(38, 28)
     ctx.lineTo(50, 42)
     ctx.fill()
 
-    // Sun
-    ctx.fillStyle = '#FFFF00'
+    // Front mountain highlight
+    ctx.fillStyle = '#6495ED'
+    ctx.globalAlpha = 0.4
     ctx.beginPath()
-    ctx.arc(42, 20, 4, 0, Math.PI * 2)
+    ctx.moveTo(36, 32)
+    ctx.lineTo(38, 28)
+    ctx.lineTo(40, 34)
     ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Sun with glow
+    const sunGradient = ctx.createRadialGradient(42, 20, 2, 42, 20, 6)
+    sunGradient.addColorStop(0, '#FFFFCC')
+    sunGradient.addColorStop(0.5, '#FFFF00')
+    sunGradient.addColorStop(1, 'rgba(255, 255, 0, 0)')
+    ctx.fillStyle = sunGradient
+    ctx.beginPath()
+    ctx.arc(42, 20, 6, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Sun core
+    ctx.fillStyle = white
+    ctx.globalAlpha = 0.8
+    ctx.beginPath()
+    ctx.arc(42, 20, 3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Glass reflection effect
+    ctx.fillStyle = white
+    ctx.globalAlpha = 0.1
+    ctx.fillRect(14, 14, 36, 18)
+    ctx.globalAlpha = 0.2
+    ctx.beginPath()
+    ctx.moveTo(14, 14)
+    ctx.lineTo(50, 14)
+    ctx.lineTo(14, 50)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
