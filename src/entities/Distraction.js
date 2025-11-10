@@ -3,6 +3,7 @@
  * Examples: vases, picture frames, books, etc.
  */
 
+import * as THREE from 'three'
 import { Entity } from './Entity.js'
 import { TextureGenerator } from '../rendering/TextureGenerator.js'
 
@@ -216,5 +217,20 @@ export class Distraction extends Entity {
 
   getInteractPrompt() {
     return `Press E to knock over ${this.type}`
+  }
+
+  destroy() {
+    // Clean up break pieces
+    if (this.breakPieces.length > 0) {
+      for (const piece of this.breakPieces) {
+        this.scene.remove(piece.mesh)
+        piece.mesh.geometry.dispose()
+        piece.mesh.material.dispose()
+      }
+      this.breakPieces = []
+    }
+
+    // Call parent destroy
+    super.destroy()
   }
 }

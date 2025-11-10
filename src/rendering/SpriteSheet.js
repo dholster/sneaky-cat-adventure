@@ -28,7 +28,7 @@ export class SpriteSheet {
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.columns; col++) {
         const u = col * frameWidthUV
-        const v = 1 - (row + 1) * frameHeightUV // Flip V coordinate
+        const v = row * frameHeightUV // No flip needed with flipY = false
 
         this.frames.push({
           u: u,
