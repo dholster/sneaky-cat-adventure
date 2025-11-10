@@ -173,7 +173,7 @@ export class Game {
 
     // Setup camera controller to follow player
     this.cameraController = new CameraController(this.camera, this.player)
-    this.cameraController.setBounds(-20, 30, 0, 15)
+    this.cameraController.setBounds(-20, 50, 0, 15) // Wider bounds for Phase 2 level
 
     console.log('🐱 Player created at position:', this.player.position)
   }
@@ -414,15 +414,23 @@ export class Game {
     moonlight.position.set(10, 20, 5)
     this.scene.add(moonlight)
 
-    // Simple straight ground - tutorial level
-    this.createPlatform(0, 0, 50, 1, 0x1a1a2e)
+    // Phase 2 Level - "The House"
+    // Long main floor
+    this.createPlatform(10, 0, 70, 1, 0x1a1a2e)
 
-    // A few platforms for cover/navigation
-    this.createPlatform(3, 3, 3, 0.5, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(8, 3, 3, 0.5, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(18, 3, 3, 0.5, Config.COLORS.SHADOW_BLUE)
+    // Upper platforms for distractions and cover
+    this.createPlatform(2, 3.5, 4, 0.5, Config.COLORS.SHADOW_BLUE) // Platform for vase
+    this.createPlatform(17, 3.5, 4, 0.5, Config.COLORS.SHADOW_BLUE) // Platform for book
+    this.createPlatform(20, 3.5, 3, 0.5, Config.COLORS.SHADOW_BLUE) // Platform for plant
+    this.createPlatform(33, 3.5, 4, 0.5, Config.COLORS.SHADOW_BLUE) // Platform for frame
 
-    console.log(`🏗️  Created simple tutorial level`)
+    // Cover platforms (can hide behind/use for navigation)
+    this.createPlatform(6, 3, 2, 0.5, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(12, 3, 2, 0.5, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(25, 3, 2, 0.5, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(38, 3, 2, 0.5, Config.COLORS.SHADOW_BLUE)
+
+    console.log(`🏗️  Created Phase 2 level: The House`)
   }
 
   createPlatform(x, y, width, height, color) {
