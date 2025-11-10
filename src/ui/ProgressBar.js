@@ -20,51 +20,54 @@ export class ProgressBar {
     this.group = new THREE.Group()
 
     // Bar dimensions (in screen space)
-    const barWidth = 20
-    const barHeight = 0.8
-    const barY = -7 // Bottom of screen (adjusted to be within frustum)
+    const barWidth = 18
+    const barHeight = 0.7
+    const barY = 0 // We'll position the whole group at the bottom
 
-    // Background bar (dark)
+    // Background bar (dark with high contrast)
     const bgGeometry = new THREE.PlaneGeometry(barWidth, barHeight)
     const bgMaterial = new THREE.MeshBasicMaterial({
-      color: 0x2a2a2a,
-      transparent: true,
-      opacity: 0.8,
-      depthTest: false,
-      depthWrite: false
-    })
-    this.backgroundBar = new THREE.Mesh(bgGeometry, bgMaterial)
-    this.backgroundBar.position.set(0, barY, 20) // z=20 to be in front of vignette
-    this.group.add(this.backgroundBar)
-
-    // Progress bar (green)
-    const progressGeometry = new THREE.PlaneGeometry(barWidth, barHeight)
-    const progressMaterial = new THREE.MeshBasicMaterial({
-      color: 0x4CAF50,
+      color: 0x000000,
       transparent: true,
       opacity: 0.9,
       depthTest: false,
       depthWrite: false
     })
+    this.backgroundBar = new THREE.Mesh(bgGeometry, bgMaterial)
+    this.backgroundBar.position.set(0, barY, 0)
+    this.backgroundBar.renderOrder = 1000 // Force render on top
+    this.group.add(this.backgroundBar)
+
+    // Progress bar (bright green)
+    const progressGeometry = new THREE.PlaneGeometry(barWidth, barHeight)
+    const progressMaterial = new THREE.MeshBasicMaterial({
+      color: 0x00FF00,
+      transparent: true,
+      opacity: 1.0,
+      depthTest: false,
+      depthWrite: false
+    })
     this.progressBar = new THREE.Mesh(progressGeometry, progressMaterial)
-    this.progressBar.position.set(0, barY, 20.1)
+    this.progressBar.position.set(0, barY, 0.01)
+    this.progressBar.renderOrder = 1001
     this.group.add(this.progressBar)
 
-    // Player marker (cat icon)
-    const markerGeometry = new THREE.PlaneGeometry(0.6, 0.6)
+    // Player marker (bright orange)
+    const markerGeometry = new THREE.PlaneGeometry(0.5, 0.5)
     const markerMaterial = new THREE.MeshBasicMaterial({
-      color: 0xE07B39,
+      color: 0xFF6600,
       transparent: true,
       opacity: 1,
       depthTest: false,
       depthWrite: false
     })
     this.playerMarker = new THREE.Mesh(markerGeometry, markerMaterial)
-    this.playerMarker.position.set(-barWidth / 2, barY, 20.2)
+    this.playerMarker.position.set(-barWidth / 2, barY, 0.02)
+    this.playerMarker.renderOrder = 1002
     this.group.add(this.playerMarker)
 
-    // Goal marker (flag)
-    const goalGeometry = new THREE.PlaneGeometry(0.6, 0.6)
+    // Goal marker (bright gold)
+    const goalGeometry = new THREE.PlaneGeometry(0.5, 0.5)
     const goalMaterial = new THREE.MeshBasicMaterial({
       color: 0xFFD700,
       transparent: true,
@@ -73,29 +76,33 @@ export class ProgressBar {
       depthWrite: false
     })
     this.goalMarker = new THREE.Mesh(goalGeometry, goalMaterial)
-    this.goalMarker.position.set(barWidth / 2, barY, 20.2)
+    this.goalMarker.position.set(barWidth / 2, barY, 0.02)
+    this.goalMarker.renderOrder = 1002
     this.group.add(this.goalMarker)
 
-    // Border for the bar
+    // Border for the bar (bright white)
     const borderGeometry = new THREE.BufferGeometry()
     const borderVertices = new Float32Array([
-      -barWidth / 2, barY - barHeight / 2, 20.3,
-      barWidth / 2, barY - barHeight / 2, 20.3,
-      barWidth / 2, barY + barHeight / 2, 20.3,
-      -barWidth / 2, barY + barHeight / 2, 20.3,
-      -barWidth / 2, barY - barHeight / 2, 20.3
+      -barWidth / 2, barY - barHeight / 2, 0.03,
+      barWidth / 2, barY - barHeight / 2, 0.03,
+      barWidth / 2, barY + barHeight / 2, 0.03,
+      -barWidth / 2, barY + barHeight / 2, 0.03,
+      -barWidth / 2, barY - barHeight / 2, 0.03
     ])
     borderGeometry.setAttribute('position', new THREE.BufferAttribute(borderVertices, 3))
     const borderMaterial = new THREE.LineBasicMaterial({
       color: 0xFFFFFF,
       transparent: true,
-      opacity: 0.6,
-      depthTest: false
+      opacity: 1.0,
+      depthTest: false,
+      linewidth: 2
     })
     this.border = new THREE.Line(borderGeometry, borderMaterial)
+    this.border.renderOrder = 1003
     this.group.add(this.border)
 
     this.scene.add(this.group)
+    console.log('📊 Progress bar created with bright colors')
   }
 
   setRange(startX, goalX) {
@@ -109,8 +116,8 @@ export class ProgressBar {
     // Calculate progress (0 to 1)
     const progress = Math.max(0, Math.min(1, (playerX - this.startX) / (this.goalX - this.startX)))
 
-    // Update progress bar width
-    const barWidth = 20
+    // Update progress bar width (must match createProgressBar)
+    const barWidth = 18
     this.progressBar.scale.x = progress
     this.progressBar.position.x = -barWidth / 2 + (barWidth * progress / 2)
 
