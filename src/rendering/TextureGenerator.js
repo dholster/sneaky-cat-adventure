@@ -2385,18 +2385,37 @@ export class TextureGenerator {
     const carpetRed = '#8B2635'
     const carpetDark = '#6B1525'
     const carpetLight = '#AB4655'
+    const carpetHighlight = '#BB5665'
 
-    // Base carpet color
-    ctx.fillStyle = carpetRed
+    // Base carpet color with subtle gradient
+    const baseGradient = ctx.createRadialGradient(32, 32, 10, 32, 32, 40)
+    baseGradient.addColorStop(0, carpetLight)
+    baseGradient.addColorStop(0.6, carpetRed)
+    baseGradient.addColorStop(1, carpetDark)
+    ctx.fillStyle = baseGradient
     ctx.fillRect(0, 0, size, size)
 
-    // Carpet pattern (diamond/square pattern)
+    // Carpet pattern (diamond/square pattern) with depth
     ctx.strokeStyle = carpetDark
     ctx.lineWidth = 2
 
-    // Diamond pattern
+    // Diamond pattern with shadows
     for (let x = -size; x < size * 2; x += 16) {
       for (let y = -size; y < size * 2; y += 16) {
+        // Shadow diamond (offset)
+        ctx.strokeStyle = carpetDark
+        ctx.globalAlpha = 0.4
+        ctx.beginPath()
+        ctx.moveTo(x + 1, y + 1)
+        ctx.lineTo(x + 9, y + 9)
+        ctx.lineTo(x + 1, y + 17)
+        ctx.lineTo(x - 7, y + 9)
+        ctx.closePath()
+        ctx.stroke()
+        ctx.globalAlpha = 1.0
+
+        // Main diamond
+        ctx.strokeStyle = carpetDark
         ctx.beginPath()
         ctx.moveTo(x, y)
         ctx.lineTo(x + 8, y + 8)
@@ -2404,20 +2423,62 @@ export class TextureGenerator {
         ctx.lineTo(x - 8, y + 8)
         ctx.closePath()
         ctx.stroke()
+
+        // Highlight diamond (inner)
+        ctx.strokeStyle = carpetLight
+        ctx.lineWidth = 1
+        ctx.globalAlpha = 0.3
+        ctx.beginPath()
+        ctx.moveTo(x, y + 2)
+        ctx.lineTo(x + 6, y + 8)
+        ctx.lineTo(x, y + 14)
+        ctx.lineTo(x - 6, y + 8)
+        ctx.closePath()
+        ctx.stroke()
+        ctx.globalAlpha = 1.0
+        ctx.lineWidth = 2
       }
     }
 
-    // Add some texture/fibers
+    // Add carpet fibers/texture with depth
     ctx.strokeStyle = carpetLight
     ctx.lineWidth = 1
-    for (let i = 0; i < 30; i++) {
+    ctx.globalAlpha = 0.3
+    for (let i = 0; i < 60; i++) {
       const x = Math.random() * size
       const y = Math.random() * size
+      const length = 1 + Math.random() * 2
       ctx.beginPath()
       ctx.moveTo(x, y)
-      ctx.lineTo(x + 1, y + 1)
+      ctx.lineTo(x + length, y + length)
       ctx.stroke()
     }
+    ctx.globalAlpha = 1.0
+
+    // Darker fibers for contrast
+    ctx.strokeStyle = carpetDark
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.2
+    for (let i = 0; i < 40; i++) {
+      const x = Math.random() * size
+      const y = Math.random() * size
+      const length = 1 + Math.random()
+      ctx.beginPath()
+      ctx.moveTo(x, y)
+      ctx.lineTo(x + length, y + length)
+      ctx.stroke()
+    }
+    ctx.globalAlpha = 1.0
+
+    // Pile texture highlights (carpet nap)
+    ctx.fillStyle = carpetHighlight
+    ctx.globalAlpha = 0.15
+    for (let i = 0; i < 25; i++) {
+      const x = Math.random() * size
+      const y = Math.random() * size
+      ctx.fillRect(x, y, 2, 2)
+    }
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
