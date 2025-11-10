@@ -22,6 +22,8 @@ import { HidingSpot } from '../entities/HidingSpot.js'
 import { Distraction } from '../entities/Distraction.js'
 import { Config } from '../utils/Config.js'
 
+import { Background } from '../entities/Background.js'
+
 export class Game {
   constructor(canvas) {
     this.canvas = canvas
