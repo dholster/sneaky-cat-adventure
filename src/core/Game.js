@@ -220,6 +220,20 @@ export class Game {
 
   createHidingSpot(x, y, type) {
     const spot = new HidingSpot(this.scene, x, y, type)
+
+    // Add label
+    let labelText = 'HIDING SPOT'
+    if (type === 'box') labelText = 'HIDING (Box) - Press E'
+    if (type === 'shadow') labelText = 'HIDING (Shadow) - Press E'
+    if (type === 'furniture') labelText = 'HIDING (Furniture) - Press E'
+
+    spot.label = this.labelSystem.createLabel(
+      labelText,
+      new THREE.Vector3(x, y + 2.5, 0),
+      '#44ff44',
+      32
+    )
+
     this.hidingSpots.push(spot)
     return spot
   }
