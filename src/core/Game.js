@@ -10,6 +10,9 @@ import { DetectionSystem } from '../systems/DetectionSystem.js'
 import { VisionConeRenderer } from '../rendering/VisionConeRenderer.js'
 import { LabelSystem } from '../rendering/LabelSystem.js'
 import { UI } from '../rendering/UI.js'
+import { AnimatedSprite } from '../rendering/AnimatedSprite.js'
+import { SpriteSheet } from '../rendering/SpriteSheet.js'
+import { TextureGenerator } from '../rendering/TextureGenerator.js'
 import { Player } from '../entities/Player.js'
 import { Platform } from '../entities/Platform.js'
 import { Human } from '../entities/Human.js'
@@ -168,8 +171,31 @@ export class Game {
     this.player = new Player(this.scene, this.inputManager)
     this.player.position.set(-15, 1, 0) // Start on left side
 
-    // Create a temporary colored sprite for the player (cat)
-    this.player.createColorSprite(0xffaa66, 1, 1) // Orange color for cat
+    // Create animated sprite for player
+    const catData = TextureGenerator.createCatSpriteSheet()
+    const catSpriteSheet = new SpriteSheet(
+      catData.texture,
+      catData.frameSize,
+      catData.frameSize,
+      catData.columns,
+      catData.rows
+    )
+
+    const catSprite = new AnimatedSprite(this.scene, catSpriteSheet, 2, 2)
+
+    // Add animations
+    catSprite.addAnimation('idle', [0, 1], 2, true) // Slow breathing
+    catSprite.addAnimation('walk', [2, 3, 4, 5], 8, true) // Walking cycle
+    catSprite.addAnimation('run', [6, 7, 8, 9], 12, true) // Fast run cycle
+    catSprite.addAnimation('crouch', [10, 11], 4, true) // Crouch idle
+
+    // Set initial animation
+    catSprite.play('idle')
+
+    // Attach to player
+    this.player.createAnimatedSprite(catSprite)
+
+    console.log('🎨 Player now using animated sprite!')
 
     // Add label
     this.player.label = this.labelSystem.createLabel(
