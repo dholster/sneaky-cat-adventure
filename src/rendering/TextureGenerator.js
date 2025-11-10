@@ -25,13 +25,15 @@ export class TextureGenerator {
     ctx.fillStyle = 'transparent'
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // Colors
-    const catOrange = '#FF8844'
-    const catDark = '#CC5522'
-    const catLight = '#FFAA77'
+    // Colors - more realistic cat colors
+    const catOrange = '#E07B39'
+    const catDark = '#B85C2A'
+    const catLight = '#F5A66D'
+    const catHighlight = '#FFD4AA'
     const white = '#FFFFFF'
-    const black = '#222222'
-    const pink = '#FFB6C1'
+    const black = '#1a1a1a'
+    const pink = '#E8A1A8'
+    const nose = '#E67E7E'
 
     // Helper to draw a cat frame with more detail
     const drawCatFrame = (col, row, offsetX = 0, offsetY = 0, earAngle = 0, tailCurve = 0, legPos = 0) => {
@@ -40,9 +42,13 @@ export class TextureGenerator {
       const centerX = x + frameSize / 2 + offsetX
       const centerY = y + frameSize / 2 + offsetY
 
-      // Tail (behind body) - curved and fluffy
-      ctx.strokeStyle = catOrange
-      ctx.lineWidth = 4
+      // Tail (behind body) - curved and fluffy with gradient
+      const tailGradient = ctx.createLinearGradient(centerX - 12, centerY, centerX - 8, centerY - 10 + tailCurve)
+      tailGradient.addColorStop(0, catDark)
+      tailGradient.addColorStop(0.5, catOrange)
+      tailGradient.addColorStop(1, catLight)
+      ctx.strokeStyle = tailGradient
+      ctx.lineWidth = 5
       ctx.lineCap = 'round'
       ctx.beginPath()
       ctx.moveTo(centerX - 8, centerY + 2)
@@ -52,21 +58,52 @@ export class TextureGenerator {
       )
       ctx.stroke()
 
-      // Body (oval, more compact and cat-like)
-      ctx.fillStyle = catOrange
+      // Tail tip (darker)
+      ctx.fillStyle = catDark
+      ctx.beginPath()
+      ctx.arc(centerX - 10, centerY - 10 + tailCurve, 2, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Body (oval, more compact and cat-like) with gradient
+      const bodyGradient = ctx.createRadialGradient(centerX - 2, centerY, 2, centerX - 2, centerY + 2, 8)
+      bodyGradient.addColorStop(0, catLight)
+      bodyGradient.addColorStop(0.6, catOrange)
+      bodyGradient.addColorStop(1, catDark)
+      ctx.fillStyle = bodyGradient
       ctx.beginPath()
       ctx.ellipse(centerX - 2, centerY + 2, 8, 6, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Back legs
+      // Body stripes (subtle)
+      ctx.strokeStyle = catDark
+      ctx.lineWidth = 1
+      ctx.globalAlpha = 0.3
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath()
+        ctx.arc(centerX - 2, centerY + i, 6, 0, Math.PI)
+        ctx.stroke()
+      }
+      ctx.globalAlpha = 1.0
+
+      // Back legs with shading
       ctx.fillStyle = catDark
       ctx.fillRect(centerX - 8, centerY + 6 + legPos, 3, 5)
       ctx.fillRect(centerX - 4, centerY + 6 - legPos, 3, 5)
 
-      // Paws (back)
+      // Leg highlights
+      ctx.fillStyle = catOrange
+      ctx.fillRect(centerX - 7, centerY + 6 + legPos, 1, 5)
+      ctx.fillRect(centerX - 3, centerY + 6 - legPos, 1, 5)
+
+      // Paws (back) with toe beans
       ctx.fillStyle = catLight
       ctx.fillRect(centerX - 8, centerY + 10 + legPos, 3, 2)
       ctx.fillRect(centerX - 4, centerY + 10 - legPos, 3, 2)
+
+      // Toe beans
+      ctx.fillStyle = pink
+      ctx.fillRect(centerX - 7, centerY + 11 + legPos, 1, 1)
+      ctx.fillRect(centerX - 3, centerY + 11 - legPos, 1, 1)
 
       // Head (more cat-like with pointed face)
       ctx.fillStyle = catOrange
