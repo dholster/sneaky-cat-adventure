@@ -493,6 +493,11 @@ export class Game {
     this.goalPosition = new THREE.Vector2(x, y)
     this.goalReached = false
 
+    // Setup progress bar range if it exists
+    if (this.progressBar && this.player) {
+      this.progressBar.setRange(this.player.position.x, x)
+    }
+
     console.log('🎯 Goal created at:', x, y)
   }
 
@@ -637,6 +642,11 @@ export class Game {
 
     // Update camera
     this.cameraController.update(deltaTime)
+
+    // Update progress bar
+    if (this.progressBar) {
+      this.progressBar.update(this.player.position.x)
+    }
 
     // Update UI with highest detection level from all enemies
     let maxDetectionLevel = 0
