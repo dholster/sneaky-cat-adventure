@@ -450,4 +450,533 @@ export class TextureGenerator {
 
     return { texture, frameSize, columns, rows }
   }
+
+  /**
+   * Create sprite textures for hiding spots
+   */
+  static createBoxSprite() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const boxBrown = '#8B6F47'
+    const boxLight = '#A68A5C'
+    const boxDark = '#6B5537'
+    const tape = '#D4AF37'
+
+    // Cardboard box with tape
+    // Bottom face
+    ctx.fillStyle = boxDark
+    ctx.fillRect(8, 45, 48, 15)
+
+    // Left face
+    ctx.fillStyle = boxBrown
+    ctx.beginPath()
+    ctx.moveTo(8, 45)
+    ctx.lineTo(2, 40)
+    ctx.lineTo(2, 10)
+    ctx.lineTo(8, 15)
+    ctx.fill()
+
+    // Front face (lighter)
+    ctx.fillStyle = boxLight
+    ctx.fillRect(8, 15, 48, 30)
+
+    // Top face
+    ctx.fillStyle = boxBrown
+    ctx.fillRect(8, 10, 48, 5)
+
+    // Flaps (open box)
+    ctx.fillStyle = boxLight
+    ctx.beginPath()
+    ctx.moveTo(8, 15)
+    ctx.lineTo(6, 8)
+    ctx.lineTo(20, 8)
+    ctx.lineTo(18, 15)
+    ctx.fill()
+
+    ctx.beginPath()
+    ctx.moveTo(56, 15)
+    ctx.lineTo(58, 8)
+    ctx.lineTo(44, 8)
+    ctx.lineTo(46, 15)
+    ctx.fill()
+
+    // Tape strips
+    ctx.fillStyle = tape
+    ctx.fillRect(28, 15, 8, 30)
+    ctx.fillRect(8, 28, 48, 4)
+
+    // Box lines/texture
+    ctx.strokeStyle = boxDark
+    ctx.lineWidth = 1
+    // Vertical lines
+    for (let i = 0; i < 4; i++) {
+      ctx.beginPath()
+      ctx.moveTo(16 + i * 12, 15)
+      ctx.lineTo(16 + i * 12, 45)
+      ctx.stroke()
+    }
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createFurnitureSprite() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const woodBrown = '#654321'
+    const woodLight = '#8B6F47'
+    const woodDark = '#4a3419'
+    const shadow = 'rgba(0, 0, 0, 0.5)'
+
+    // Table/furniture (side view with space underneath)
+    // Table top
+    ctx.fillStyle = woodBrown
+    ctx.fillRect(4, 18, 56, 6)
+
+    // Table top edge (3D effect)
+    ctx.fillStyle = woodLight
+    ctx.fillRect(4, 18, 56, 2)
+
+    // Wood grain
+    ctx.strokeStyle = woodDark
+    ctx.lineWidth = 1
+    for (let i = 0; i < 6; i++) {
+      ctx.beginPath()
+      ctx.moveTo(8 + i * 10, 20)
+      ctx.lineTo(12 + i * 10, 24)
+      ctx.stroke()
+    }
+
+    // Left leg
+    ctx.fillStyle = woodBrown
+    ctx.fillRect(8, 24, 6, 36)
+    ctx.fillStyle = woodDark
+    ctx.fillRect(8, 24, 2, 36)
+
+    // Right leg
+    ctx.fillStyle = woodBrown
+    ctx.fillRect(50, 24, 6, 36)
+    ctx.fillStyle = woodDark
+    ctx.fillRect(50, 24, 2, 36)
+
+    // Shadow underneath (hiding space)
+    ctx.fillStyle = shadow
+    ctx.fillRect(14, 32, 36, 24)
+
+    // Hide here indicator (subtle)
+    ctx.strokeStyle = '#FFFFFF'
+    ctx.lineWidth = 2
+    ctx.setLineDash([4, 4])
+    ctx.strokeRect(16, 34, 32, 20)
+    ctx.setLineDash([])
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createCurtainSprite() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const curtainRed = '#8B0000'
+    const curtainLight = '#CD5C5C'
+    const curtainDark = '#5C0000'
+    const rodBrown = '#654321'
+
+    // Curtain rod
+    ctx.fillStyle = rodBrown
+    ctx.fillRect(4, 4, 56, 4)
+
+    // Rod ends (decorative)
+    ctx.beginPath()
+    ctx.arc(4, 6, 4, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(60, 6, 4, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Curtain folds (multiple vertical strips)
+    for (let i = 0; i < 6; i++) {
+      const x = 6 + i * 9
+      const offset = Math.sin(i * 0.5) * 2
+
+      // Dark fold
+      ctx.fillStyle = curtainDark
+      ctx.beginPath()
+      ctx.moveTo(x + offset, 8)
+      ctx.lineTo(x + offset - 2, 60)
+      ctx.lineTo(x + offset + 2, 60)
+      ctx.lineTo(x + offset + 4, 8)
+      ctx.fill()
+
+      // Light fold
+      ctx.fillStyle = curtainLight
+      ctx.beginPath()
+      ctx.moveTo(x + offset + 4, 8)
+      ctx.lineTo(x + offset + 2, 60)
+      ctx.lineTo(x + offset + 6, 60)
+      ctx.lineTo(x + offset + 8, 8)
+      ctx.fill()
+
+      // Main curtain
+      ctx.fillStyle = curtainRed
+      ctx.beginPath()
+      ctx.moveTo(x + offset + 8, 8)
+      ctx.lineTo(x + offset + 6, 60)
+      ctx.lineTo(x + offset + 10, 60)
+      ctx.lineTo(x + offset + 12, 8)
+      ctx.fill()
+    }
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createShadowSprite() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    // Dark shadow area with gradient effect
+    const gradient = ctx.createRadialGradient(32, 32, 10, 32, 32, 32)
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.8)')
+    gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.5)')
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.2)')
+
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, size, size)
+
+    // Moonlight edge (to show it's a shadow)
+    ctx.strokeStyle = 'rgba(200, 200, 255, 0.3)'
+    ctx.lineWidth = 3
+    ctx.beginPath()
+    ctx.moveTo(0, 10)
+    ctx.quadraticCurveTo(32, 20, 64, 10)
+    ctx.stroke()
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  /**
+   * Create sprite textures for distractions
+   */
+  static createVaseSprite() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const vasePink = '#FF69B4'
+    const vaseDark = '#C71585'
+    const vaseLight = '#FFB6C1'
+    const white = '#FFFFFF'
+
+    // Vase base
+    ctx.fillStyle = vaseDark
+    ctx.fillRect(20, 54, 24, 6)
+
+    // Vase body (curved)
+    ctx.fillStyle = vasePink
+    ctx.beginPath()
+    ctx.moveTo(22, 54)
+    ctx.quadraticCurveTo(18, 40, 22, 26)
+    ctx.lineTo(42, 26)
+    ctx.quadraticCurveTo(46, 40, 42, 54)
+    ctx.fill()
+
+    // Vase neck
+    ctx.fillRect(26, 18, 12, 8)
+
+    // Vase rim
+    ctx.fillStyle = vaseDark
+    ctx.fillRect(24, 16, 16, 2)
+
+    // Shine/highlight
+    ctx.fillStyle = vaseLight
+    ctx.beginPath()
+    ctx.ellipse(28, 35, 4, 8, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Decorative pattern
+    ctx.strokeStyle = white
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.arc(32, 42, 6, 0, Math.PI * 2)
+    ctx.stroke()
+
+    // Flowers in vase (optional)
+    ctx.fillStyle = '#FF6347'
+    ctx.beginPath()
+    ctx.arc(28, 12, 3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(36, 10, 3, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Flower stems
+    ctx.strokeStyle = '#228B22'
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(28, 12)
+    ctx.lineTo(28, 20)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(36, 10)
+    ctx.lineTo(36, 20)
+    ctx.stroke()
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createBookSprite() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const bookRed = '#8B0000'
+    const bookBrown = '#654321'
+    const bookBlue = '#191970'
+    const paper = '#FFF8DC'
+    const gold = '#FFD700'
+
+    // Stack of 3 books
+    // Bottom book (brown)
+    ctx.fillStyle = bookBrown
+    ctx.fillRect(12, 48, 40, 10)
+    ctx.fillStyle = paper
+    ctx.fillRect(52, 48, 2, 10)
+    // Spine
+    ctx.fillStyle = '#4a3419'
+    ctx.fillRect(12, 48, 4, 10)
+    // Title line
+    ctx.fillStyle = gold
+    ctx.fillRect(20, 52, 24, 2)
+
+    // Middle book (blue)
+    ctx.fillStyle = bookBlue
+    ctx.fillRect(16, 38, 36, 10)
+    ctx.fillStyle = paper
+    ctx.fillRect(52, 38, 2, 10)
+    ctx.fillStyle = '#0c0c38'
+    ctx.fillRect(16, 38, 4, 10)
+    ctx.fillStyle = gold
+    ctx.fillRect(24, 42, 20, 2)
+
+    // Top book (red)
+    ctx.fillStyle = bookRed
+    ctx.fillRect(20, 28, 32, 10)
+    ctx.fillStyle = paper
+    ctx.fillRect(52, 28, 2, 10)
+    ctx.fillStyle = '#5C0000'
+    ctx.fillRect(20, 28, 4, 10)
+    ctx.fillStyle = gold
+    ctx.fillRect(28, 32, 16, 2)
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createFrameSprite() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const frameGold = '#FFD700'
+    const frameDark = '#B8860B'
+    const picture = '#87CEEB'
+    const pictureDark = '#4682B4'
+
+    // Frame outer border (ornate gold)
+    ctx.fillStyle = frameGold
+    ctx.fillRect(8, 8, 48, 48)
+
+    // Frame inner (darker)
+    ctx.fillStyle = frameDark
+    ctx.fillRect(10, 10, 44, 44)
+
+    // Frame decorative corners
+    ctx.fillStyle = frameGold
+    ctx.beginPath()
+    ctx.arc(12, 12, 3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(52, 12, 3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(12, 52, 3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(52, 52, 3, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Picture inside (simple landscape)
+    ctx.fillStyle = picture
+    ctx.fillRect(14, 14, 36, 36)
+
+    // Simple picture content (mountains)
+    ctx.fillStyle = pictureDark
+    ctx.beginPath()
+    ctx.moveTo(14, 42)
+    ctx.lineTo(26, 24)
+    ctx.lineTo(38, 42)
+    ctx.fill()
+
+    ctx.beginPath()
+    ctx.moveTo(28, 42)
+    ctx.lineTo(38, 28)
+    ctx.lineTo(50, 42)
+    ctx.fill()
+
+    // Sun
+    ctx.fillStyle = '#FFFF00'
+    ctx.beginPath()
+    ctx.arc(42, 20, 4, 0, Math.PI * 2)
+    ctx.fill()
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createPlantSprite() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const potRed = '#8B4513'
+    const potDark = '#654321'
+    const leafGreen = '#228B22'
+    const leafDark = '#006400'
+    const soil = '#3d2817'
+
+    // Pot
+    ctx.fillStyle = potRed
+    ctx.beginPath()
+    ctx.moveTo(22, 54)
+    ctx.quadraticCurveTo(20, 48, 22, 42)
+    ctx.lineTo(42, 42)
+    ctx.quadraticCurveTo(44, 48, 42, 54)
+    ctx.fill()
+
+    // Pot rim
+    ctx.fillStyle = potDark
+    ctx.fillRect(20, 40, 24, 2)
+
+    // Soil
+    ctx.fillStyle = soil
+    ctx.fillRect(22, 40, 20, 4)
+
+    // Plant stem
+    ctx.strokeStyle = leafDark
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(32, 40)
+    ctx.lineTo(32, 20)
+    ctx.stroke()
+
+    // Leaves (multiple)
+    ctx.fillStyle = leafGreen
+    // Left leaves
+    ctx.beginPath()
+    ctx.ellipse(24, 32, 6, 3, -0.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(22, 26, 7, 4, -0.7, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(24, 20, 6, 3, -0.4, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Right leaves
+    ctx.beginPath()
+    ctx.ellipse(40, 34, 6, 3, 0.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(42, 28, 7, 4, 0.7, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(40, 22, 6, 3, 0.4, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Top leaves
+    ctx.beginPath()
+    ctx.ellipse(32, 16, 5, 8, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Leaf veins
+    ctx.strokeStyle = leafDark
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(24, 32)
+    ctx.lineTo(20, 32)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(40, 34)
+    ctx.lineTo(44, 34)
+    ctx.stroke()
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.needsUpdate = true
+
+    return texture
+  }
 }

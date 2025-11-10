@@ -3,6 +3,7 @@
  */
 
 import { Entity } from './Entity.js'
+import { TextureGenerator } from '../rendering/TextureGenerator.js'
 
 export class HidingSpot extends Entity {
   constructor(scene, x, y, type = 'box') {
