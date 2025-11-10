@@ -316,7 +316,8 @@ export class TextureGenerator {
   }
 
   /**
-   * Create a simple dog sprite sheet (placeholder)
+   * Create a recognizable dog sprite sheet
+   * 4 columns x 1 row = 4 frames
    */
   static createDogSpriteSheet() {
     const frameSize = 32
@@ -329,48 +330,116 @@ export class TextureGenerator {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    const dogBrown = '#8B4513'
+    const dogBrown = '#8B5A3C'
     const dogDark = '#654321'
-    const black = '#000000'
+    const dogLight = '#A67C52'
+    const black = '#222222'
+    const white = '#FFFFFF'
+    const pink = '#FFB6C1'
 
-    const drawDogFrame = (col, tailWag = 0) => {
+    const drawDogFrame = (col, tailWag = 0, legPhase = 0) => {
       const x = col * frameSize
       const y = 0
       const centerX = x + frameSize / 2
-      const centerY = y + frameSize / 2
+      const centerY = y + frameSize / 2 + 2
 
-      // Body (elongated)
+      // Tail (behind body) - wagging
+      ctx.strokeStyle = dogBrown
+      ctx.lineWidth = 4
+      ctx.lineCap = 'round'
+      ctx.beginPath()
+      ctx.moveTo(centerX - 10, centerY + 1)
+      ctx.lineTo(centerX - 14, centerY - 3 + tailWag)
+      ctx.stroke()
+
+      // Body (elongated, dog-like)
       ctx.fillStyle = dogBrown
-      ctx.fillRect(centerX - 12, centerY, 20, 8)
+      ctx.beginPath()
+      ctx.ellipse(centerX - 3, centerY + 1, 10, 5, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Back legs
+      ctx.fillStyle = dogDark
+      ctx.fillRect(centerX - 9, centerY + 5 + Math.sin(legPhase) * 2, 2, 5)
+      ctx.fillRect(centerX - 6, centerY + 5 - Math.sin(legPhase) * 2, 2, 5)
+
+      // Paws (back)
+      ctx.fillStyle = black
+      ctx.fillRect(centerX - 9, centerY + 9 + Math.sin(legPhase) * 2, 2, 2)
+      ctx.fillRect(centerX - 6, centerY + 9 - Math.sin(legPhase) * 2, 2, 2)
+
+      // Chest/neck area
+      ctx.fillStyle = dogLight
+      ctx.beginPath()
+      ctx.ellipse(centerX + 5, centerY, 4, 4, 0, 0, Math.PI * 2)
+      ctx.fill()
 
       // Head
-      ctx.fillRect(centerX + 8, centerY - 2, 8, 6)
-
-      // Ears
-      ctx.fillStyle = dogDark
-      ctx.fillRect(centerX + 9, centerY - 5, 2, 3)
-      ctx.fillRect(centerX + 13, centerY - 5, 2, 3)
-
-      // Nose
-      ctx.fillStyle = black
-      ctx.fillRect(centerX + 14, centerY, 2, 2)
-
-      // Tail
       ctx.fillStyle = dogBrown
-      ctx.fillRect(centerX - 12, centerY - 2 + tailWag, 2, 6)
+      ctx.beginPath()
+      ctx.ellipse(centerX + 9, centerY - 1, 5, 4, 0, 0, Math.PI * 2)
+      ctx.fill()
 
-      // Legs
-      ctx.fillRect(centerX - 8, centerY + 8, 2, 4)
-      ctx.fillRect(centerX - 4, centerY + 8, 2, 4)
-      ctx.fillRect(centerX + 0, centerY + 8, 2, 4)
-      ctx.fillRect(centerX + 4, centerY + 8, 2, 4)
+      // Snout (elongated)
+      ctx.fillStyle = dogLight
+      ctx.fillRect(centerX + 11, centerY - 1, 4, 3)
+
+      // Nose (black, prominent)
+      ctx.fillStyle = black
+      ctx.fillRect(centerX + 14, centerY - 1, 2, 2)
+
+      // Ears (floppy)
+      ctx.fillStyle = dogDark
+      // Left ear
+      ctx.beginPath()
+      ctx.ellipse(centerX + 6, centerY - 3, 2, 4, -0.3, 0, Math.PI * 2)
+      ctx.fill()
+      // Right ear
+      ctx.beginPath()
+      ctx.ellipse(centerX + 11, centerY - 3, 2, 4, 0.3, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Eye
+      ctx.fillStyle = black
+      ctx.fillRect(centerX + 9, centerY - 2, 2, 2)
+
+      // Eye shine
+      ctx.fillStyle = white
+      ctx.fillRect(centerX + 9, centerY - 2, 1, 1)
+
+      // Mouth line
+      ctx.strokeStyle = black
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(centerX + 14, centerY + 1)
+      ctx.lineTo(centerX + 12, centerY + 2)
+      ctx.stroke()
+
+      // Front legs
+      ctx.fillStyle = dogBrown
+      ctx.fillRect(centerX + 2, centerY + 4 - Math.sin(legPhase) * 2, 2, 6)
+      ctx.fillRect(centerX + 5, centerY + 4 + Math.sin(legPhase) * 2, 2, 6)
+
+      // Paws (front)
+      ctx.fillStyle = black
+      ctx.fillRect(centerX + 2, centerY + 9 - Math.sin(legPhase) * 2, 2, 2)
+      ctx.fillRect(centerX + 5, centerY + 9 + Math.sin(legPhase) * 2, 2, 2)
+
+      // Collar (optional detail)
+      ctx.fillStyle = '#FF4444'
+      ctx.fillRect(centerX + 4, centerY - 1, 4, 2)
+
+      // Collar tag
+      ctx.fillStyle = '#FFD700'
+      ctx.fillRect(centerX + 5, centerY + 1, 2, 2)
     }
 
-    // Walk cycle
-    drawDogFrame(0, 0)
-    drawDogFrame(1, 2)
-    drawDogFrame(2, 0)
-    drawDogFrame(3, -2)
+    // Walk cycle with tail wagging and leg movement
+    for (let i = 0; i < 4; i++) {
+      const tailWag = Math.sin(i * Math.PI / 2) * 3
+      const legPhase = (i / 4) * Math.PI * 2
+      drawDogFrame(i, tailWag, legPhase)
+    }
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
