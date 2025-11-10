@@ -990,4 +990,280 @@ export class TextureGenerator {
 
     return texture
   }
+
+  /**
+   * Create environment tile textures
+   */
+  static createWoodFloorTile() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const woodBrown = '#8B6F47'
+    const woodDark = '#6B5537'
+    const woodLight = '#A68A5C'
+
+    // Draw wood planks (3 horizontal planks)
+    const plankHeight = size / 3
+
+    for (let i = 0; i < 3; i++) {
+      const y = i * plankHeight
+
+      // Base plank color (slight variation)
+      const variation = Math.sin(i * 1.5) * 10
+      ctx.fillStyle = i % 2 === 0 ? woodBrown : woodLight
+      ctx.fillRect(0, y, size, plankHeight)
+
+      // Wood grain lines
+      ctx.strokeStyle = woodDark
+      ctx.lineWidth = 1
+      for (let j = 0; j < 4; j++) {
+        const grainX = j * 16 + (i * 8)
+        ctx.beginPath()
+        ctx.moveTo(grainX, y + 2)
+        ctx.quadraticCurveTo(grainX + 8, y + plankHeight / 2, grainX + 4, y + plankHeight - 2)
+        ctx.stroke()
+      }
+
+      // Plank separators
+      ctx.strokeStyle = woodDark
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.moveTo(0, y + plankHeight)
+      ctx.lineTo(size, y + plankHeight)
+      ctx.stroke()
+
+      // Knots in wood
+      if (i === 1) {
+        ctx.fillStyle = woodDark
+        ctx.beginPath()
+        ctx.ellipse(20 + variation, y + plankHeight / 2, 3, 2, 0, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.flipY = false
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createCarpetTile() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const carpetRed = '#8B2635'
+    const carpetDark = '#6B1525'
+    const carpetLight = '#AB4655'
+
+    // Base carpet color
+    ctx.fillStyle = carpetRed
+    ctx.fillRect(0, 0, size, size)
+
+    // Carpet pattern (diamond/square pattern)
+    ctx.strokeStyle = carpetDark
+    ctx.lineWidth = 2
+
+    // Diamond pattern
+    for (let x = -size; x < size * 2; x += 16) {
+      for (let y = -size; y < size * 2; y += 16) {
+        ctx.beginPath()
+        ctx.moveTo(x, y)
+        ctx.lineTo(x + 8, y + 8)
+        ctx.lineTo(x, y + 16)
+        ctx.lineTo(x - 8, y + 8)
+        ctx.closePath()
+        ctx.stroke()
+      }
+    }
+
+    // Add some texture/fibers
+    ctx.strokeStyle = carpetLight
+    ctx.lineWidth = 1
+    for (let i = 0; i < 30; i++) {
+      const x = Math.random() * size
+      const y = Math.random() * size
+      ctx.beginPath()
+      ctx.moveTo(x, y)
+      ctx.lineTo(x + 1, y + 1)
+      ctx.stroke()
+    }
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.flipY = false
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createTileFloorTile() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const tileWhite = '#E8E8E8'
+    const tileGray = '#D0D0D0'
+    const grout = '#A0A0A0'
+
+    // Draw 2x2 tiles
+    const tileSize = size / 2
+
+    for (let row = 0; row < 2; row++) {
+      for (let col = 0; col < 2; col++) {
+        const x = col * tileSize
+        const y = row * tileSize
+
+        // Checkerboard pattern
+        ctx.fillStyle = (row + col) % 2 === 0 ? tileWhite : tileGray
+        ctx.fillRect(x + 1, y + 1, tileSize - 2, tileSize - 2)
+
+        // Grout lines
+        ctx.strokeStyle = grout
+        ctx.lineWidth = 2
+        ctx.strokeRect(x, y, tileSize, tileSize)
+      }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.flipY = false
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createWallpaperTile() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const wallBlue = '#4A5A7A'
+    const wallDark = '#3A4A6A'
+    const wallLight = '#6A7A9A'
+
+    // Base wallpaper color
+    ctx.fillStyle = wallBlue
+    ctx.fillRect(0, 0, size, size)
+
+    // Damask pattern (simplified)
+    ctx.strokeStyle = wallDark
+    ctx.lineWidth = 2
+
+    // Vertical stripes
+    for (let x = 0; x < size; x += 16) {
+      ctx.beginPath()
+      ctx.moveTo(x, 0)
+      ctx.lineTo(x, size)
+      ctx.stroke()
+    }
+
+    // Decorative flourishes
+    ctx.strokeStyle = wallLight
+    ctx.lineWidth = 1
+    for (let x = 8; x < size; x += 16) {
+      for (let y = 8; y < size; y += 16) {
+        // Small flower pattern
+        ctx.beginPath()
+        ctx.arc(x, y, 3, 0, Math.PI * 2)
+        ctx.stroke()
+
+        // Petals
+        for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 2) {
+          ctx.beginPath()
+          ctx.moveTo(x, y)
+          ctx.lineTo(x + Math.cos(angle) * 5, y + Math.sin(angle) * 5)
+          ctx.stroke()
+        }
+      }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.flipY = false
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    texture.needsUpdate = true
+
+    return texture
+  }
+
+  static createBrickWallTile() {
+    const size = 64
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, size, size)
+
+    const brickRed = '#8B4C4C'
+    const brickDark = '#6B3C3C'
+    const mortar = '#B0A090'
+
+    // Draw bricks in offset pattern
+    const brickHeight = 16
+    const brickWidth = 32
+
+    for (let row = 0; row < 4; row++) {
+      const offsetX = row % 2 === 0 ? 0 : brickWidth / 2
+
+      for (let col = -1; col < 3; col++) {
+        const x = col * brickWidth + offsetX
+        const y = row * brickHeight
+
+        // Mortar (background)
+        ctx.fillStyle = mortar
+        ctx.fillRect(x, y, brickWidth, brickHeight)
+
+        // Brick
+        ctx.fillStyle = brickRed
+        ctx.fillRect(x + 1, y + 1, brickWidth - 2, brickHeight - 2)
+
+        // Brick texture
+        ctx.fillStyle = brickDark
+        for (let i = 0; i < 3; i++) {
+          ctx.fillRect(
+            x + 3 + Math.random() * (brickWidth - 6),
+            y + 3 + Math.random() * (brickHeight - 6),
+            2, 1
+          )
+        }
+      }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.magFilter = THREE.NearestFilter
+    texture.minFilter = THREE.NearestFilter
+    texture.flipY = false
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    texture.needsUpdate = true
+
+    return texture
+  }
 }
