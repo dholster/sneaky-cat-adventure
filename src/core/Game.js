@@ -25,6 +25,7 @@ import { Config } from '../utils/Config.js'
 import { Background } from '../entities/Background.js'
 import { ProgressBar } from '../ui/ProgressBar.js'
 import { LightingSystem } from '../rendering/LightingSystem.js'
+import { ParallaxBackground } from '../rendering/ParallaxBackground.js'
 
 export class Game {
   constructor(canvas) {
@@ -45,6 +46,7 @@ export class Game {
     this.ui = null // UI/HUD system
     this.progressBar = null // Progress bar showing distance to goal
     this.lightingSystem = null // Atmospheric lighting and effects
+    this.parallaxBackground = null // Parallax background layers
 
     // Game entities
     this.player = null
