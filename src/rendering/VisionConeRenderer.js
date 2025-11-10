@@ -66,9 +66,15 @@ export class VisionConeRenderer {
       mesh.position.x = enemy.position.x
       mesh.position.y = enemy.position.y
 
-      // Update rotation based on facing direction
-      // facing = 1 (right), facing = -1 (left)
-      mesh.rotation.z = enemy.facing === 1 ? Math.PI / 2 : -Math.PI / 2
+      // Update rotation based on enemy type
+      if (enemy.getVisionAngle && typeof enemy.getVisionAngle === 'function') {
+        // Camera - use custom rotation angle
+        mesh.rotation.z = enemy.getVisionAngle() + Math.PI / 2
+      } else {
+        // Human/Dog - use facing direction
+        // facing = 1 (right), facing = -1 (left)
+        mesh.rotation.z = enemy.facing === 1 ? Math.PI / 2 : -Math.PI / 2
+      }
 
       // Update shader uniforms
       mesh.material.uniforms.uTime.value = time
@@ -90,6 +96,10 @@ export class VisionConeRenderer {
         case 'search':
           color = new THREE.Color(0xff8800) // Orange
           detectionState = 1.5
+          break
+        case 'scanning': // Camera scanning state
+          color = new THREE.Color(0x00AAFF) // Blue for cameras
+          detectionState = 0
           break
         case 'unaware':
         default:
