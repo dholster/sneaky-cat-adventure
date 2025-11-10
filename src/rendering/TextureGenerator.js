@@ -1757,12 +1757,23 @@ export class TextureGenerator {
 
     const potRed = '#8B4513'
     const potDark = '#654321'
+    const potLight = '#A0653C'
     const leafGreen = '#228B22'
     const leafDark = '#006400'
+    const leafLight = '#32CD32'
     const soil = '#3d2817'
+    const soilLight = '#5a3a25'
 
-    // Pot
-    ctx.fillStyle = potRed
+    // Pot shadow underneath
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
+    ctx.fillRect(19, 57, 26, 4)
+
+    // Pot with gradient for roundness
+    const potGradient = ctx.createRadialGradient(32, 48, 5, 32, 48, 14)
+    potGradient.addColorStop(0, potLight)
+    potGradient.addColorStop(0.5, potRed)
+    potGradient.addColorStop(1, potDark)
+    ctx.fillStyle = potGradient
     ctx.beginPath()
     ctx.moveTo(22, 54)
     ctx.quadraticCurveTo(20, 48, 22, 42)
@@ -1770,62 +1781,235 @@ export class TextureGenerator {
     ctx.quadraticCurveTo(44, 48, 42, 54)
     ctx.fill()
 
-    // Pot rim
+    // Pot side shadows
     ctx.fillStyle = potDark
+    ctx.globalAlpha = 0.4
+    ctx.beginPath()
+    ctx.moveTo(22, 54)
+    ctx.quadraticCurveTo(20, 48, 22, 42)
+    ctx.lineTo(24, 42)
+    ctx.quadraticCurveTo(23, 48, 24, 54)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Pot highlights
+    ctx.fillStyle = potLight
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.ellipse(28, 46, 3, 6, 0, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Pot rim with depth
+    const rimGradient = ctx.createLinearGradient(20, 40, 44, 40)
+    rimGradient.addColorStop(0, potDark)
+    rimGradient.addColorStop(0.3, potRed)
+    rimGradient.addColorStop(0.7, potRed)
+    rimGradient.addColorStop(1, potDark)
+    ctx.fillStyle = rimGradient
     ctx.fillRect(20, 40, 24, 2)
 
-    // Soil
-    ctx.fillStyle = soil
+    // Rim highlight
+    ctx.fillStyle = potLight
+    ctx.globalAlpha = 0.6
+    ctx.fillRect(20, 40, 24, 1)
+    ctx.globalAlpha = 1.0
+
+    // Soil with texture
+    const soilGradient = ctx.createLinearGradient(22, 40, 42, 40)
+    soilGradient.addColorStop(0, potDark)
+    soilGradient.addColorStop(0.3, soil)
+    soilGradient.addColorStop(0.7, soil)
+    soilGradient.addColorStop(1, potDark)
+    ctx.fillStyle = soilGradient
     ctx.fillRect(22, 40, 20, 4)
 
-    // Plant stem
-    ctx.strokeStyle = leafDark
-    ctx.lineWidth = 2
+    // Soil texture (particles)
+    ctx.fillStyle = soilLight
+    ctx.globalAlpha = 0.4
+    for (let i = 0; i < 15; i++) {
+      ctx.fillRect(23 + Math.random() * 18, 40 + Math.random() * 3, 1, 1)
+    }
+    ctx.globalAlpha = 1.0
+
+    // Plant stem with thickness variation and shading
+    const stemGradient = ctx.createLinearGradient(32, 40, 34, 40)
+    stemGradient.addColorStop(0, leafDark)
+    stemGradient.addColorStop(1, leafGreen)
+    ctx.strokeStyle = stemGradient
+    ctx.lineWidth = 2.5
+    ctx.lineCap = 'round'
     ctx.beginPath()
     ctx.moveTo(32, 40)
     ctx.lineTo(32, 20)
     ctx.stroke()
 
-    // Leaves (multiple)
-    ctx.fillStyle = leafGreen
+    // Stem highlight
+    ctx.strokeStyle = leafLight
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.moveTo(31, 38)
+    ctx.lineTo(31, 22)
+    ctx.stroke()
+    ctx.globalAlpha = 1.0
+
+    // Leaves (multiple) with gradients and veins
     // Left leaves
+    // Bottom left leaf
+    const leaf1Gradient = ctx.createRadialGradient(24, 32, 1, 24, 32, 6)
+    leaf1Gradient.addColorStop(0, leafLight)
+    leaf1Gradient.addColorStop(0.5, leafGreen)
+    leaf1Gradient.addColorStop(1, leafDark)
+    ctx.fillStyle = leaf1Gradient
     ctx.beginPath()
     ctx.ellipse(24, 32, 6, 3, -0.5, 0, Math.PI * 2)
     ctx.fill()
+
+    // Leaf vein
+    ctx.strokeStyle = leafDark
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.moveTo(28, 32)
+    ctx.lineTo(20, 32)
+    ctx.stroke()
+    ctx.globalAlpha = 1.0
+
+    // Middle left leaf
+    const leaf2Gradient = ctx.createRadialGradient(22, 26, 1, 22, 26, 7)
+    leaf2Gradient.addColorStop(0, leafLight)
+    leaf2Gradient.addColorStop(0.5, leafGreen)
+    leaf2Gradient.addColorStop(1, leafDark)
+    ctx.fillStyle = leaf2Gradient
     ctx.beginPath()
     ctx.ellipse(22, 26, 7, 4, -0.7, 0, Math.PI * 2)
     ctx.fill()
+
+    // Leaf vein
+    ctx.strokeStyle = leafDark
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.moveTo(27, 26)
+    ctx.lineTo(17, 26)
+    ctx.stroke()
+    ctx.globalAlpha = 1.0
+
+    // Top left leaf
+    const leaf3Gradient = ctx.createRadialGradient(24, 20, 1, 24, 20, 6)
+    leaf3Gradient.addColorStop(0, leafLight)
+    leaf3Gradient.addColorStop(0.5, leafGreen)
+    leaf3Gradient.addColorStop(1, leafDark)
+    ctx.fillStyle = leaf3Gradient
     ctx.beginPath()
     ctx.ellipse(24, 20, 6, 3, -0.4, 0, Math.PI * 2)
     ctx.fill()
 
+    // Leaf vein
+    ctx.strokeStyle = leafDark
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.moveTo(28, 20)
+    ctx.lineTo(20, 20)
+    ctx.stroke()
+    ctx.globalAlpha = 1.0
+
     // Right leaves
+    // Bottom right leaf
+    const leaf4Gradient = ctx.createRadialGradient(40, 34, 1, 40, 34, 6)
+    leaf4Gradient.addColorStop(0, leafLight)
+    leaf4Gradient.addColorStop(0.5, leafGreen)
+    leaf4Gradient.addColorStop(1, leafDark)
+    ctx.fillStyle = leaf4Gradient
     ctx.beginPath()
     ctx.ellipse(40, 34, 6, 3, 0.5, 0, Math.PI * 2)
     ctx.fill()
+
+    // Leaf vein
+    ctx.strokeStyle = leafDark
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.moveTo(36, 34)
+    ctx.lineTo(44, 34)
+    ctx.stroke()
+    ctx.globalAlpha = 1.0
+
+    // Middle right leaf
+    const leaf5Gradient = ctx.createRadialGradient(42, 28, 1, 42, 28, 7)
+    leaf5Gradient.addColorStop(0, leafLight)
+    leaf5Gradient.addColorStop(0.5, leafGreen)
+    leaf5Gradient.addColorStop(1, leafDark)
+    ctx.fillStyle = leaf5Gradient
     ctx.beginPath()
     ctx.ellipse(42, 28, 7, 4, 0.7, 0, Math.PI * 2)
     ctx.fill()
+
+    // Leaf vein
+    ctx.strokeStyle = leafDark
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.moveTo(37, 28)
+    ctx.lineTo(47, 28)
+    ctx.stroke()
+    ctx.globalAlpha = 1.0
+
+    // Top right leaf
+    const leaf6Gradient = ctx.createRadialGradient(40, 22, 1, 40, 22, 6)
+    leaf6Gradient.addColorStop(0, leafLight)
+    leaf6Gradient.addColorStop(0.5, leafGreen)
+    leaf6Gradient.addColorStop(1, leafDark)
+    ctx.fillStyle = leaf6Gradient
     ctx.beginPath()
     ctx.ellipse(40, 22, 6, 3, 0.4, 0, Math.PI * 2)
     ctx.fill()
 
-    // Top leaves
+    // Leaf vein
+    ctx.strokeStyle = leafDark
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.moveTo(36, 22)
+    ctx.lineTo(44, 22)
+    ctx.stroke()
+    ctx.globalAlpha = 1.0
+
+    // Top center leaves
+    const leaf7Gradient = ctx.createRadialGradient(32, 16, 1, 32, 16, 5)
+    leaf7Gradient.addColorStop(0, leafLight)
+    leaf7Gradient.addColorStop(0.5, leafGreen)
+    leaf7Gradient.addColorStop(1, leafDark)
+    ctx.fillStyle = leaf7Gradient
     ctx.beginPath()
     ctx.ellipse(32, 16, 5, 8, 0, 0, Math.PI * 2)
     ctx.fill()
 
-    // Leaf veins
+    // Main vein
     ctx.strokeStyle = leafDark
     ctx.lineWidth = 1
+    ctx.globalAlpha = 0.5
     ctx.beginPath()
-    ctx.moveTo(24, 32)
-    ctx.lineTo(20, 32)
+    ctx.moveTo(32, 10)
+    ctx.lineTo(32, 22)
     ctx.stroke()
+    ctx.globalAlpha = 1.0
+
+    // Leaf shine/highlights on various leaves
+    ctx.fillStyle = leafLight
+    ctx.globalAlpha = 0.4
     ctx.beginPath()
-    ctx.moveTo(40, 34)
-    ctx.lineTo(44, 34)
-    ctx.stroke()
+    ctx.ellipse(23, 25, 2, 3, -0.7, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(41, 27, 2, 3, 0.7, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(31, 14, 2, 3, 0, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
