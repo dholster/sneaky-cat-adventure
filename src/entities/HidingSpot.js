@@ -26,35 +26,35 @@ export class HidingSpot extends Entity {
   setupVisual(type) {
     switch (type) {
       case 'box':
-        // Cardboard box - BRIGHT and VISIBLE
-        this.size = { width: 2, height: 2 }
-        this.createColorSprite(0xCC8844, this.size.width, this.size.height)
+        // Cardboard box - SUPER BRIGHT ORANGE (highly visible)
+        this.size = { width: 3, height: 3 }
+        this.createColorSprite(0xFF8800, this.size.width, this.size.height)
         break
       case 'furniture':
-        // Under furniture - Dark gray
+        // Under furniture - Bright gray
         this.size = { width: 2.5, height: 1.5 }
-        this.createColorSprite(0x666666, this.size.width, this.size.height)
+        this.createColorSprite(0xAAAAAA, this.size.width, this.size.height)
         break
       case 'curtain':
-        // Behind curtain - Purple
+        // Behind curtain - Bright Purple
         this.size = { width: 1.5, height: 3 }
-        this.createColorSprite(0x9966CC, this.size.width, this.size.height)
+        this.createColorSprite(0xCC66FF, this.size.width, this.size.height)
         break
       case 'shadow':
-        // Dark shadow area - Darker but still visible
-        this.size = { width: 3, height: 2 }
-        this.createColorSprite(0x3a3a5e, this.size.width, this.size.height)
+        // Dark shadow area - BRIGHT CYAN (contrasts with blue background)
+        this.size = { width: 4, height: 3 }
+        this.createColorSprite(0x00FFFF, this.size.width, this.size.height)
         break
       default:
-        this.size = { width: 2, height: 2 }
-        this.createColorSprite(0xCC8844, this.size.width, this.size.height)
+        this.size = { width: 3, height: 3 }
+        this.createColorSprite(0xFF8800, this.size.width, this.size.height)
     }
 
     // Make sure sprite is visible and in front
     if (this.sprite) {
-      this.sprite.position.z = 1.5 // Higher z than ground and entities
-      this.sprite.material.opacity = 0.9
-      this.sprite.material.transparent = true
+      this.sprite.position.z = 2.0 // Even higher z to be in front of everything
+      this.sprite.material.opacity = 1.0 // Fully opaque
+      this.sprite.material.transparent = false
     }
   }
 
