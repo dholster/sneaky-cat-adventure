@@ -363,6 +363,7 @@ export class Game {
     )
 
     this.distractions.push(distraction)
+    console.log(`💥 Created ${type} distraction at x=${x}, y=${y}`)
     return distraction
   }
 
@@ -374,6 +375,7 @@ export class Game {
     if (type === 'box') labelText = 'HIDING (Box) - Press E'
     if (type === 'shadow') labelText = 'HIDING (Shadow) - Press E'
     if (type === 'furniture') labelText = 'HIDING (Furniture) - Press E'
+    if (type === 'curtain') labelText = 'HIDING (Curtain) - Press E'
 
     spot.label = this.labelSystem.createLabel(
       labelText,
@@ -383,6 +385,7 @@ export class Game {
     )
 
     this.hidingSpots.push(spot)
+    console.log(`📦 Created ${type} hiding spot at x=${x}, y=${y}`)
     return spot
   }
 
