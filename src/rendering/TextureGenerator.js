@@ -502,34 +502,114 @@ export class TextureGenerator {
       }
       ctx.globalAlpha = 1.0
 
-      // Ears
-      ctx.fillStyle = skinTone
+      // Ears with shading
+      const earGradient = ctx.createLinearGradient(centerX - 6, centerY - 8, centerX - 4, centerY - 8)
+      earGradient.addColorStop(0, skinDark)
+      earGradient.addColorStop(1, skinTone)
+      ctx.fillStyle = earGradient
       ctx.fillRect(centerX - 6, centerY - 8, 2, 3)
+
+      const earGradient2 = ctx.createLinearGradient(centerX + 4, centerY - 8, centerX + 6, centerY - 8)
+      earGradient2.addColorStop(0, skinTone)
+      earGradient2.addColorStop(1, skinDark)
+      ctx.fillStyle = earGradient2
       ctx.fillRect(centerX + 4, centerY - 8, 2, 3)
 
-      // Eyes
-      ctx.fillStyle = black
+      // Ear shadows
+      ctx.fillStyle = skinDark
+      ctx.globalAlpha = 0.4
+      ctx.fillRect(centerX - 5, centerY - 7, 1, 2)
+      ctx.fillRect(centerX + 4, centerY - 7, 1, 2)
+      ctx.globalAlpha = 1.0
+
+      // Eyes with detail
+      // Eye whites
+      ctx.fillStyle = white
       ctx.fillRect(centerX - 3, centerY - 9, 2, 2)
       ctx.fillRect(centerX + 1, centerY - 9, 2, 2)
 
-      // Eye whites
+      // Pupils
+      ctx.fillStyle = black
+      ctx.fillRect(centerX - 2, centerY - 9, 2, 2)
+      ctx.fillRect(centerX + 2, centerY - 9, 2, 2)
+
+      // Eye shine
       ctx.fillStyle = white
       ctx.fillRect(centerX - 3, centerY - 9, 1, 1)
       ctx.fillRect(centerX + 1, centerY - 9, 1, 1)
 
-      // Nose
-      ctx.fillStyle = '#FFBB88'
+      // Eyebrows
+      ctx.strokeStyle = hairBrown
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(centerX - 4, centerY - 10)
+      ctx.lineTo(centerX - 1, centerY - 10.5)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(centerX + 1, centerY - 10.5)
+      ctx.lineTo(centerX + 4, centerY - 10)
+      ctx.stroke()
+
+      // Nose with shading
+      const noseGradient = ctx.createLinearGradient(centerX - 1, centerY - 6, centerX + 1, centerY - 6)
+      noseGradient.addColorStop(0, skinDark)
+      noseGradient.addColorStop(0.5, '#FFBB88')
+      noseGradient.addColorStop(1, skinTone)
+      ctx.fillStyle = noseGradient
       ctx.fillRect(centerX - 1, centerY - 6, 2, 3)
 
-      // Mouth
-      ctx.fillStyle = black
+      // Nose shadow
+      ctx.fillStyle = skinDark
+      ctx.globalAlpha = 0.3
+      ctx.fillRect(centerX + 1, centerY - 6, 1, 3)
+      ctx.globalAlpha = 1.0
+
+      // Mouth with depth
+      ctx.fillStyle = '#8B6F6F'
       ctx.fillRect(centerX - 2, centerY - 4, 4, 1)
 
-      // Front arm
-      ctx.fillStyle = uniformBlue
+      // Mouth highlight (upper lip)
+      ctx.fillStyle = skinTone
+      ctx.globalAlpha = 0.6
+      ctx.fillRect(centerX - 2, centerY - 5, 4, 1)
+      ctx.globalAlpha = 1.0
+
+      // Front arm with gradient
+      const frontArmGradient = ctx.createLinearGradient(centerX + 5 + armSwing, centerY + 2, centerX + 8 + armSwing, centerY + 2)
+      frontArmGradient.addColorStop(0, uniformBlue)
+      frontArmGradient.addColorStop(1, uniformLight)
+      ctx.fillStyle = frontArmGradient
       ctx.fillRect(centerX + 5 + armSwing, centerY + 2, 3, 8)
+
+      // Arm highlight
+      ctx.fillStyle = uniformLight
+      ctx.globalAlpha = 0.4
+      ctx.fillRect(centerX + 6 + armSwing, centerY + 3, 1, 6)
+      ctx.globalAlpha = 1.0
+
+      // Front hand
       ctx.fillStyle = skinTone
       ctx.fillRect(centerX + 5 + armSwing, centerY + 10, 3, 3)
+
+      // Hand shading and fingers
+      ctx.fillStyle = skinDark
+      ctx.globalAlpha = 0.3
+      ctx.fillRect(centerX + 5 + armSwing, centerY + 12, 3, 1)
+      ctx.globalAlpha = 1.0
+
+      // Finger lines
+      ctx.strokeStyle = skinDark
+      ctx.lineWidth = 0.5
+      ctx.globalAlpha = 0.5
+      ctx.beginPath()
+      ctx.moveTo(centerX + 6 + armSwing, centerY + 10)
+      ctx.lineTo(centerX + 6 + armSwing, centerY + 13)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(centerX + 7 + armSwing, centerY + 10)
+      ctx.lineTo(centerX + 7 + armSwing, centerY + 13)
+      ctx.stroke()
+      ctx.globalAlpha = 1.0
     }
 
     // Patrol animations with walking motion
