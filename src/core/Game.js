@@ -134,17 +134,28 @@ export class Game {
   }
 
   setupStealthSystems() {
-    // Initialize detection system
-    this.detectionSystem = new DetectionSystem(this.scene, this.player)
+    // Initialize detection system with callback
+    this.detectionSystem = new DetectionSystem(
+      this.scene,
+      this.player,
+      (enemy) => this.onPlayerDetected(enemy)
+    )
 
     // Initialize vision cone renderer
     this.visionConeRenderer = new VisionConeRenderer(this.scene)
 
     // Create ONE human enemy for tutorial
-    this.createHuman(5, 1, [
+    const enemyPatrol = [
       { x: 0, y: 1 },
       { x: 10, y: 1 }
-    ])
+    ]
+    this.createHuman(5, 1, enemyPatrol)
+
+    // Store initial enemy position for restart
+    this.initialPositions.enemies.push({
+      position: { x: 5, y: 1 },
+      patrol: enemyPatrol
+    })
 
     // Create hiding spots along the path
     this.createHidingSpot(-5, 1, 'box')
@@ -267,7 +278,7 @@ export class Game {
     const deltaTime = elapsedTime - this.previousTime
     this.previousTime = elapsedTime
 
-    if (this.paused) return
+    if (this.paused || this.isRestarting) return
 
     // Update input manager (clears pressed/released states)
     this.inputManager.update()
@@ -424,6 +435,66 @@ export class Game {
     if (Math.floor(this.clock.getElapsedTime() * 60) % 60 === 0) {
       console.log('Player:', this.player.getDebugInfo())
     }
+  }
+
+  onPlayerDetected(enemy) {
+    console.log('🚨🚨🚨 DETECTED BY GUARD! 🚨🚨🚨')
+    console.log('⏱️  Restarting in 2 seconds...')
+
+    this.isRestarting = true
+
+    // Wait 2 seconds then restart
+    setTimeout(() => {
+      this.restartLevel()
+    }, 2000)
+  }
+
+  restartLevel() {
+    console.log('🔄 Restarting level...')
+
+    // Reset player position and state
+    this.player.position.set(
+      this.initialPositions.player.x,
+      this.initialPositions.player.y,
+      0
+    )
+    this.player.velocity.set(0, 0, 0)
+    this.player.isGrounded = false
+    this.player.isHiding = false
+    this.player.isCrouching = false
+    this.player.isDetected = false
+    this.player.facing = 1
+
+    // Exit all hiding spots
+    this.hidingSpots.forEach(spot => {
+      spot.isOccupied = false
+      spot.occupant = null
+    })
+
+    // Reset enemies
+    this.enemies.forEach((enemy, index) => {
+      const initialData = this.initialPositions.enemies[index]
+      if (initialData) {
+        enemy.position.set(initialData.position.x, initialData.position.y, 0)
+        enemy.velocity.set(0, 0, 0)
+        enemy.detectionLevel = 0
+        enemy.detectionState = 'unaware'
+        enemy.currentWaypoint = 0
+        enemy.waitTimer = 0
+        enemy.investigatePosition = null
+        enemy.chaseTarget = null
+        enemy.facing = 1
+      }
+    })
+
+    // Reset goal
+    this.goalReached = false
+
+    // Resume game
+    this.isRestarting = false
+
+    console.log('✅ Level restarted! Try again.')
+    console.log('💡 Tip: Wait for the guard to walk away before moving!')
   }
 
   start() {
