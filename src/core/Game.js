@@ -46,6 +46,7 @@ export class Game {
     this.player = null
     this.entities = []
     this.platforms = [] // Static platforms for collision
+    this.backgrounds = [] // Background walls/surfaces
     this.enemies = [] // Human, dog, camera enemies
     this.hidingSpots = [] // Interactive hiding spots
     this.distractions = [] // Objects that can be knocked over for distraction
@@ -493,6 +494,10 @@ export class Game {
     const moonlight = new THREE.DirectionalLight(0xaabbcc, 0.4)
     moonlight.position.set(10, 20, 5)
     this.scene.add(moonlight)
+
+    // Background wall
+    const background = new Background(this.scene, 10, 5, 70, 20, 'wallpaper')
+    this.backgrounds.push(background)
 
     // Phase 2 Level - "The House"
     // Long main floor with wood tiles
