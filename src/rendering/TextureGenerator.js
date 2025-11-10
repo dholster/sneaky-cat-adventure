@@ -160,26 +160,26 @@ export class TextureGenerator {
     }
 
     // Row 0: Idle and Walk animations
-    // Idle (frames 0-1)
-    drawCatFrame(0, 0, 0, 0, 0, 0)
-    drawCatFrame(1, 0, 0, -1, 0, 0) // Slight bob
+    // Idle (frames 0-1) - subtle breathing and tail movement
+    drawCatFrame(0, 0, 0, 0, 0, 0, 0) // neutral
+    drawCatFrame(1, 0, 0, -1, 0, 2, 0) // slight bob, tail up
 
-    // Walk (frames 2-5)
-    drawCatFrame(2, 0, 0, 0, 0, 0)
-    drawCatFrame(3, 0, 1, -1, 0, 0) // Step forward
-    drawCatFrame(4, 0, 2, 0, 0, 0)
-    drawCatFrame(5, 0, 1, -1, 0, 0) // Step forward
+    // Walk (frames 2-5) - alternating legs
+    drawCatFrame(2, 0, 0, 0, 0, 0, 1)  // left legs forward
+    drawCatFrame(3, 0, 0, -1, 0, 1, 0) // middle position
+    drawCatFrame(4, 0, 0, 0, 0, 0, -1) // right legs forward
+    drawCatFrame(5, 0, 0, -1, 0, 1, 0) // middle position
 
     // Row 1: Run and Crouch animations
-    // Run (frames 6-9)
-    drawCatFrame(0, 1, 0, 0, -1, 1) // Ears back
-    drawCatFrame(1, 1, 2, -1, -1, 1) // Stretched
-    drawCatFrame(2, 1, 4, 0, -1, 1)
-    drawCatFrame(3, 1, 2, -1, -1, 1) // Stretched
+    // Run (frames 6-9) - stretched out, ears back
+    drawCatFrame(0, 1, 0, 0, -2, -2, 2)  // stretched, ears back
+    drawCatFrame(1, 1, 1, -1, -2, -1, -2) // compressed
+    drawCatFrame(2, 1, 2, 0, -2, -2, 2)  // stretched opposite
+    drawCatFrame(3, 1, 1, -1, -2, -1, -2) // compressed
 
-    // Crouch (frames 10-11)
-    drawCatFrame(4, 1, 0, 2, 1, -1) // Lower to ground
-    drawCatFrame(5, 1, 0, 3, 1, -1) // Lower to ground
+    // Crouch (frames 10-11) - lower to ground, sneaky
+    drawCatFrame(4, 1, 0, 3, 1, 3, 0) // crouched low
+    drawCatFrame(5, 1, 0, 4, 1, 4, 0) // even lower
 
     // Create texture
     const texture = new THREE.CanvasTexture(canvas)
