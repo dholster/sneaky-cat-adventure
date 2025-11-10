@@ -6,8 +6,12 @@ import * as THREE from 'three'
 import { InputManager } from './InputManager.js'
 import { CameraController } from './CameraController.js'
 import { PhysicsSystem } from '../systems/PhysicsSystem.js'
+import { DetectionSystem } from '../systems/DetectionSystem.js'
+import { VisionConeRenderer } from '../rendering/VisionConeRenderer.js'
 import { Player } from '../entities/Player.js'
 import { Platform } from '../entities/Platform.js'
+import { Human } from '../entities/Human.js'
+import { HidingSpot } from '../entities/HidingSpot.js'
 import { Config } from '../utils/Config.js'
 
 export class Game {
@@ -23,11 +27,15 @@ export class Game {
     this.inputManager = new InputManager()
     this.cameraController = null
     this.physicsSystem = new PhysicsSystem()
+    this.detectionSystem = null // Will be initialized after player
+    this.visionConeRenderer = null
 
     // Game entities
     this.player = null
     this.entities = []
     this.platforms = [] // Static platforms for collision
+    this.enemies = [] // Human, dog enemies
+    this.hidingSpots = [] // Interactive hiding spots
 
     // Game state
     this.paused = false
@@ -46,11 +54,19 @@ export class Game {
     this.setupCamera()
     this.setupRenderer()
     this.setupPlayer()
+    this.setupStealth Systems()
     this.setupEnvironment()
     this.setupEventListeners()
 
     console.log('🐱 Stealth Cat - Game Initialized')
-    console.log('Controls: Arrow Keys/WASD = Move, Space = Jump, Shift = Run, Ctrl = Crouch')
+    console.log('Controls:')
+    console.log('  Move: Arrow Keys/WASD')
+    console.log('  Jump: Space')
+    console.log('  Run (Hold): Shift - ⚠️  Makes noise!')
+    console.log('  Crouch (Hold): Ctrl')
+    console.log('  Hide: E (near hiding spot)')
+    console.log('  Pause: P')
+    console.log('  Debug: I')
   }
 
   setupScene() {
