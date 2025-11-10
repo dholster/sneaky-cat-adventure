@@ -798,8 +798,8 @@ export class Game {
     // If player wants to drop through, unground them immediately
     if (wantsToDropThrough) {
       this.player.isGrounded = false
-      this.player.velocity.y = -0.5 // Small downward velocity to start falling
-      console.log('🔽 Dropping through platform')
+      this.player.velocity.y = -1.0 // Stronger downward velocity
+      console.log('🔽 Dropping through platform - velocity:', this.player.velocity.y)
     }
 
     // Track if player is actually on a platform
@@ -808,9 +808,15 @@ export class Game {
     this.platforms.forEach(platform => {
       const platformBounds = platform.getBounds()
 
-      // Skip platforms if player is trying to drop through from above
-      if (wantsToDropThrough && this.player.position.y > platformBounds.y + platformBounds.height) {
-        return // Don't collide with this platform
+      // Skip platforms if player is trying to drop through
+      // Check if player is above or approximately on top of this platform
+      const playerBottom = this.player.position.y - playerBounds.height / 2
+      const platformTop = platformBounds.y + platformBounds.height
+      const onTopOfThisPlatform = Math.abs(playerBottom - platformTop) < 1.0
+
+      if (wantsToDropThrough && onTopOfThisPlatform) {
+        console.log(`   Skipping platform at y=${platformBounds.y} (on top of it)`)
+        return // Don't collide with platforms we're standing on
       }
 
       // Check if player overlaps platform
