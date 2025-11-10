@@ -6,11 +6,14 @@ import * as THREE from 'three'
 import { Config } from '../utils/Config.js'
 
 export class DetectionSystem {
-  constructor(scene, player) {
+  constructor(scene, player, onDetectionCallback = null) {
     this.scene = scene
     this.player = player
     this.enemies = []
     this.obstacles = [] // Walls/platforms that block vision
+
+    // Callback when player is fully detected
+    this.onDetectionCallback = onDetectionCallback
 
     // Raycaster for line-of-sight checks
     this.raycaster = new THREE.Raycaster()
