@@ -59,7 +59,10 @@ export class HidingSpot extends Entity {
   }
 
   update(deltaTime) {
-    // Static hiding spots don't need updates
+    // Sync sprite position even though we're static
+    if (this.sprite) {
+      this.sprite.position.copy(this.position)
+    }
   }
 
   canInteract(player) {

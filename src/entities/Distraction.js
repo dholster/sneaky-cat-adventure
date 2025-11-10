@@ -57,6 +57,11 @@ export class Distraction extends Entity {
   }
 
   update(deltaTime) {
+    // Sync sprite position with entity position
+    if (this.sprite && !this.hasBeenKnocked) {
+      this.sprite.position.copy(this.position)
+    }
+
     // Knocked over objects fall and fade
     if (this.hasBeenKnocked && this.sprite) {
       // Rotate and fall
