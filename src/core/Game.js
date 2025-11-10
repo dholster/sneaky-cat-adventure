@@ -307,8 +307,28 @@ export class Game {
     const human = new Human(this.scene, patrolPath)
     human.position.set(x, y, 0)
 
-    // Create visual representation (dark gray rectangle for now)
-    human.createColorSprite(0x4a4a6a, 1, 2)
+    // Create animated sprite for guard
+    const guardData = TextureGenerator.createGuardSpriteSheet()
+    const guardSpriteSheet = new SpriteSheet(
+      guardData.texture,
+      guardData.frameSize,
+      guardData.frameSize,
+      guardData.columns,
+      guardData.rows
+    )
+
+    const guardSprite = new AnimatedSprite(this.scene, guardSpriteSheet, 2, 2.5)
+
+    // Add animations
+    guardSprite.addAnimation('idle', [0], 1, true)
+    guardSprite.addAnimation('walk', [0, 1, 2, 3], 6, true)
+    guardSprite.addAnimation('alert', [4, 5], 8, true)
+    guardSprite.addAnimation('search', [6, 7], 4, true)
+
+    guardSprite.play('walk')
+    human.createAnimatedSprite(guardSprite)
+
+    console.log('🎨 Guard now using animated sprite!')
 
     // Add label
     human.label = this.labelSystem.createLabel(
@@ -332,8 +352,26 @@ export class Game {
     const dog = new Dog(this.scene, patrolPath)
     dog.position.set(x, y, 0)
 
-    // Create visual representation (brown for dog)
-    dog.createColorSprite(0x8B4513, dog.size.width, dog.size.height)
+    // Create animated sprite for dog
+    const dogData = TextureGenerator.createDogSpriteSheet()
+    const dogSpriteSheet = new SpriteSheet(
+      dogData.texture,
+      dogData.frameSize,
+      dogData.frameSize,
+      dogData.columns,
+      dogData.rows
+    )
+
+    const dogSprite = new AnimatedSprite(this.scene, dogSpriteSheet, 2, 1.5)
+
+    // Add animations
+    dogSprite.addAnimation('walk', [0, 1, 2, 3], 8, true)
+    dogSprite.addAnimation('run', [0, 1, 2, 3], 12, true)
+
+    dogSprite.play('walk')
+    dog.createAnimatedSprite(dogSprite)
+
+    console.log('🎨 Dog now using animated sprite!')
 
     // Add label
     dog.label = this.labelSystem.createLabel(
