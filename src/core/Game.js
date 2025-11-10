@@ -201,7 +201,9 @@ export class Game {
     catSprite.addAnimation('idle', [0, 1], 2, true) // Slow breathing
     catSprite.addAnimation('walk', [2, 3, 4, 5], 8, true) // Walking cycle
     catSprite.addAnimation('run', [6, 7, 8, 9], 12, true) // Fast run cycle
-    catSprite.addAnimation('crouch', [10, 11], 4, true) // Crouch idle
+    catSprite.addAnimation('crouch', [10, 11], 4, true) // Crouch idle/sneak
+    catSprite.addAnimation('jump', [12, 13, 14, 15], 10, false) // Jump sequence
+    catSprite.addAnimation('land', [16, 17], 8, false) // Landing sequence
 
     // Set initial animation
     catSprite.play('idle')
