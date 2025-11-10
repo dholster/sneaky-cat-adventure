@@ -493,26 +493,26 @@ export class Game {
     this.scene.add(moonlight)
 
     // Phase 2 Level - "The House"
-    // Long main floor (brighter blue)
-    this.createPlatform(10, 0, 70, 1, 0x2a3a5e)
+    // Long main floor with wood tiles
+    this.createPlatform(10, 0, 70, 1, 'wood')
 
-    // Upper platforms for distractions and cover (brighter colors)
-    this.createPlatform(2, 3.5, 4, 0.5, 0x556B8B) // Platform for vase
-    this.createPlatform(17, 3.5, 4, 0.5, 0x556B8B) // Platform for book
-    this.createPlatform(20, 3.5, 3, 0.5, 0x556B8B) // Platform for plant
-    this.createPlatform(33, 3.5, 4, 0.5, 0x556B8B) // Platform for frame
+    // Upper platforms for distractions (wood shelves)
+    this.createPlatform(2, 3.5, 4, 0.5, 'wood') // Platform for vase
+    this.createPlatform(17, 3.5, 4, 0.5, 'wood') // Platform for book
+    this.createPlatform(20, 3.5, 3, 0.5, 'wood') // Platform for plant
+    this.createPlatform(33, 3.5, 4, 0.5, 'wood') // Platform for frame
 
-    // Cover platforms (can hide behind/use for navigation) - even brighter
-    this.createPlatform(6, 3, 2, 0.5, 0x6A7B9B)
-    this.createPlatform(12, 3, 2, 0.5, 0x6A7B9B)
-    this.createPlatform(25, 3, 2, 0.5, 0x6A7B9B)
-    this.createPlatform(38, 3, 2, 0.5, 0x6A7B9B)
+    // Cover platforms (can hide behind/use for navigation) - carpet for variety
+    this.createPlatform(6, 3, 2, 0.5, 'carpet')
+    this.createPlatform(12, 3, 2, 0.5, 'wood')
+    this.createPlatform(25, 3, 2, 0.5, 'carpet')
+    this.createPlatform(38, 3, 2, 0.5, 'wood')
 
     console.log(`🏗️  Created Phase 2 level: The House`)
   }
 
-  createPlatform(x, y, width, height, color) {
-    const platform = new Platform(this.scene, x, y, width, height, color)
+  createPlatform(x, y, width, height, tileType = 'wood') {
+    const platform = new Platform(this.scene, x, y, width, height, tileType)
     this.platforms.push(platform)
     return platform
   }
