@@ -1169,27 +1169,73 @@ export class TextureGenerator {
     const curtainRed = '#8B0000'
     const curtainLight = '#CD5C5C'
     const curtainDark = '#5C0000'
+    const curtainHighlight = '#DC7C7C'
     const rodBrown = '#654321'
+    const rodLight = '#8B6F47'
+    const rodDark = '#4a3419'
 
-    // Curtain rod
-    ctx.fillStyle = rodBrown
+    // Curtain rod with gradient for metallic/wood effect
+    const rodGradient = ctx.createLinearGradient(4, 4, 4, 8)
+    rodGradient.addColorStop(0, rodLight)
+    rodGradient.addColorStop(0.5, rodBrown)
+    rodGradient.addColorStop(1, rodDark)
+    ctx.fillStyle = rodGradient
     ctx.fillRect(4, 4, 56, 4)
 
-    // Rod ends (decorative)
+    // Rod highlight (shine)
+    ctx.fillStyle = rodLight
+    ctx.globalAlpha = 0.6
+    ctx.fillRect(4, 4, 56, 1)
+    ctx.globalAlpha = 1.0
+
+    // Rod ends (decorative) with depth
+    // Left end
+    const leftEndGradient = ctx.createRadialGradient(4, 6, 1, 4, 6, 4)
+    leftEndGradient.addColorStop(0, rodLight)
+    leftEndGradient.addColorStop(0.6, rodBrown)
+    leftEndGradient.addColorStop(1, rodDark)
+    ctx.fillStyle = leftEndGradient
     ctx.beginPath()
     ctx.arc(4, 6, 4, 0, Math.PI * 2)
     ctx.fill()
+
+    // Left end highlight
+    ctx.fillStyle = rodLight
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.arc(3, 5, 2, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Right end
+    const rightEndGradient = ctx.createRadialGradient(60, 6, 1, 60, 6, 4)
+    rightEndGradient.addColorStop(0, rodLight)
+    rightEndGradient.addColorStop(0.6, rodBrown)
+    rightEndGradient.addColorStop(1, rodDark)
+    ctx.fillStyle = rightEndGradient
     ctx.beginPath()
     ctx.arc(60, 6, 4, 0, Math.PI * 2)
     ctx.fill()
 
-    // Curtain folds (multiple vertical strips)
+    // Right end highlight
+    ctx.fillStyle = rodLight
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.arc(59, 5, 2, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Curtain folds (multiple vertical strips) with realistic fabric shading
     for (let i = 0; i < 6; i++) {
       const x = 6 + i * 9
       const offset = Math.sin(i * 0.5) * 2
 
-      // Dark fold
-      ctx.fillStyle = curtainDark
+      // Deep shadow fold (darkest)
+      const darkFoldGradient = ctx.createLinearGradient(x + offset - 2, 8, x + offset + 2, 8)
+      darkFoldGradient.addColorStop(0, curtainRed)
+      darkFoldGradient.addColorStop(0.5, curtainDark)
+      darkFoldGradient.addColorStop(1, curtainRed)
+      ctx.fillStyle = darkFoldGradient
       ctx.beginPath()
       ctx.moveTo(x + offset, 8)
       ctx.lineTo(x + offset - 2, 60)
@@ -1197,8 +1243,24 @@ export class TextureGenerator {
       ctx.lineTo(x + offset + 4, 8)
       ctx.fill()
 
-      // Light fold
-      ctx.fillStyle = curtainLight
+      // Shadow gradient on fold edge
+      ctx.fillStyle = curtainDark
+      ctx.globalAlpha = 0.4
+      ctx.beginPath()
+      ctx.moveTo(x + offset, 8)
+      ctx.lineTo(x + offset - 1, 60)
+      ctx.lineTo(x + offset + 1, 60)
+      ctx.lineTo(x + offset + 2, 8)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Light fold (highlighted part)
+      const lightFoldGradient = ctx.createLinearGradient(x + offset + 4, 8, x + offset + 8, 8)
+      lightFoldGradient.addColorStop(0, curtainRed)
+      lightFoldGradient.addColorStop(0.3, curtainLight)
+      lightFoldGradient.addColorStop(0.7, curtainLight)
+      lightFoldGradient.addColorStop(1, curtainRed)
+      ctx.fillStyle = lightFoldGradient
       ctx.beginPath()
       ctx.moveTo(x + offset + 4, 8)
       ctx.lineTo(x + offset + 2, 60)
@@ -1206,15 +1268,56 @@ export class TextureGenerator {
       ctx.lineTo(x + offset + 8, 8)
       ctx.fill()
 
-      // Main curtain
-      ctx.fillStyle = curtainRed
+      // Fabric highlight (catch light)
+      ctx.fillStyle = curtainHighlight
+      ctx.globalAlpha = 0.3
+      ctx.beginPath()
+      ctx.moveTo(x + offset + 5, 8)
+      ctx.lineTo(x + offset + 3.5, 60)
+      ctx.lineTo(x + offset + 5, 60)
+      ctx.lineTo(x + offset + 6.5, 8)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Main curtain (base color)
+      const mainFoldGradient = ctx.createLinearGradient(x + offset + 8, 8, x + offset + 12, 8)
+      mainFoldGradient.addColorStop(0, curtainLight)
+      mainFoldGradient.addColorStop(0.5, curtainRed)
+      mainFoldGradient.addColorStop(1, curtainDark)
+      ctx.fillStyle = mainFoldGradient
       ctx.beginPath()
       ctx.moveTo(x + offset + 8, 8)
       ctx.lineTo(x + offset + 6, 60)
       ctx.lineTo(x + offset + 10, 60)
       ctx.lineTo(x + offset + 12, 8)
       ctx.fill()
+
+      // Fabric texture lines (subtle weave)
+      ctx.strokeStyle = curtainDark
+      ctx.lineWidth = 0.5
+      ctx.globalAlpha = 0.2
+      for (let j = 0; j < 10; j++) {
+        ctx.beginPath()
+        ctx.moveTo(x + offset, 10 + j * 5)
+        ctx.lineTo(x + offset + 12, 10 + j * 5)
+        ctx.stroke()
+      }
+      ctx.globalAlpha = 1.0
     }
+
+    // Bottom hem shadow
+    ctx.fillStyle = curtainDark
+    ctx.globalAlpha = 0.4
+    ctx.fillRect(4, 58, 56, 2)
+    ctx.globalAlpha = 1.0
+
+    // Overall fabric shadow variation (depth)
+    ctx.fillStyle = curtainDark
+    ctx.globalAlpha = 0.1
+    for (let i = 0; i < 30; i++) {
+      ctx.fillRect(6 + Math.random() * 52, 10 + Math.random() * 48, 1, 2)
+    }
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
@@ -1233,22 +1336,61 @@ export class TextureGenerator {
     const ctx = canvas.getContext('2d')
     ctx.clearRect(0, 0, size, size)
 
-    // Dark shadow area with gradient effect
-    const gradient = ctx.createRadialGradient(32, 32, 10, 32, 32, 32)
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.8)')
-    gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.5)')
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.2)')
+    // Dark shadow area with complex gradient effect for realistic darkness
+    const gradient = ctx.createRadialGradient(32, 32, 5, 32, 32, 32)
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.9)')
+    gradient.addColorStop(0.4, 'rgba(0, 0, 0, 0.7)')
+    gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.4)')
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)')
 
     ctx.fillStyle = gradient
     ctx.fillRect(0, 0, size, size)
 
-    // Moonlight edge (to show it's a shadow)
-    ctx.strokeStyle = 'rgba(200, 200, 255, 0.3)'
-    ctx.lineWidth = 3
+    // Additional darker spots for depth variation
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
+    ctx.beginPath()
+    ctx.ellipse(20, 25, 8, 6, 0.3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(44, 28, 8, 6, -0.3, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Very dark core (deepest shadow)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
+    ctx.beginPath()
+    ctx.ellipse(32, 36, 10, 8, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Moonlight edge (to show it's a shadow) with softer glow
+    const moonlightGradient = ctx.createLinearGradient(0, 10, 0, 15)
+    moonlightGradient.addColorStop(0, 'rgba(200, 200, 255, 0.4)')
+    moonlightGradient.addColorStop(1, 'rgba(200, 200, 255, 0)')
+    ctx.strokeStyle = moonlightGradient
+    ctx.lineWidth = 4
     ctx.beginPath()
     ctx.moveTo(0, 10)
     ctx.quadraticCurveTo(32, 20, 64, 10)
     ctx.stroke()
+
+    // Secondary moonlight edge (stronger highlight)
+    ctx.strokeStyle = 'rgba(220, 220, 255, 0.4)'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(0, 10)
+    ctx.quadraticCurveTo(32, 18, 64, 10)
+    ctx.stroke()
+
+    // Ambient light scatter (small spots)
+    ctx.fillStyle = 'rgba(180, 180, 220, 0.15)'
+    ctx.globalAlpha = 0.5
+    for (let i = 0; i < 8; i++) {
+      const x = 10 + Math.random() * 44
+      const y = 8 + Math.random() * 15
+      ctx.beginPath()
+      ctx.arc(x, y, 1 + Math.random() * 2, 0, Math.PI * 2)
+      ctx.fill()
+    }
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
