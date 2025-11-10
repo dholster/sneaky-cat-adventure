@@ -1341,43 +1341,205 @@ export class TextureGenerator {
     ctx.clearRect(0, 0, size, size)
 
     const bookRed = '#8B0000'
+    const bookRedDark = '#5C0000'
+    const bookRedLight = '#A52A2A'
     const bookBrown = '#654321'
+    const bookBrownDark = '#4a3419'
+    const bookBrownLight = '#8B6F47'
     const bookBlue = '#191970'
+    const bookBlueDark = '#0c0c38'
+    const bookBlueLight = '#2C3E8C'
     const paper = '#FFF8DC'
+    const paperDark = '#F5E6C8'
     const gold = '#FFD700'
 
-    // Stack of 3 books
+    // Stack of 3 books with realistic gradients
     // Bottom book (brown)
-    ctx.fillStyle = bookBrown
+    const brownBookGradient = ctx.createLinearGradient(12, 48, 52, 48)
+    brownBookGradient.addColorStop(0, bookBrownDark)
+    brownBookGradient.addColorStop(0.3, bookBrown)
+    brownBookGradient.addColorStop(0.7, bookBrown)
+    brownBookGradient.addColorStop(1, bookBrownDark)
+    ctx.fillStyle = brownBookGradient
     ctx.fillRect(12, 48, 40, 10)
-    ctx.fillStyle = paper
+
+    // Book cover depth/shadow
+    ctx.fillStyle = bookBrownDark
+    ctx.globalAlpha = 0.4
+    ctx.fillRect(12, 56, 40, 2)
+    ctx.globalAlpha = 1.0
+
+    // Pages with gradient
+    const pagesGradient = ctx.createLinearGradient(52, 48, 54, 48)
+    pagesGradient.addColorStop(0, paperDark)
+    pagesGradient.addColorStop(1, paper)
+    ctx.fillStyle = pagesGradient
     ctx.fillRect(52, 48, 2, 10)
-    // Spine
-    ctx.fillStyle = '#4a3419'
+
+    // Page lines
+    ctx.strokeStyle = paperDark
+    ctx.lineWidth = 0.5
+    for (let i = 0; i < 5; i++) {
+      ctx.beginPath()
+      ctx.moveTo(52, 49 + i * 2)
+      ctx.lineTo(54, 49 + i * 2)
+      ctx.stroke()
+    }
+
+    // Spine with gradient
+    const brownSpineGradient = ctx.createLinearGradient(12, 48, 16, 48)
+    brownSpineGradient.addColorStop(0, bookBrownDark)
+    brownSpineGradient.addColorStop(1, bookBrown)
+    ctx.fillStyle = brownSpineGradient
     ctx.fillRect(12, 48, 4, 10)
-    // Title line
+
+    // Spine highlights
+    ctx.fillStyle = bookBrownLight
+    ctx.globalAlpha = 0.3
+    ctx.fillRect(13, 49, 1, 8)
+    ctx.globalAlpha = 1.0
+
+    // Title line with shadow
     ctx.fillStyle = gold
     ctx.fillRect(20, 52, 24, 2)
+    ctx.fillStyle = '#DAA520' // darker gold
+    ctx.fillRect(20, 53, 24, 1)
+
+    // Cover texture
+    ctx.fillStyle = bookBrownDark
+    ctx.globalAlpha = 0.1
+    for (let i = 0; i < 20; i++) {
+      ctx.fillRect(14 + Math.random() * 36, 49 + Math.random() * 8, 1, 1)
+    }
+    ctx.globalAlpha = 1.0
 
     // Middle book (blue)
-    ctx.fillStyle = bookBlue
+    const blueBookGradient = ctx.createLinearGradient(16, 38, 52, 38)
+    blueBookGradient.addColorStop(0, bookBlueDark)
+    blueBookGradient.addColorStop(0.3, bookBlue)
+    blueBookGradient.addColorStop(0.7, bookBlue)
+    blueBookGradient.addColorStop(1, bookBlueDark)
+    ctx.fillStyle = blueBookGradient
     ctx.fillRect(16, 38, 36, 10)
-    ctx.fillStyle = paper
+
+    // Book cover depth/shadow
+    ctx.fillStyle = bookBlueDark
+    ctx.globalAlpha = 0.4
+    ctx.fillRect(16, 46, 36, 2)
+    ctx.globalAlpha = 1.0
+
+    // Pages
+    const pagesGradient2 = ctx.createLinearGradient(52, 38, 54, 38)
+    pagesGradient2.addColorStop(0, paperDark)
+    pagesGradient2.addColorStop(1, paper)
+    ctx.fillStyle = pagesGradient2
     ctx.fillRect(52, 38, 2, 10)
-    ctx.fillStyle = '#0c0c38'
+
+    // Page lines
+    for (let i = 0; i < 5; i++) {
+      ctx.strokeStyle = paperDark
+      ctx.lineWidth = 0.5
+      ctx.beginPath()
+      ctx.moveTo(52, 39 + i * 2)
+      ctx.lineTo(54, 39 + i * 2)
+      ctx.stroke()
+    }
+
+    // Spine
+    const blueSpineGradient = ctx.createLinearGradient(16, 38, 20, 38)
+    blueSpineGradient.addColorStop(0, bookBlueDark)
+    blueSpineGradient.addColorStop(1, bookBlue)
+    ctx.fillStyle = blueSpineGradient
     ctx.fillRect(16, 38, 4, 10)
+
+    // Spine highlights
+    ctx.fillStyle = bookBlueLight
+    ctx.globalAlpha = 0.3
+    ctx.fillRect(17, 39, 1, 8)
+    ctx.globalAlpha = 1.0
+
+    // Title
     ctx.fillStyle = gold
     ctx.fillRect(24, 42, 20, 2)
+    ctx.fillStyle = '#DAA520'
+    ctx.fillRect(24, 43, 20, 1)
+
+    // Cover texture
+    ctx.fillStyle = bookBlueDark
+    ctx.globalAlpha = 0.1
+    for (let i = 0; i < 20; i++) {
+      ctx.fillRect(18 + Math.random() * 32, 39 + Math.random() * 8, 1, 1)
+    }
+    ctx.globalAlpha = 1.0
 
     // Top book (red)
-    ctx.fillStyle = bookRed
+    const redBookGradient = ctx.createLinearGradient(20, 28, 52, 28)
+    redBookGradient.addColorStop(0, bookRedDark)
+    redBookGradient.addColorStop(0.3, bookRed)
+    redBookGradient.addColorStop(0.7, bookRed)
+    redBookGradient.addColorStop(1, bookRedDark)
+    ctx.fillStyle = redBookGradient
     ctx.fillRect(20, 28, 32, 10)
-    ctx.fillStyle = paper
+
+    // Book cover depth/shadow
+    ctx.fillStyle = bookRedDark
+    ctx.globalAlpha = 0.4
+    ctx.fillRect(20, 36, 32, 2)
+    ctx.globalAlpha = 1.0
+
+    // Pages
+    const pagesGradient3 = ctx.createLinearGradient(52, 28, 54, 28)
+    pagesGradient3.addColorStop(0, paperDark)
+    pagesGradient3.addColorStop(1, paper)
+    ctx.fillStyle = pagesGradient3
     ctx.fillRect(52, 28, 2, 10)
-    ctx.fillStyle = '#5C0000'
+
+    // Page lines
+    for (let i = 0; i < 5; i++) {
+      ctx.strokeStyle = paperDark
+      ctx.lineWidth = 0.5
+      ctx.beginPath()
+      ctx.moveTo(52, 29 + i * 2)
+      ctx.lineTo(54, 29 + i * 2)
+      ctx.stroke()
+    }
+
+    // Spine
+    const redSpineGradient = ctx.createLinearGradient(20, 28, 24, 28)
+    redSpineGradient.addColorStop(0, bookRedDark)
+    redSpineGradient.addColorStop(1, bookRed)
+    ctx.fillStyle = redSpineGradient
     ctx.fillRect(20, 28, 4, 10)
+
+    // Spine highlights
+    ctx.fillStyle = bookRedLight
+    ctx.globalAlpha = 0.3
+    ctx.fillRect(21, 29, 1, 8)
+    ctx.globalAlpha = 1.0
+
+    // Title
     ctx.fillStyle = gold
     ctx.fillRect(28, 32, 16, 2)
+    ctx.fillStyle = '#DAA520'
+    ctx.fillRect(28, 33, 16, 1)
+
+    // Cover texture and wear marks
+    ctx.fillStyle = bookRedDark
+    ctx.globalAlpha = 0.1
+    for (let i = 0; i < 20; i++) {
+      ctx.fillRect(22 + Math.random() * 28, 29 + Math.random() * 8, 1, 1)
+    }
+    ctx.globalAlpha = 1.0
+
+    // Wear corner
+    ctx.fillStyle = bookRedLight
+    ctx.globalAlpha = 0.3
+    ctx.beginPath()
+    ctx.moveTo(52, 28)
+    ctx.lineTo(48, 28)
+    ctx.lineTo(52, 32)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
