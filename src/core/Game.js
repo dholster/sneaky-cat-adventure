@@ -416,11 +416,6 @@ export class Game {
       }
     })
 
-    // Debug: Show if near any hiding spot
-    if (nearestSpot) {
-      console.log(`✅ Near hiding spot! Press E to hide. Distance: ${nearestDistance.toFixed(2)}`)
-    }
-
     // Handle interaction
     if (this.inputManager.interact) {
       console.log('🔑 E key pressed!')
@@ -435,15 +430,15 @@ export class Game {
         })
       } else if (nearestSpot) {
         // Enter hiding
-        console.log('📦 Trying to enter hiding spot...')
+        console.log('📦 Entering hiding spot!')
         nearestSpot.enter(this.player)
       } else {
-        console.log('❌ No hiding spot nearby to interact with')
-        console.log(`   Player position: (${this.player.position.x.toFixed(1)}, ${this.player.position.y.toFixed(1)})`)
-        console.log(`   Hiding spots:`)
+        console.log('❌ No hiding spot nearby!')
+        console.log(`   Interaction range: 1.5 units`)
+        console.log(`   Nearest spots:`)
         this.hidingSpots.forEach((spot, i) => {
           const dist = spot.position.distanceTo(this.player.position)
-          console.log(`   ${i+1}. (${spot.position.x.toFixed(1)}, ${spot.position.y.toFixed(1)}) - distance: ${dist.toFixed(2)}`)
+          console.log(`   ${i+1}. Distance: ${dist.toFixed(2)} units`)
         })
       }
     }
