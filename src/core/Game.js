@@ -422,16 +422,16 @@ export class Game {
     this.hidingSpots.forEach(spot => {
       const distance = spot.position.distanceTo(this.player.position)
 
-      // Visual feedback: Make hiding spot brighter when nearby
+      // Visual feedback: Make hiding spot pulse white when nearby
       if (distance < spot.interactionRange && spot.sprite) {
-        // Change to bright green when in range
-        spot.sprite.material.color.setHex(0x44ff44)
+        // Change to bright white when in range (SUPER visible!)
+        spot.sprite.material.color.setHex(0xFFFFFF)
       } else if (spot.sprite) {
         // Reset to original color
         if (spot.type === 'box') {
-          spot.sprite.material.color.setHex(0xCC8844)
+          spot.sprite.material.color.setHex(0xFF8800) // Bright orange
         } else if (spot.type === 'shadow') {
-          spot.sprite.material.color.setHex(0x3a3a5e)
+          spot.sprite.material.color.setHex(0x00FFFF) // Bright cyan
         }
       }
 
