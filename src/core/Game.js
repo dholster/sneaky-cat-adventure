@@ -24,6 +24,7 @@ import { Config } from '../utils/Config.js'
 
 import { Background } from '../entities/Background.js'
 import { ProgressBar } from '../ui/ProgressBar.js'
+import { LightingSystem } from '../rendering/LightingSystem.js'
 
 export class Game {
   constructor(canvas) {
