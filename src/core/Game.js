@@ -207,32 +207,15 @@ export class Game {
     moonlight.position.set(10, 20, 5)
     this.scene.add(moonlight)
 
-    // Create main ground platform (darker, nighttime color)
-    this.createPlatform(-30, 0, 100, 1, 0x1a1a2e)
+    // Simple straight ground - tutorial level
+    this.createPlatform(0, 0, 50, 1, 0x1a1a2e)
 
-    // Fewer, more strategic platforms for stealth gameplay
-    // Left side - tutorial area
-    this.createPlatform(-25, 3, 4, 0.5, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(-20, 5, 4, 0.5, Config.COLORS.SHADOW_BLUE)
+    // A few platforms for cover/navigation
+    this.createPlatform(3, 3, 3, 0.5, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(8, 3, 3, 0.5, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(18, 3, 3, 0.5, Config.COLORS.SHADOW_BLUE)
 
-    // Center area - main gameplay
-    this.createPlatform(-5, 3, 6, 0.5, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(5, 5, 5, 0.5, Config.COLORS.SHADOW_BLUE)
-
-    // Right side - challenge area
-    this.createPlatform(18, 3, 5, 0.5, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(28, 5, 6, 0.5, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(40, 3, 8, 0.5, Config.COLORS.SHADOW_BLUE)
-
-    // Vertical platforms
-    this.createPlatform(10, 8, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(35, 8, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-
-    // Create "rooms" with walls
-    this.createPlatform(-12, 3, 0.5, 6, 0x2d3e50) // Wall
-    this.createPlatform(8, 3, 0.5, 6, 0x2d3e50) // Wall
-
-    console.log(`🏗️  Created ${this.platforms.length} platforms`)
+    console.log(`🏗️  Created simple tutorial level`)
   }
 
   createPlatform(x, y, width, height, color) {
