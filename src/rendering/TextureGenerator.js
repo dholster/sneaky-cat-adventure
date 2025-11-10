@@ -527,6 +527,7 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
     texture.minFilter = THREE.NearestFilter
+    texture.flipY = false
     texture.needsUpdate = true
 
     return texture
@@ -590,6 +591,7 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
     texture.minFilter = THREE.NearestFilter
+    texture.flipY = false
     texture.needsUpdate = true
 
     return texture
@@ -656,6 +658,7 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
     texture.minFilter = THREE.NearestFilter
+    texture.flipY = false
     texture.needsUpdate = true
 
     return texture
@@ -689,6 +692,7 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
     texture.minFilter = THREE.NearestFilter
+    texture.flipY = false
     texture.needsUpdate = true
 
     return texture
