@@ -299,15 +299,63 @@ export class Game {
     ]
     this.createHuman(32, 1, endGuardPatrol)
 
-    // Hiding spots for final area
+    // Hiding spots for Area 3
     this.createHidingSpot(29, 1, 'box')
     this.createHidingSpot(35, 1, 'curtain')
 
-    // Final distraction
+    // Distraction
     this.createDistraction(33, 4, 'frame')
 
+    // === AREA 4: NEW EXTENDED AREA (Dog + Camera) ===
+    // Dog patrol in new area
+    const dogPatrol2 = [
+      { x: 45, y: 1 },
+      { x: 56, y: 1 }
+    ]
+    this.createDog(50, 1, dogPatrol2)
+
+    // Camera watching area 4
+    this.createCamera(58, 6, 1.0, Math.PI / 2)
+
+    // Hiding spots for Area 4
+    this.createHidingSpot(42, 1, 'shadow')
+    this.createHidingSpot(53, 1, 'furniture')
+    this.createHidingSpot(60, 1, 'box')
+
+    // Distractions
+    this.createDistraction(55, 4, 'vase')
+    this.createDistraction(72, 4, 'plant')
+
+    // === AREA 5: FINAL CHALLENGE (Multiple Enemies) ===
+    // Human guard patrolling final stretch
+    const finalHumanPatrol = [
+      { x: 68, y: 1 },
+      { x: 80, y: 1 }
+    ]
+    this.createHuman(74, 1, finalHumanPatrol)
+
+    // Another dog patrol
+    const dogPatrol3 = [
+      { x: 85, y: 1 },
+      { x: 95, y: 1 }
+    ]
+    this.createDog(90, 1, dogPatrol3)
+
+    // Final camera
+    this.createCamera(100, 6, 0.7, Math.PI / 1.8)
+
+    // Hiding spots for Area 5
+    this.createHidingSpot(70, 1, 'curtain')
+    this.createHidingSpot(82, 1, 'shadow')
+    this.createHidingSpot(92, 1, 'furniture')
+    this.createHidingSpot(105, 1, 'box')
+
+    // Final distractions
+    this.createDistraction(88, 4, 'book')
+    this.createDistraction(98, 4, 'frame')
+
     // === GOAL ===
-    this.createGoal(45, 1)
+    this.createGoal(115, 1)
 
     // Register platforms as obstacles for vision blocking
     this.platforms.forEach(platform => {
