@@ -7,6 +7,7 @@ import { InputManager } from './InputManager.js'
 import { CameraController } from './CameraController.js'
 import { PhysicsSystem } from '../systems/PhysicsSystem.js'
 import { Player } from '../entities/Player.js'
+import { Platform } from '../entities/Platform.js'
 import { Config } from '../utils/Config.js'
 
 export class Game {
@@ -26,6 +27,7 @@ export class Game {
     // Game entities
     this.player = null
     this.entities = []
+    this.platforms = [] // Static platforms for collision
 
     // Game state
     this.paused = false
