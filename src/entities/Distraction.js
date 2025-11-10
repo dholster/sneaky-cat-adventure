@@ -72,20 +72,111 @@ export class Distraction extends Entity {
   }
 
   update(deltaTime) {
-    // Sync sprite position with entity position
+    // Sync sprite position with entity position when not knocked over
     if (this.sprite && !this.hasBeenKnocked) {
       this.sprite.position.copy(this.position)
     }
 
-    // Knocked over objects fall and fade
-    if (this.hasBeenKnocked && this.sprite) {
-      // Rotate and fall
-      this.sprite.rotation.z += deltaTime * 3
-      this.sprite.material.opacity -= deltaTime * 0.5
+    // Apply physics when falling
+    if (this.hasBeenKnocked && this.isFalling && !this.hasHitGround) {
+      // Apply gravity
+      this.velocity.y += this.gravity * deltaTime
 
-      if (this.sprite.material.opacity <= 0) {
+      // Update position
+      this.position.y += this.velocity.y * deltaTime
+      this.position.x += this.velocity.x * deltaTime
+
+      // Rotate while falling
+      if (this.sprite) {
+        this.sprite.position.copy(this.position)
+        this.sprite.rotation.z += deltaTime * 5
+      }
+
+      // Check if hit ground
+      if (this.position.y <= this.groundY) {
+        this.position.y = this.groundY
+        this.hasHitGround = true
+        this.isFalling = false
+        this.createBreakEffect()
+        console.log(`💥 ${this.type} hit the ground and broke!`)
+      }
+    }
+
+    // Update break pieces
+    if (this.hasHitGround && this.breakPieces.length > 0) {
+      for (let i = this.breakPieces.length - 1; i >= 0; i--) {
+        const piece = this.breakPieces[i]
+
+        // Apply gravity to pieces
+        piece.velocityY += this.gravity * deltaTime * 0.5
+        piece.mesh.position.y += piece.velocityY * deltaTime
+        piece.mesh.position.x += piece.velocityX * deltaTime
+
+        // Rotate pieces
+        piece.mesh.rotation.z += deltaTime * piece.rotationSpeed
+
+        // Fade out
+        piece.mesh.material.opacity -= deltaTime * 1.5
+
+        // Remove if fully faded or below ground
+        if (piece.mesh.material.opacity <= 0 || piece.mesh.position.y < this.groundY - 2) {
+          this.scene.remove(piece.mesh)
+          piece.mesh.geometry.dispose()
+          piece.mesh.material.dispose()
+          this.breakPieces.splice(i, 1)
+        }
+      }
+
+      // Destroy self when all pieces are gone
+      if (this.breakPieces.length === 0) {
         this.destroy()
       }
+    }
+  }
+
+  createBreakEffect() {
+    if (!this.sprite) return
+
+    // Hide original sprite
+    this.sprite.visible = false
+
+    // Create 4-6 break pieces
+    const numPieces = 4 + Math.floor(Math.random() * 3)
+
+    for (let i = 0; i < numPieces; i++) {
+      // Create smaller piece
+      const pieceSize = this.size.width / 3 + Math.random() * 0.3
+      const geometry = new THREE.PlaneGeometry(pieceSize, pieceSize)
+
+      // Use same texture as original
+      const material = new THREE.MeshBasicMaterial({
+        map: this.sprite.material.map,
+        transparent: true,
+        opacity: 1.0,
+        side: THREE.DoubleSide
+      })
+
+      const piece = new THREE.Mesh(geometry, material)
+
+      // Position near break point with some randomness
+      piece.position.set(
+        this.position.x + (Math.random() - 0.5) * 1,
+        this.position.y + (Math.random() - 0.5) * 0.5,
+        this.sprite.position.z
+      )
+
+      // Random rotation
+      piece.rotation.z = Math.random() * Math.PI * 2
+
+      this.scene.add(piece)
+
+      // Store piece data
+      this.breakPieces.push({
+        mesh: piece,
+        velocityX: (Math.random() - 0.5) * 4, // Scatter sideways
+        velocityY: Math.random() * 2 + 1, // Bounce up slightly
+        rotationSpeed: (Math.random() - 0.5) * 10
+      })
     }
   }
 
@@ -100,6 +191,16 @@ export class Distraction extends Entity {
 
     console.log(`💥 Knocked over ${this.type}! Creating noise...`)
     this.hasBeenKnocked = true
+    this.isFalling = true
+
+    // Set ground level (assuming main floor is at y = -10)
+    this.groundY = -10
+
+    // Give it some initial velocity (kicked away from player)
+    const directionX = this.position.x - player.position.x
+    const normalized = Math.sign(directionX) || 1
+    this.velocity.x = normalized * 3 // Kicked sideways
+    this.velocity.y = 2 // Initial upward velocity
 
     if (this.sprite) {
       this.sprite.material.transparent = true
