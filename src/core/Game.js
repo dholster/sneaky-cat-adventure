@@ -103,6 +103,7 @@ export class Game {
       console.log('Controls:')
       console.log('  Move: Arrow Keys/WASD')
       console.log('  Jump: Space')
+      console.log('  Drop Down: S/Down Arrow (while on platform)')
       console.log('  Run (Hold): Shift - ⚠️  Makes noise!')
       console.log('  Crouch (Hold): Ctrl')
       console.log('  Hide: E (near hiding spot)')

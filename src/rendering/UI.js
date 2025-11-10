@@ -77,6 +77,7 @@ export class UI {
       <strong>CONTROLS:</strong><br>
       Move: WASD / Arrows<br>
       Jump: SPACE<br>
+      Drop Down: S / Down Arrow<br>
       Run: SHIFT (loud!)<br>
       Crouch: CTRL (quiet)<br>
       Hide/Interact: E<br>
