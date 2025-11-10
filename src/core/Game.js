@@ -245,6 +245,71 @@ export class Game {
     return human
   }
 
+  createDog(x, y, patrolPath) {
+    const dog = new Dog(this.scene, patrolPath)
+    dog.position.set(x, y, 0)
+
+    // Create visual representation (brown for dog)
+    dog.createColorSprite(0x8B4513, dog.size.width, dog.size.height)
+
+    // Add label
+    dog.label = this.labelSystem.createLabel(
+      'DOG (Sound Sensitive)',
+      new THREE.Vector3(x, y + 2.5, 0),
+      '#ff8800',
+      36
+    )
+
+    // Register with systems
+    this.enemies.push(dog)
+    this.detectionSystem.registerEnemy(dog)
+
+    // Create vision cone
+    this.visionConeRenderer.createVisionCone(dog)
+
+    return dog
+  }
+
+  createCamera(x, y, rotationSpeed = 1.0, rotationRange = Math.PI / 2) {
+    const camera = new Camera(this.scene, x, y, rotationSpeed, rotationRange)
+
+    // Create visual representation (dark gray box for camera)
+    camera.createColorSprite(0x333333, camera.size.width, camera.size.height)
+
+    // Add label
+    camera.label = this.labelSystem.createLabel(
+      'CAMERA (Rotating)',
+      new THREE.Vector3(x, y + 2, 0),
+      '#00AAFF',
+      36
+    )
+
+    // Register with systems
+    this.enemies.push(camera)
+    this.detectionSystem.registerEnemy(camera)
+
+    // Create vision cone
+    this.visionConeRenderer.createVisionCone(camera)
+
+    return camera
+  }
+
+  createDistraction(x, y, type) {
+    const distraction = new Distraction(this.scene, x, y, type)
+
+    // Add label
+    let labelText = `${type.toUpperCase()} - Press E`
+    distraction.label = this.labelSystem.createLabel(
+      labelText,
+      new THREE.Vector3(x, y + 2, 0),
+      '#FFD700',
+      28
+    )
+
+    this.distractions.push(distraction)
+    return distraction
+  }
+
   createHidingSpot(x, y, type) {
     const spot = new HidingSpot(this.scene, x, y, type)
 
@@ -485,6 +550,65 @@ export class Game {
 
     // Store nearest spot for potential UI prompts later
     this.nearestHidingSpot = nearestSpot
+  }
+
+  checkDistractions() {
+    // Find nearest distraction
+    let nearestDist = null
+    let nearestDistance = Infinity
+
+    this.distractions.forEach(dist => {
+      if (dist.hasBeenKnocked) return
+
+      const distance = dist.position.distanceTo(this.player.position)
+
+      // Visual feedback: Make distraction brighter when nearby
+      if (distance < dist.interactionRange && dist.sprite) {
+        dist.sprite.material.color.setHex(0xFFFFFF) // White when in range
+      } else if (dist.sprite) {
+        // Reset to original color based on type
+        switch (dist.type) {
+          case 'vase':
+            dist.sprite.material.color.setHex(0xFF6B9D)
+            break
+          case 'book':
+            dist.sprite.material.color.setHex(0x8B4513)
+            break
+          case 'frame':
+            dist.sprite.material.color.setHex(0xFFD700)
+            break
+          case 'plant':
+            dist.sprite.material.color.setHex(0x228B22)
+            break
+        }
+      }
+
+      if (dist.canInteract(this.player)) {
+        if (distance < nearestDistance) {
+          nearestDistance = distance
+          nearestDist = dist
+        }
+      }
+    })
+
+    // Handle interaction
+    if (this.inputManager.interact && nearestDist && !this.player.isHiding) {
+      const soundEvent = nearestDist.knockOver(this.player)
+
+      if (soundEvent) {
+        // Notify all enemies of the noise
+        this.enemies.forEach(enemy => {
+          if (enemy.onSoundHeard) {
+            enemy.onSoundHeard(soundEvent.position, soundEvent.radius)
+          }
+        })
+
+        // Hide the label
+        if (nearestDist.label) {
+          nearestDist.label.visible = false
+        }
+      }
+    }
   }
 
   updateLabels() {
