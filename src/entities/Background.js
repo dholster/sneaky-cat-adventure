@@ -16,9 +16,15 @@ export class Background {
   }
 
   createTiledBackground(tileType, width, height) {
-    // Get the appropriate tile texture
-    let texture
+    // Get the appropriate tile texture or use flat color
+    let texture = null
+    let color = null
+
     switch (tileType) {
+      case 'flat':
+        // Use a flat color - soft, neutral blue-gray
+        color = 0x6B7C8C // Muted blue-gray
+        break
       case 'wallpaper':
         texture = TextureGenerator.createWallpaperTile()
         break
@@ -29,32 +35,43 @@ export class Background {
         texture = TextureGenerator.createWoodFloorTile()
         break
       default:
-        texture = TextureGenerator.createWallpaperTile()
+        color = 0x6B7C8C // Default to flat color
     }
 
     // Create geometry
     const geometry = new THREE.PlaneGeometry(width, height)
 
-    // Calculate UV repeat
-    const repeatX = width / 1
-    const repeatY = height / 1
+    let material
+    if (color !== null) {
+      // Flat color material
+      material = new THREE.MeshBasicMaterial({
+        color: color,
+        transparent: false,
+        side: THREE.DoubleSide
+      })
+    } else {
+      // Textured material
+      // Calculate UV repeat
+      const repeatX = width / 1
+      const repeatY = height / 1
 
-    // Set UV repeating
-    texture.repeat.set(repeatX, repeatY)
+      // Set UV repeating
+      texture.repeat.set(repeatX, repeatY)
 
-    // Fix UVs for flipY = false textures
-    const uvAttribute = geometry.attributes.uv
-    uvAttribute.setXY(0, 0, 0)              // top-left
-    uvAttribute.setXY(1, repeatX, 0)        // top-right
-    uvAttribute.setXY(2, 0, repeatY)        // bottom-left
-    uvAttribute.setXY(3, repeatX, repeatY)  // bottom-right
-    uvAttribute.needsUpdate = true
+      // Fix UVs for flipY = false textures
+      const uvAttribute = geometry.attributes.uv
+      uvAttribute.setXY(0, 0, 0)              // top-left
+      uvAttribute.setXY(1, repeatX, 0)        // top-right
+      uvAttribute.setXY(2, 0, repeatY)        // bottom-left
+      uvAttribute.setXY(3, repeatX, repeatY)  // bottom-right
+      uvAttribute.needsUpdate = true
 
-    const material = new THREE.MeshBasicMaterial({
-      map: texture,
-      transparent: false,
-      side: THREE.DoubleSide
-    })
+      material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: false,
+        side: THREE.DoubleSide
+      })
+    }
 
     this.mesh = new THREE.Mesh(geometry, material)
     this.mesh.position.set(this.position.x, this.position.y, -1) // Behind everything
