@@ -537,27 +537,34 @@ export class Game {
     moonlight.position.set(10, 20, 5)
     this.scene.add(moonlight)
 
-    // Background wall
-    const background = new Background(this.scene, 10, 5, 70, 20, 'wallpaper')
+    // Background wall - flat color, much longer
+    const background = new Background(this.scene, 50, 5, 150, 20, 'flat')
     this.backgrounds.push(background)
 
-    // Phase 2 Level - "The House"
+    // Phase 2 Level - "The House" - Extended!
     // Long main floor with wood tiles
-    this.createPlatform(10, 0, 70, 1, 'wood')
+    this.createPlatform(50, 0, 150, 1, 'wood')
 
     // Upper platforms for distractions (wood shelves)
     this.createPlatform(2, 3.5, 4, 0.5, 'wood') // Platform for vase
     this.createPlatform(17, 3.5, 4, 0.5, 'wood') // Platform for book
     this.createPlatform(20, 3.5, 3, 0.5, 'wood') // Platform for plant
     this.createPlatform(33, 3.5, 4, 0.5, 'wood') // Platform for frame
+    this.createPlatform(55, 3.5, 4, 0.5, 'wood') // New platform
+    this.createPlatform(72, 3.5, 4, 0.5, 'wood') // New platform
+    this.createPlatform(88, 3.5, 4, 0.5, 'wood') // New platform
 
     // Cover platforms (can hide behind/use for navigation) - carpet for variety
     this.createPlatform(6, 3, 2, 0.5, 'carpet')
     this.createPlatform(12, 3, 2, 0.5, 'wood')
     this.createPlatform(25, 3, 2, 0.5, 'carpet')
     this.createPlatform(38, 3, 2, 0.5, 'wood')
+    this.createPlatform(48, 3, 2, 0.5, 'carpet')
+    this.createPlatform(62, 3, 2, 0.5, 'wood')
+    this.createPlatform(78, 3, 2, 0.5, 'carpet')
+    this.createPlatform(95, 3, 2, 0.5, 'wood')
 
-    console.log(`🏗️  Created Phase 2 level: The House`)
+    console.log(`🏗️  Created Phase 2 level: The House (Extended)`)
   }
 
   createPlatform(x, y, width, height, tileType = 'wood') {
