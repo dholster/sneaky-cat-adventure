@@ -761,8 +761,16 @@ export class Game {
     // Simple AABB collision detection with edge tolerance
     const playerBounds = this.player.getBounds()
 
+    // Check if player is trying to drop through platforms
+    const wantsToDropThrough = this.inputManager.down && this.player.isGrounded
+
     this.platforms.forEach(platform => {
       const platformBounds = platform.getBounds()
+
+      // Skip platforms if player is trying to drop through from above
+      if (wantsToDropThrough && this.player.position.y > platformBounds.y + platformBounds.height) {
+        return // Don't collide with this platform
+      }
 
       // Check if player overlaps platform
       if (
