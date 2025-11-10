@@ -9,6 +9,7 @@ import { PhysicsSystem } from '../systems/PhysicsSystem.js'
 import { DetectionSystem } from '../systems/DetectionSystem.js'
 import { VisionConeRenderer } from '../rendering/VisionConeRenderer.js'
 import { LabelSystem } from '../rendering/LabelSystem.js'
+import { UI } from '../rendering/UI.js'
 import { Player } from '../entities/Player.js'
 import { Platform } from '../entities/Platform.js'
 import { Human } from '../entities/Human.js'
@@ -34,6 +35,7 @@ export class Game {
     this.detectionSystem = null // Will be initialized after player
     this.visionConeRenderer = null
     this.labelSystem = null
+    this.ui = null // UI/HUD system
 
     // Game entities
     this.player = null
@@ -80,6 +82,9 @@ export class Game {
 
       console.log('  → Setting up label system...')
       this.setupLabelSystem()
+
+      console.log('  → Setting up UI...')
+      this.setupUI()
 
       console.log('  → Setting up player...')
       this.setupPlayer()
@@ -150,6 +155,11 @@ export class Game {
     this.labelSystem = new LabelSystem(this.scene)
     this.labelsVisible = true
     console.log('🏷️  Label system initialized (Press L to toggle)')
+  }
+
+  setupUI() {
+    this.ui = new UI()
+    console.log('📊 UI system initialized')
   }
 
   setupPlayer() {
@@ -534,6 +544,15 @@ export class Game {
     // Update camera
     this.cameraController.update(deltaTime)
 
+    // Update UI with highest detection level from all enemies
+    let maxDetectionLevel = 0
+    this.enemies.forEach(enemy => {
+      if (enemy.detectionLevel > maxDetectionLevel) {
+        maxDetectionLevel = enemy.detectionLevel
+      }
+    })
+    this.ui.updateDetectionLevel(maxDetectionLevel)
+
     // Debug info
     if (this.debugMode) {
       this.showDebugInfo()
@@ -695,6 +714,8 @@ export class Game {
       console.log('🎉🎉🎉 LEVEL COMPLETE! 🎉🎉🎉')
       console.log('You successfully reached the goal!')
 
+      this.ui.showStatus('LEVEL COMPLETE!', '#44ff44', 5000)
+
       // Make goal marker brighter
       if (this.goalMarker) {
         this.goalMarker.material.opacity = 1.0
@@ -770,6 +791,7 @@ export class Game {
     console.log('🚨🚨🚨 DETECTED BY GUARD! 🚨🚨🚨')
     console.log('⏱️  Restarting in 2 seconds...')
 
+    this.ui.showStatus('DETECTED! Restarting...', '#ff4444', 2000)
     this.isRestarting = true
 
     // Wait 2 seconds then restart
