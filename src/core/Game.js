@@ -251,6 +251,14 @@ export class Game {
     this.goalMarker.position.set(x, y + 1.5, 1)
     this.scene.add(this.goalMarker)
 
+    // Add label
+    this.goalLabel = this.labelSystem.createLabel(
+      '🎯 GOAL - Reach Here! 🎯',
+      new THREE.Vector3(x, y + 4, 0),
+      '#00ff00',
+      56
+    )
+
     // Store goal position
     this.goalPosition = new THREE.Vector2(x, y)
     this.goalReached = false
@@ -298,7 +306,28 @@ export class Game {
         this.debugMode = !this.debugMode
         console.log('Debug Mode:', this.debugMode)
       }
+      if (e.code === 'KeyL') {
+        this.labelsVisible = !this.labelsVisible
+        this.toggleLabels()
+        console.log('Labels:', this.labelsVisible ? 'Visible' : 'Hidden')
+      }
     })
+  }
+
+  toggleLabels() {
+    // Toggle all label visibility
+    if (this.player.label) {
+      this.player.label.visible = this.labelsVisible
+    }
+    this.enemies.forEach(enemy => {
+      if (enemy.label) enemy.label.visible = this.labelsVisible
+    })
+    this.hidingSpots.forEach(spot => {
+      if (spot.label) spot.label.visible = this.labelsVisible
+    })
+    if (this.goalLabel) {
+      this.goalLabel.visible = this.labelsVisible
+    }
   }
 
   onResize() {
