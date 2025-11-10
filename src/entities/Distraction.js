@@ -30,28 +30,29 @@ export class Distraction extends Entity {
   setupVisual(type) {
     switch (type) {
       case 'vase':
-        this.size = { width: 0.8, height: 1.2 }
-        this.createColorSprite(0xFF6B9D, this.size.width, this.size.height) // Pink vase
+        this.size = { width: 1.5, height: 2.0 }
+        this.createColorSprite(0xFF1493, this.size.width, this.size.height) // BRIGHT PINK vase
         break
       case 'book':
-        this.size = { width: 1.0, height: 0.6 }
-        this.createColorSprite(0x8B4513, this.size.width, this.size.height) // Brown book
+        this.size = { width: 1.5, height: 1.0 }
+        this.createColorSprite(0xFF4500, this.size.width, this.size.height) // BRIGHT ORANGE book
         break
       case 'frame':
-        this.size = { width: 1.2, height: 1.5 }
-        this.createColorSprite(0xFFD700, this.size.width, this.size.height) // Gold frame
+        this.size = { width: 2.0, height: 2.5 }
+        this.createColorSprite(0xFFD700, this.size.width, this.size.height) // BRIGHT GOLD frame
         break
       case 'plant':
-        this.size = { width: 1.0, height: 1.5 }
-        this.createColorSprite(0x228B22, this.size.width, this.size.height) // Green plant
+        this.size = { width: 1.5, height: 2.5 }
+        this.createColorSprite(0x00FF00, this.size.width, this.size.height) // BRIGHT GREEN plant
         break
       default:
-        this.size = { width: 0.8, height: 1.2 }
-        this.createColorSprite(0xFF6B9D, this.size.width, this.size.height)
+        this.size = { width: 1.5, height: 2.0 }
+        this.createColorSprite(0xFF1493, this.size.width, this.size.height)
     }
 
     if (this.sprite) {
-      this.sprite.position.z = 1.0
+      this.sprite.position.z = 2.5 // In front of everything!
+      this.sprite.material.transparent = false
     }
   }
 

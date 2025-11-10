@@ -639,19 +639,19 @@ export class Game {
       if (distance < dist.interactionRange && dist.sprite) {
         dist.sprite.material.color.setHex(0xFFFFFF) // White when in range
       } else if (dist.sprite) {
-        // Reset to original color based on type
+        // Reset to original bright color based on type
         switch (dist.type) {
           case 'vase':
-            dist.sprite.material.color.setHex(0xFF6B9D)
+            dist.sprite.material.color.setHex(0xFF1493) // Bright pink
             break
           case 'book':
-            dist.sprite.material.color.setHex(0x8B4513)
+            dist.sprite.material.color.setHex(0xFF4500) // Bright orange
             break
           case 'frame':
-            dist.sprite.material.color.setHex(0xFFD700)
+            dist.sprite.material.color.setHex(0xFFD700) // Gold
             break
           case 'plant':
-            dist.sprite.material.color.setHex(0x228B22)
+            dist.sprite.material.color.setHex(0x00FF00) // Bright green
             break
         }
       }
