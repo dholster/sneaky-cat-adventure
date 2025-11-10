@@ -26,33 +26,34 @@ export class HidingSpot extends Entity {
   setupVisual(type) {
     switch (type) {
       case 'box':
-        // Cardboard box
-        this.size = { width: 1.5, height: 1.5 }
-        this.createColorSprite(0x8B7355, this.size.width, this.size.height)
+        // Cardboard box - BRIGHT and VISIBLE
+        this.size = { width: 2, height: 2 }
+        this.createColorSprite(0xCC8844, this.size.width, this.size.height)
         break
       case 'furniture':
-        // Under furniture
-        this.size = { width: 2, height: 1 }
-        this.createColorSprite(0x4a4a4a, this.size.width, this.size.height)
+        // Under furniture - Dark gray
+        this.size = { width: 2.5, height: 1.5 }
+        this.createColorSprite(0x666666, this.size.width, this.size.height)
         break
       case 'curtain':
-        // Behind curtain
-        this.size = { width: 1, height: 3 }
-        this.createColorSprite(0x6b4c7a, this.size.width, this.size.height)
+        // Behind curtain - Purple
+        this.size = { width: 1.5, height: 3 }
+        this.createColorSprite(0x9966CC, this.size.width, this.size.height)
         break
       case 'shadow':
-        // Dark shadow area
+        // Dark shadow area - Darker but still visible
         this.size = { width: 3, height: 2 }
-        this.createColorSprite(0x1a1a2e, this.size.width, this.size.height)
+        this.createColorSprite(0x3a3a5e, this.size.width, this.size.height)
         break
       default:
-        this.size = { width: 1.5, height: 1.5 }
-        this.createColorSprite(0x8B7355, this.size.width, this.size.height)
+        this.size = { width: 2, height: 2 }
+        this.createColorSprite(0xCC8844, this.size.width, this.size.height)
     }
 
-    // Make sprite semi-transparent
+    // Make sure sprite is visible and in front
     if (this.sprite) {
-      this.sprite.material.opacity = 0.6
+      this.sprite.position.z = 1.5 // Higher z than ground and entities
+      this.sprite.material.opacity = 0.9
       this.sprite.material.transparent = true
     }
   }
@@ -63,7 +64,14 @@ export class HidingSpot extends Entity {
 
   canInteract(player) {
     const distance = this.position.distanceTo(player.position)
-    return distance < this.interactionRange && !this.isOccupied
+    const canInteract = distance < this.interactionRange && !this.isOccupied
+
+    // Debug logging
+    if (distance < this.interactionRange + 1) {
+      console.log(`Near hiding spot: distance=${distance.toFixed(2)}, can interact=${canInteract}`)
+    }
+
+    return canInteract
   }
 
   enter(player) {
