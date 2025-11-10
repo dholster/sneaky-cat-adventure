@@ -587,9 +587,8 @@ export class Game {
     moonlight.position.set(10, 20, 5)
     this.scene.add(moonlight)
 
-    // Background wall - flat color, much longer
-    const background = new Background(this.scene, 50, 5, 150, 20, 'flat')
-    this.backgrounds.push(background)
+    // Create parallax background for depth
+    this.parallaxBackground = ParallaxBackground.createDefault(this.scene, this.camera)
 
     // Phase 2 Level - "The House" - Extended!
     // Long main floor with wood tiles
@@ -614,7 +613,7 @@ export class Game {
     this.createPlatform(78, 3, 2, 0.5, 'carpet')
     this.createPlatform(95, 3, 2, 0.5, 'wood')
 
-    console.log(`🏗️  Created Phase 2 level: The House (Extended)`)
+    console.log(`🏗️  Created Phase 2 level: The House (Extended with Parallax)`)
   }
 
   createPlatform(x, y, width, height, tileType = 'wood') {
@@ -725,6 +724,11 @@ export class Game {
 
     // Update camera
     this.cameraController.update(deltaTime)
+
+    // Update parallax background
+    if (this.parallaxBackground) {
+      this.parallaxBackground.update(deltaTime)
+    }
 
     // Update progress bar
     if (this.progressBar) {
