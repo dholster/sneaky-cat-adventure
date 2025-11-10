@@ -17,6 +17,13 @@ export class Distraction extends Entity {
     this.interactionRange = 2.0
     this.hasBeenKnocked = false
 
+    // Physics (for falling)
+    this.gravity = -20
+    this.isFalling = false
+    this.groundY = -10 // Will be set when knocked over
+    this.hasHitGround = false
+    this.breakPieces = [] // For shatter effect
+
     // Sound properties
     this.soundRadius = 8 // How far the noise travels
     this.soundDuration = 3.0 // How long enemies investigate
