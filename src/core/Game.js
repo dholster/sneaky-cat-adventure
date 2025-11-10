@@ -428,20 +428,20 @@ export class Game {
     this.scene.add(moonlight)
 
     // Phase 2 Level - "The House"
-    // Long main floor
-    this.createPlatform(10, 0, 70, 1, 0x1a1a2e)
+    // Long main floor (brighter blue)
+    this.createPlatform(10, 0, 70, 1, 0x2a3a5e)
 
-    // Upper platforms for distractions and cover
-    this.createPlatform(2, 3.5, 4, 0.5, Config.COLORS.SHADOW_BLUE) // Platform for vase
-    this.createPlatform(17, 3.5, 4, 0.5, Config.COLORS.SHADOW_BLUE) // Platform for book
-    this.createPlatform(20, 3.5, 3, 0.5, Config.COLORS.SHADOW_BLUE) // Platform for plant
-    this.createPlatform(33, 3.5, 4, 0.5, Config.COLORS.SHADOW_BLUE) // Platform for frame
+    // Upper platforms for distractions and cover (brighter colors)
+    this.createPlatform(2, 3.5, 4, 0.5, 0x556B8B) // Platform for vase
+    this.createPlatform(17, 3.5, 4, 0.5, 0x556B8B) // Platform for book
+    this.createPlatform(20, 3.5, 3, 0.5, 0x556B8B) // Platform for plant
+    this.createPlatform(33, 3.5, 4, 0.5, 0x556B8B) // Platform for frame
 
-    // Cover platforms (can hide behind/use for navigation)
-    this.createPlatform(6, 3, 2, 0.5, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(12, 3, 2, 0.5, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(25, 3, 2, 0.5, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(38, 3, 2, 0.5, Config.COLORS.SHADOW_BLUE)
+    // Cover platforms (can hide behind/use for navigation) - even brighter
+    this.createPlatform(6, 3, 2, 0.5, 0x6A7B9B)
+    this.createPlatform(12, 3, 2, 0.5, 0x6A7B9B)
+    this.createPlatform(25, 3, 2, 0.5, 0x6A7B9B)
+    this.createPlatform(38, 3, 2, 0.5, 0x6A7B9B)
 
     console.log(`🏗️  Created Phase 2 level: The House`)
   }
