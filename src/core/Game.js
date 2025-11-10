@@ -672,9 +672,9 @@ export class Game {
       const soundEvent = nearestDist.knockOver(this.player)
 
       if (soundEvent) {
-        // Notify all enemies of the noise
+        // Notify all enemies of the noise (only those that can hear)
         this.enemies.forEach(enemy => {
-          if (enemy.onSoundHeard) {
+          if (enemy.onSoundHeard && typeof enemy.onSoundHeard === 'function') {
             enemy.onSoundHeard(soundEvent.position, soundEvent.radius)
           }
         })

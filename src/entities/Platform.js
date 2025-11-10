@@ -15,24 +15,37 @@ export class Platform extends Entity {
     this.collider.size.x = width
     this.collider.size.y = height
 
-    // Create visual representation with brighter color
-    this.createColorSprite(color, width, height)
+    // Create visual representation with MUCH brighter color
+    // Triple the brightness for visibility
+    const brightColor = this.brightenColor(color, 3.0)
+    this.createColorSprite(brightColor, width, height)
 
-    // Make platforms more visible
+    // Make platforms very visible
     if (this.sprite) {
+      this.sprite.position.copy(this.position) // Sync position immediately
       this.sprite.position.z = 0.5 // Behind entities but visible
-      // Brighten the color by 50%
-      const c = this.sprite.material.color
-      c.r = Math.min(1, c.r * 1.5)
-      c.g = Math.min(1, c.g * 1.5)
-      c.b = Math.min(1, c.b * 1.5)
     }
 
     // Platforms don't move
     this.isStatic = true
   }
 
+  brightenColor(color, factor) {
+    const r = ((color >> 16) & 0xFF) / 255
+    const g = ((color >> 8) & 0xFF) / 255
+    const b = (color & 0xFF) / 255
+
+    const newR = Math.min(1, r * factor)
+    const newG = Math.min(1, g * factor)
+    const newB = Math.min(1, b * factor)
+
+    return (Math.floor(newR * 255) << 16) | (Math.floor(newG * 255) << 8) | Math.floor(newB * 255)
+  }
+
   update(deltaTime) {
-    // Static platforms don't update
+    // Sync sprite position
+    if (this.sprite) {
+      this.sprite.position.copy(this.position)
+    }
   }
 }
