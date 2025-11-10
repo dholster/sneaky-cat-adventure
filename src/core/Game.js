@@ -72,6 +72,9 @@ export class Game {
   setupScene() {
     this.scene = new THREE.Scene()
     this.scene.background = new THREE.Color(Config.COLORS.NIGHT_BLUE)
+
+    // Add fog for atmosphere
+    this.scene.fog = new THREE.FogExp2(Config.COLORS.NIGHT_BLUE, 0.015)
   }
 
   setupCamera() {
@@ -273,6 +276,18 @@ export class Game {
     // Check platform collisions
     this.checkPlatformCollisions()
 
+    // Update enemies
+    this.enemies.forEach(enemy => enemy.update(deltaTime))
+
+    // Update detection system
+    this.detectionSystem.update(deltaTime)
+
+    // Update vision cone renderer
+    this.visionConeRenderer.update(elapsedTime)
+
+    // Check hiding spot interactions
+    this.checkHidingSpots()
+
     // Update camera
     this.cameraController.update(deltaTime)
 
@@ -280,6 +295,40 @@ export class Game {
     if (this.debugMode) {
       this.showDebugInfo()
     }
+  }
+
+  checkHidingSpots() {
+    // Find nearest hiding spot
+    let nearestSpot = null
+    let nearestDistance = Infinity
+
+    this.hidingSpots.forEach(spot => {
+      if (spot.canInteract(this.player)) {
+        const distance = spot.position.distanceTo(this.player.position)
+        if (distance < nearestDistance) {
+          nearestDistance = distance
+          nearestSpot = spot
+        }
+      }
+    })
+
+    // Handle interaction
+    if (this.inputManager.interact) {
+      if (this.player.isHiding) {
+        // Exit hiding
+        this.hidingSpots.forEach(spot => {
+          if (spot.occupant === this.player) {
+            spot.exit(this.player)
+          }
+        })
+      } else if (nearestSpot) {
+        // Enter hiding
+        nearestSpot.enter(this.player)
+      }
+    }
+
+    // Store nearest spot for potential UI prompts later
+    this.nearestHidingSpot = nearestSpot
   }
 
   checkPlatformCollisions() {
