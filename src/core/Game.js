@@ -189,35 +189,81 @@ export class Game {
     // Initialize vision cone renderer
     this.visionConeRenderer = new VisionConeRenderer(this.scene)
 
-    // Create ONE human enemy for tutorial
-    const enemyPatrol = [
+    // PHASE 2 LEVEL: Multi-path with all enemy types!
+
+    // === AREA 1: HUMAN PATROL (Easy Start) ===
+    console.log('🏠 Creating Phase 2 Level: The House')
+
+    // Human guard patrolling entrance area
+    const humanPatrol = [
       { x: 0, y: 1 },
-      { x: 10, y: 1 }
+      { x: 8, y: 1 }
     ]
-    this.createHuman(5, 1, enemyPatrol)
+    this.createHuman(4, 1, humanPatrol)
 
-    // Store initial enemy position for restart
-    this.initialPositions.enemies.push({
-      position: { x: 5, y: 1 },
-      patrol: enemyPatrol
-    })
+    // Hiding spots for Area 1
+    this.createHidingSpot(-8, 1, 'box')
+    this.createHidingSpot(10, 1, 'shadow')
 
-    // Create hiding spots along the path
-    this.createHidingSpot(-5, 1, 'box')
-    this.createHidingSpot(5, 1, 'shadow')
-    this.createHidingSpot(15, 1, 'box')
+    // Distraction to lure guard away
+    this.createDistraction(2, 4, 'vase')
 
-    // Create goal marker
-    this.createGoal(25, 1)
+    // === AREA 2: DOG PATROL (Medium difficulty) ===
+    // Dog patrolling middle area - more sensitive to sound!
+    const dogPatrol = [
+      { x: 15, y: 1 },
+      { x: 22, y: 1 }
+    ]
+    this.createDog(18, 1, dogPatrol)
+
+    // Hiding spots for Area 2
+    this.createHidingSpot(14, 1, 'furniture')
+    this.createHidingSpot(23, 1, 'shadow')
+
+    // More distractions to confuse the dog
+    this.createDistraction(17, 4, 'book')
+    this.createDistraction(20, 4, 'plant')
+
+    // === AREA 3: CAMERA + HUMAN (Hard) ===
+    // Rotating camera watching narrow corridor
+    this.createCamera(32, 6, 0.8, Math.PI / 1.5) // Slow sweep, wide angle
+
+    // Human guard in same area
+    const endGuardPatrol = [
+      { x: 28, y: 1 },
+      { x: 36, y: 1 }
+    ]
+    this.createHuman(32, 1, endGuardPatrol)
+
+    // Hiding spots for final area
+    this.createHidingSpot(29, 1, 'box')
+    this.createHidingSpot(35, 1, 'curtain')
+
+    // Final distraction
+    this.createDistraction(33, 4, 'frame')
+
+    // === GOAL ===
+    this.createGoal(45, 1)
 
     // Register platforms as obstacles for vision blocking
     this.platforms.forEach(platform => {
       this.detectionSystem.registerObstacle(platform)
     })
 
-    console.log(`🕵️  Created ${this.enemies.length} human enemy`)
+    // Store initial positions for restart
+    this.initialPositions.enemies = []
+    this.enemies.forEach(enemy => {
+      this.initialPositions.enemies.push({
+        position: { x: enemy.position.x, y: enemy.position.y },
+        patrol: enemy.patrolPath || null
+      })
+    })
+
+    console.log(`🕵️  Created ${this.enemies.length} enemies (humans, dogs, cameras)`)
     console.log(`📦 Created ${this.hidingSpots.length} hiding spots`)
-    console.log(`🎯 Goal is at x=25 - Try to reach it without being detected!`)
+    console.log(`💥 Created ${this.distractions.length} distractions`)
+    console.log(`🎯 Goal is at x=45 - Navigate through all areas!`)
+    console.log(`💡 TIP: Use distractions to lure enemies away!`)
   }
 
   createHuman(x, y, patrolPath) {
