@@ -154,12 +154,24 @@ export class Player extends Entity {
     this.setAnimation('hide_peek')
     this.soundRadius = 0
     this.velocity.x = 0
+
+    // Make sprite greyscale when hiding
+    if (this.animatedSprite) {
+      this.animatedSprite.setColor(0x808080) // Grey color for greyscale effect
+    }
+
     console.log('Hiding!')
   }
 
   exitHiding() {
     this.isHiding = false
     this.setAnimation('idle')
+
+    // Restore normal color when exiting hiding
+    if (this.animatedSprite) {
+      this.animatedSprite.setColor(0xFFFFFF) // White color = normal
+    }
+
     console.log('Exiting hiding')
   }
 
