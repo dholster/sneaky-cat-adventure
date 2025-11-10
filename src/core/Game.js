@@ -674,21 +674,46 @@ export class Game {
       }
     })
 
-    // Handle interaction
-    if (this.inputManager.interact && nearestDist && !this.player.isHiding) {
-      const soundEvent = nearestDist.knockOver(this.player)
+    // Handle interaction - separate from checking
+    if (this.inputManager.interact) {
+      console.log('🔑 E pressed - checking distractions')
+      console.log('   Player hiding?', this.player.isHiding)
+      console.log('   Nearest distraction:', nearestDist ? nearestDist.type : 'none')
 
-      if (soundEvent) {
-        // Notify all enemies of the noise (only those that can hear)
-        this.enemies.forEach(enemy => {
-          if (enemy.onSoundHeard && typeof enemy.onSoundHeard === 'function') {
-            enemy.onSoundHeard(soundEvent.position, soundEvent.radius)
+      if (!this.player.isHiding && nearestDist) {
+        try {
+          console.log(`💥 Knocking over ${nearestDist.type}...`)
+          const soundEvent = nearestDist.knockOver(this.player)
+
+          if (soundEvent) {
+            console.log('   Sound event created:', soundEvent)
+
+            // Notify all enemies of the noise (with safety checks)
+            let enemiesNotified = 0
+            this.enemies.forEach((enemy, index) => {
+              try {
+                if (enemy && enemy.onSoundHeard && typeof enemy.onSoundHeard === 'function') {
+                  console.log(`   Notifying enemy ${index} (${enemy.constructor.name})`)
+                  enemy.onSoundHeard(soundEvent.position, soundEvent.radius)
+                  enemiesNotified++
+                } else {
+                  console.log(`   Skipping enemy ${index} - no sound hearing`)
+                }
+              } catch (err) {
+                console.error(`   Error notifying enemy ${index}:`, err)
+              }
+            })
+
+            console.log(`   Notified ${enemiesNotified} enemies`)
+
+            // Hide the label
+            if (nearestDist.label) {
+              nearestDist.label.visible = false
+            }
           }
-        })
-
-        // Hide the label
-        if (nearestDist.label) {
-          nearestDist.label.visible = false
+        } catch (error) {
+          console.error('❌ Error in distraction interaction:', error)
+          console.error('Stack:', error.stack)
         }
       }
     }
