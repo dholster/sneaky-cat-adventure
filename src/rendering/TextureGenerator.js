@@ -465,156 +465,110 @@ export class TextureGenerator {
     const ctx = canvas.getContext('2d')
     ctx.clearRect(0, 0, size, size)
 
-    const boxBrown = '#C19A6B'  // Cardboard tan
-    const boxLight = '#D4B896'
-    const boxDark = '#8B7355'
-    const boxShadow = '#6B5537'
-    const tape = '#E8DCC0'      // Tan packing tape
-    const tapeDark = '#D4C4A0'
+    const cardboard = '#D2B48C'  // Light tan cardboard
+    const cardboardDark = '#A0826D'
+    const cardboardLight = '#E8D4B8'
+    const tape = '#C8B090'
+    const black = '#000000'
 
-    // Shadow underneath box
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
-    ctx.ellipse(32, 58, 22, 4, 0, 0, Math.PI * 2)
-    ctx.fill()
+    // Simple rectangular box - front view
+    // Main box body
+    ctx.fillStyle = cardboard
+    ctx.fillRect(16, 22, 32, 32)
 
-    // Bottom of box (perspective)
-    ctx.fillStyle = boxShadow
-    ctx.beginPath()
-    ctx.moveTo(14, 54)
-    ctx.lineTo(50, 54)
-    ctx.lineTo(54, 50)
-    ctx.lineTo(10, 50)
-    ctx.closePath()
-    ctx.fill()
-
-    // Left side of box (darker for 3D effect)
-    ctx.fillStyle = boxDark
-    ctx.beginPath()
-    ctx.moveTo(10, 50)
-    ctx.lineTo(10, 22)
-    ctx.lineTo(14, 18)
-    ctx.lineTo(14, 54)
-    ctx.closePath()
-    ctx.fill()
-
-    // Main front face
-    ctx.fillStyle = boxBrown
-    ctx.fillRect(14, 18, 36, 36)
-
-    // Cardboard texture/corrugation lines (horizontal)
-    ctx.strokeStyle = boxLight
-    ctx.lineWidth = 1
-    for (let y = 20; y < 54; y += 3) {
-      ctx.globalAlpha = 0.3
-      ctx.beginPath()
-      ctx.moveTo(14, y)
-      ctx.lineTo(50, y)
-      ctx.stroke()
-    }
-    ctx.globalAlpha = 1.0
-
-    // Cardboard texture (vertical lines for depth)
-    ctx.strokeStyle = boxDark
-    ctx.lineWidth = 1
-    for (let x = 16; x < 50; x += 4) {
-      ctx.globalAlpha = 0.2
-      ctx.beginPath()
-      ctx.moveTo(x, 18)
-      ctx.lineTo(x, 54)
-      ctx.stroke()
-    }
-    ctx.globalAlpha = 1.0
-
-    // Box flaps (top opening)
-    ctx.fillStyle = boxLight
+    // Top flaps (open box)
     // Left flap
+    ctx.fillStyle = cardboardLight
     ctx.beginPath()
-    ctx.moveTo(14, 18)
-    ctx.lineTo(12, 14)
-    ctx.lineTo(22, 14)
-    ctx.lineTo(24, 18)
+    ctx.moveTo(16, 22)
+    ctx.lineTo(14, 16)
+    ctx.lineTo(26, 16)
+    ctx.lineTo(24, 22)
     ctx.closePath()
     ctx.fill()
 
     // Right flap
     ctx.beginPath()
-    ctx.moveTo(40, 18)
-    ctx.lineTo(42, 14)
-    ctx.lineTo(52, 14)
-    ctx.lineTo(50, 18)
+    ctx.moveTo(40, 22)
+    ctx.lineTo(38, 16)
+    ctx.lineTo(50, 16)
+    ctx.lineTo(48, 22)
     ctx.closePath()
     ctx.fill()
 
-    // Flap shadows
-    ctx.strokeStyle = boxShadow
+    // Flap creases (darker lines)
+    ctx.strokeStyle = cardboardDark
     ctx.lineWidth = 2
     ctx.beginPath()
-    ctx.moveTo(14, 18)
-    ctx.lineTo(24, 18)
+    ctx.moveTo(16, 22)
+    ctx.lineTo(24, 22)
     ctx.stroke()
     ctx.beginPath()
-    ctx.moveTo(40, 18)
-    ctx.lineTo(50, 18)
+    ctx.moveTo(40, 22)
+    ctx.lineTo(48, 22)
     ctx.stroke()
 
-    // Packing tape (vertical center)
-    ctx.fillStyle = tape
-    ctx.globalAlpha = 0.7
-    ctx.fillRect(28, 14, 8, 40)
+    // Box seam down the middle
+    ctx.strokeStyle = cardboardDark
+    ctx.lineWidth = 1
+    ctx.setLineDash([3, 2])
+    ctx.beginPath()
+    ctx.moveTo(32, 22)
+    ctx.lineTo(32, 54)
+    ctx.stroke()
+    ctx.setLineDash([])
 
-    // Tape edges/shine
-    ctx.fillStyle = tapeDark
-    ctx.fillRect(28, 14, 1, 40)
-    ctx.fillRect(35, 14, 1, 40)
+    // Horizontal seam
+    ctx.beginPath()
+    ctx.moveTo(16, 38)
+    ctx.lineTo(48, 38)
+    ctx.stroke()
+
+    // Tape strip (vertical)
+    ctx.fillStyle = tape
+    ctx.fillRect(30, 16, 4, 38)
+
+    // Tape highlights
+    ctx.fillStyle = cardboardLight
+    ctx.globalAlpha = 0.5
+    ctx.fillRect(30, 16, 1, 38)
+    ctx.fillRect(33, 16, 1, 38)
     ctx.globalAlpha = 1.0
 
-    // Tape wrinkles/creases
-    ctx.strokeStyle = tapeDark
-    ctx.lineWidth = 1
+    // Tape strip (horizontal)
+    ctx.fillStyle = tape
+    ctx.fillRect(16, 36, 32, 4)
+    ctx.fillStyle = cardboardLight
     ctx.globalAlpha = 0.5
-    for (let y = 16; y < 52; y += 6) {
-      ctx.beginPath()
-      ctx.moveTo(28, y)
-      ctx.lineTo(36, y + 2)
-      ctx.stroke()
+    ctx.fillRect(16, 36, 32, 1)
+    ctx.fillRect(16, 39, 32, 1)
+    ctx.globalAlpha = 1.0
+
+    // Box outline
+    ctx.strokeStyle = black
+    ctx.lineWidth = 2
+    ctx.strokeRect(16, 22, 32, 32)
+
+    // Simple "FRAGILE" text
+    ctx.fillStyle = black
+    ctx.font = 'bold 6px monospace'
+    ctx.globalAlpha = 0.3
+    ctx.fillText('FRAGILE', 20, 50)
+    ctx.globalAlpha = 1.0
+
+    // Cardboard texture (simple dots/specks)
+    ctx.fillStyle = cardboardDark
+    ctx.globalAlpha = 0.2
+    for (let i = 0; i < 40; i++) {
+      const x = 16 + Math.random() * 32
+      const y = 22 + Math.random() * 32
+      ctx.fillRect(x, y, 1, 1)
     }
     ctx.globalAlpha = 1.0
 
-    // Horizontal tape strip
-    ctx.fillStyle = tape
-    ctx.globalAlpha = 0.7
-    ctx.fillRect(14, 32, 36, 6)
-    ctx.fillStyle = tapeDark
-    ctx.fillRect(14, 32, 36, 1)
-    ctx.fillRect(14, 37, 36, 1)
-    ctx.globalAlpha = 1.0
-
-    // Box label/marking (fragile symbol or text)
-    ctx.strokeStyle = boxShadow
-    ctx.lineWidth = 2
-    ctx.globalAlpha = 0.4
-    // Simple "FRAGILE" style arrow
-    ctx.beginPath()
-    ctx.moveTo(32, 42)
-    ctx.lineTo(32, 48)
-    ctx.moveTo(28, 44)
-    ctx.lineTo(32, 42)
-    ctx.lineTo(36, 44)
-    ctx.stroke()
-    ctx.globalAlpha = 1.0
-
-    // Box edges (outline for definition)
-    ctx.strokeStyle = boxShadow
-    ctx.lineWidth = 2
-    ctx.strokeRect(14, 18, 36, 36)
-
-    // Top edge highlight
-    ctx.strokeStyle = boxLight
-    ctx.lineWidth = 1
-    ctx.beginPath()
-    ctx.moveTo(14, 19)
-    ctx.lineTo(50, 19)
-    ctx.stroke()
+    // Shadow at bottom
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'
+    ctx.fillRect(16, 52, 32, 2)
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
