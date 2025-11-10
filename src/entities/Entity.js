@@ -7,7 +7,8 @@ import * as THREE from 'three'
 export class Entity {
   constructor(scene) {
     this.scene = scene
-    this.sprite = null
+    this.sprite = null // For simple colored sprites
+    this.animatedSprite = null // For animated sprite sheets
     this.position = new THREE.Vector3(0, 0, 0)
     this.velocity = new THREE.Vector3(0, 0, 0)
     this.size = { width: 1, height: 1 }
@@ -27,6 +28,22 @@ export class Entity {
     this.isGrounded = false
     this.facing = 1 // 1 = right, -1 = left
     this.active = true
+  }
+
+  /**
+   * Create an animated sprite from a sprite sheet
+   */
+  createAnimatedSprite(animatedSprite) {
+    // Remove old sprite if exists
+    if (this.sprite) {
+      this.scene.remove(this.sprite)
+      this.sprite.geometry?.dispose()
+      this.sprite.material?.dispose()
+      this.sprite = null
+    }
+
+    this.animatedSprite = animatedSprite
+    return animatedSprite
   }
 
   /**
@@ -72,7 +89,16 @@ export class Entity {
   update(deltaTime) {
     if (!this.active) return
 
-    // Update sprite position to match entity position
+    // Update animated sprite if present
+    if (this.animatedSprite) {
+      this.animatedSprite.update(deltaTime)
+      this.animatedSprite.setPosition(this.position.x, this.position.y, this.position.z + 1)
+
+      // Flip sprite based on facing direction
+      this.animatedSprite.flipX(this.facing < 0)
+    }
+
+    // Update simple sprite position to match entity position
     if (this.sprite) {
       this.sprite.position.copy(this.position)
 
@@ -89,6 +115,11 @@ export class Entity {
       this.currentAnimation = animName
       this.animationFrame = 0
       this.animationTime = 0
+
+      // If using animated sprite, play the animation
+      if (this.animatedSprite) {
+        this.animatedSprite.play(animName)
+      }
     }
   }
 
@@ -108,11 +139,18 @@ export class Entity {
    * Clean up
    */
   destroy() {
+    if (this.animatedSprite) {
+      this.animatedSprite.destroy()
+      this.animatedSprite = null
+    }
+
     if (this.sprite) {
       this.scene.remove(this.sprite)
       this.sprite.geometry.dispose()
       this.sprite.material.dispose()
+      this.sprite = null
     }
+
     this.active = false
   }
 }
