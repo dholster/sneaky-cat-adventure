@@ -120,6 +120,64 @@ export class Game {
     console.log('🐱 Player created at position:', this.player.position)
   }
 
+  setupStealthSystems() {
+    // Initialize detection system
+    this.detectionSystem = new DetectionSystem(this.scene, this.player)
+
+    // Initialize vision cone renderer
+    this.visionConeRenderer = new VisionConeRenderer(this.scene)
+
+    // Create human enemies with patrols
+    this.createHuman(-10, 1, [
+      { x: -15, y: 1 },
+      { x: -5, y: 1 }
+    ])
+
+    this.createHuman(20, 1, [
+      { x: 15, y: 1 },
+      { x: 25, y: 1 },
+      { x: 25, y: 5 },
+      { x: 15, y: 5 }
+    ])
+
+    // Create hiding spots
+    this.createHidingSpot(-18, 1, 'box')
+    this.createHidingSpot(-2, 1, 'box')
+    this.createHidingSpot(12, 1, 'shadow')
+    this.createHidingSpot(28, 5, 'furniture')
+
+    // Register platforms as obstacles for vision blocking
+    this.platforms.forEach(platform => {
+      this.detectionSystem.registerObstacle(platform)
+    })
+
+    console.log(`🕵️  Created ${this.enemies.length} human enemies`)
+    console.log(`📦 Created ${this.hidingSpots.length} hiding spots`)
+  }
+
+  createHuman(x, y, patrolPath) {
+    const human = new Human(this.scene, patrolPath)
+    human.position.set(x, y, 0)
+
+    // Create visual representation (dark gray rectangle for now)
+    human.createColorSprite(0x4a4a6a, 1, 2)
+
+    // Register with systems
+    this.enemies.push(human)
+    this.detectionSystem.registerEnemy(human)
+
+    // Create vision cone
+    this.visionConeRenderer.createVisionCone(human)
+
+    return human
+  }
+
+  createHidingSpot(x, y, type) {
+    const spot = new HidingSpot(this.scene, x, y, type)
+    this.hidingSpots.push(spot)
+    return spot
+  }
+
   setupEnvironment() {
     // Add simple ambient light
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.0)
