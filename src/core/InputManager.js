@@ -61,7 +61,8 @@ export class InputManager {
   }
 
   get jump() {
-    return this.isKeyPressed('Space')
+    // Check both pressed (single tap) and down (held) for more responsive jumping
+    return this.isKeyPressed('Space') || this.isKeyDown('Space')
   }
 
   get run() {

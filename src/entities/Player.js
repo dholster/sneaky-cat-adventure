@@ -69,11 +69,11 @@ export class Player extends Entity {
       this.velocity.x = 0
     }
 
-    // Jump
-    if (this.input.jump && this.isGrounded) {
+    // Jump - only allow when grounded and not already jumping
+    if (this.input.jump && this.isGrounded && this.velocity.y <= 0.1) {
       this.velocity.y = this.jumpForce
       this.isGrounded = false
-      console.log('Jump!')
+      console.log('🐱 Jump! From position:', this.position.y.toFixed(2))
     }
 
     // Apply gravity (only if physics system isn't handling it)
