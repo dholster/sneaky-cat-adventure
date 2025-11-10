@@ -44,6 +44,7 @@ export class Game {
     this.labelSystem = null
     this.ui = null // UI/HUD system
     this.progressBar = null // Progress bar showing distance to goal
+    this.lightingSystem = null // Atmospheric lighting and effects
 
     // Game entities
     this.player = null
@@ -103,6 +104,9 @@ export class Game {
 
       console.log('  → Setting up progress bar...')
       this.setupProgressBar()
+
+      console.log('  → Setting up lighting system...')
+      this.setupLighting()
 
       console.log('  → Setting up environment...')
       this.setupEnvironment()
@@ -179,6 +183,12 @@ export class Game {
     // Create progress bar (will be positioned after goal is set)
     this.progressBar = new ProgressBar(this.scene, this.camera)
     console.log('📊 Progress bar initialized')
+  }
+
+  setupLighting() {
+    // Create lighting system for atmospheric effects
+    this.lightingSystem = new LightingSystem(this.scene, this.camera)
+    console.log('💡 Lighting system initialized')
   }
 
   setupPlayer() {
