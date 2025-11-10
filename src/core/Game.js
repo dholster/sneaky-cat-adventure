@@ -109,28 +109,49 @@ export class Game {
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.0)
     this.scene.add(ambientLight)
 
-    // Create a simple ground plane for visual reference
-    const groundGeometry = new THREE.PlaneGeometry(100, 1)
-    const groundMaterial = new THREE.MeshBasicMaterial({
-      color: Config.COLORS.SHADOW_BLUE
-    })
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial)
-    ground.position.y = -0.5
-    ground.position.z = 0
-    this.scene.add(ground)
+    // Create main ground platform
+    this.createPlatform(-30, 0, 100, 1, Config.COLORS.SHADOW_BLUE)
 
-    // Add some reference walls/platforms
-    this.createPlatform(-10, 3, 5, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(10, 5, 5, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(0, 8, 3, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    // Tutorial section - Easy jumps (left side)
+    this.createPlatform(-25, 3, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    this.createPlatform(-20, 5, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    this.createPlatform(-15, 7, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    this.createPlatform(-10, 5, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    this.createPlatform(-5, 3, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+
+    // Center platforms - Medium difficulty
+    this.createPlatform(0, 8, 6, 0.5, Config.COLORS.SAFE_GREEN)
+    this.createPlatform(-3, 11, 3, 0.5, Config.COLORS.ALERT_YELLOW)
+    this.createPlatform(3, 11, 3, 0.5, Config.COLORS.ALERT_YELLOW)
+    this.createPlatform(0, 14, 4, 0.5, Config.COLORS.ROOM_LIGHT)
+
+    // Right side - Varied heights
+    this.createPlatform(8, 2, 5, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    this.createPlatform(14, 4, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    this.createPlatform(19, 6, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    this.createPlatform(24, 8, 5, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    this.createPlatform(30, 10, 4, 0.5, Config.COLORS.SAFE_GREEN)
+
+    // Floating platforms high up
+    this.createPlatform(10, 16, 3, 0.5, Config.COLORS.SECURITY_RED)
+    this.createPlatform(16, 18, 3, 0.5, Config.COLORS.SECURITY_RED)
+    this.createPlatform(22, 20, 4, 0.5, Config.COLORS.SECURITY_RED)
+
+    // Wall-like platforms (tall obstacles)
+    this.createPlatform(35, 2, 1, 6, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(40, 4, 1, 8, Config.COLORS.SHADOW_BLUE)
+
+    // Far right landing area
+    this.createPlatform(45, 0, 20, 1, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(50, 5, 6, 0.5, Config.COLORS.ROOM_LIGHT)
+    this.createPlatform(55, 8, 4, 0.5, Config.COLORS.SAFE_GREEN)
+
+    console.log(`🏗️  Created ${this.platforms.length} platforms for testing`)
   }
 
   createPlatform(x, y, width, height, color) {
-    const geometry = new THREE.PlaneGeometry(width, height)
-    const material = new THREE.MeshBasicMaterial({ color })
-    const platform = new THREE.Mesh(geometry, material)
-    platform.position.set(x, y, 0)
-    this.scene.add(platform)
+    const platform = new Platform(this.scene, x, y, width, height, color)
+    this.platforms.push(platform)
     return platform
   }
 
@@ -175,10 +196,8 @@ export class Game {
     // Update player
     this.player.update(deltaTime)
 
-    // Update physics
-    // Note: Physics is currently integrated in Player.update()
-    // Will be refactored to use PhysicsSystem in next phase
-    // this.physicsSystem.update(deltaTime)
+    // Check platform collisions
+    this.checkPlatformCollisions()
 
     // Update camera
     this.cameraController.update(deltaTime)
@@ -187,6 +206,52 @@ export class Game {
     if (this.debugMode) {
       this.showDebugInfo()
     }
+  }
+
+  checkPlatformCollisions() {
+    // Simple AABB collision detection
+    const playerBounds = this.player.getBounds()
+
+    this.platforms.forEach(platform => {
+      const platformBounds = platform.getBounds()
+
+      // Check if player overlaps platform
+      if (
+        playerBounds.x < platformBounds.x + platformBounds.width &&
+        playerBounds.x + playerBounds.width > platformBounds.x &&
+        playerBounds.y < platformBounds.y + platformBounds.height &&
+        playerBounds.y + playerBounds.height > platformBounds.y
+      ) {
+        // Calculate overlap amounts
+        const overlapLeft = (playerBounds.x + playerBounds.width) - platformBounds.x
+        const overlapRight = (platformBounds.x + platformBounds.width) - playerBounds.x
+        const overlapTop = (playerBounds.y + playerBounds.height) - platformBounds.y
+        const overlapBottom = (platformBounds.y + platformBounds.height) - playerBounds.y
+
+        // Find minimum overlap (this is the collision side)
+        const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom)
+
+        // Resolve collision on the side with minimum overlap
+        if (minOverlap === overlapTop && this.player.velocity.y <= 0) {
+          // Landing on top of platform
+          this.player.position.y = platformBounds.y + platformBounds.height + playerBounds.height / 2
+          this.player.velocity.y = 0
+          this.player.isGrounded = true
+        } else if (minOverlap === overlapBottom && this.player.velocity.y > 0) {
+          // Hitting bottom of platform (bonking head)
+          this.player.position.y = platformBounds.y - playerBounds.height / 2
+          this.player.velocity.y = 0
+        } else if (minOverlap === overlapLeft) {
+          // Hitting from the left
+          this.player.position.x = platformBounds.x - playerBounds.width / 2
+          this.player.velocity.x = 0
+        } else if (minOverlap === overlapRight) {
+          // Hitting from the right
+          this.player.position.x = platformBounds.x + platformBounds.width + playerBounds.width / 2
+          this.player.velocity.x = 0
+        }
+      }
+    })
   }
 
   render() {
