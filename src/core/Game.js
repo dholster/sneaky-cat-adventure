@@ -62,25 +62,48 @@ export class Game {
   }
 
   init() {
-    this.setupScene()
-    this.setupCamera()
-    this.setupRenderer()
-    this.setupLabelSystem()
-    this.setupPlayer()
-    this.setupStealthSystems()
-    this.setupEnvironment()
-    this.setupEventListeners()
+    console.log('🎮 Game.init() called')
 
-    console.log('🐱 Stealth Cat - Game Initialized')
-    console.log('Controls:')
-    console.log('  Move: Arrow Keys/WASD')
-    console.log('  Jump: Space')
-    console.log('  Run (Hold): Shift - ⚠️  Makes noise!')
-    console.log('  Crouch (Hold): Ctrl')
-    console.log('  Hide: E (near hiding spot)')
-    console.log('  Pause: P')
-    console.log('  Debug: I')
-    console.log('  Toggle Labels: L')
+    try {
+      console.log('  → Setting up scene...')
+      this.setupScene()
+
+      console.log('  → Setting up camera...')
+      this.setupCamera()
+
+      console.log('  → Setting up renderer...')
+      this.setupRenderer()
+
+      console.log('  → Setting up label system...')
+      this.setupLabelSystem()
+
+      console.log('  → Setting up player...')
+      this.setupPlayer()
+
+      console.log('  → Setting up stealth systems...')
+      this.setupStealthSystems()
+
+      console.log('  → Setting up environment...')
+      this.setupEnvironment()
+
+      console.log('  → Setting up event listeners...')
+      this.setupEventListeners()
+
+      console.log('✅ Game initialization complete!')
+      console.log('🐱 Stealth Cat - Game Initialized')
+      console.log('Controls:')
+      console.log('  Move: Arrow Keys/WASD')
+      console.log('  Jump: Space')
+      console.log('  Run (Hold): Shift - ⚠️  Makes noise!')
+      console.log('  Crouch (Hold): Ctrl')
+      console.log('  Hide: E (near hiding spot)')
+      console.log('  Pause: P')
+      console.log('  Debug: I')
+      console.log('  Toggle Labels: L')
+    } catch (error) {
+      console.error('❌ Error during game initialization:', error)
+      throw error
+    }
   }
 
   setupScene() {
@@ -399,13 +422,17 @@ export class Game {
     this.hidingSpots.forEach(spot => {
       const distance = spot.position.distanceTo(this.player.position)
 
-      // Visual feedback: Make hiding spot glow when nearby
+      // Visual feedback: Make hiding spot brighter when nearby
       if (distance < spot.interactionRange && spot.sprite) {
-        spot.sprite.material.emissive = new THREE.Color(0x44ff44)
-        spot.sprite.material.emissiveIntensity = 0.5
+        // Change to bright green when in range
+        spot.sprite.material.color.setHex(0x44ff44)
       } else if (spot.sprite) {
-        spot.sprite.material.emissive = new THREE.Color(0x000000)
-        spot.sprite.material.emissiveIntensity = 0
+        // Reset to original color
+        if (spot.type === 'box') {
+          spot.sprite.material.color.setHex(0xCC8844)
+        } else if (spot.type === 'shadow') {
+          spot.sprite.material.color.setHex(0x3a3a5e)
+        }
       }
 
       if (spot.canInteract(this.player)) {
