@@ -372,9 +372,6 @@ export class Game {
 
     if (this.paused || this.isRestarting) return
 
-    // Update input manager (clears pressed/released states)
-    this.inputManager.update()
-
     // Update player
     this.player.update(deltaTime)
 
@@ -390,7 +387,7 @@ export class Game {
     // Update vision cone renderer
     this.visionConeRenderer.update(elapsedTime)
 
-    // Check hiding spot interactions
+    // Check hiding spot interactions (BEFORE clearing input!)
     this.checkHidingSpots()
 
     // Check if goal is reached
@@ -412,6 +409,9 @@ export class Game {
     if (this.debugMode) {
       this.showDebugInfo()
     }
+
+    // Update input manager at the END (clears pressed/released states for next frame)
+    this.inputManager.update()
   }
 
   checkHidingSpots() {
