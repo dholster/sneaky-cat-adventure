@@ -1173,45 +1173,106 @@ export class TextureGenerator {
     const woodBrown = '#8B6F47'
     const woodDark = '#6B5537'
     const woodLight = '#A68A5C'
+    const woodHighlight = '#C4A574'
+    const grainDark = '#5A4428'
 
-    // Draw wood planks (3 horizontal planks)
+    // Draw wood planks (3 horizontal planks) with more realistic grain
     const plankHeight = size / 3
 
     for (let i = 0; i < 3; i++) {
       const y = i * plankHeight
 
-      // Base plank color (slight variation)
-      const variation = Math.sin(i * 1.5) * 10
-      ctx.fillStyle = i % 2 === 0 ? woodBrown : woodLight
+      // Base plank with gradient for roundness
+      const plankGradient = ctx.createLinearGradient(0, y, 0, y + plankHeight)
+      plankGradient.addColorStop(0, i % 2 === 0 ? woodLight : woodBrown)
+      plankGradient.addColorStop(0.5, i % 2 === 0 ? woodBrown : woodLight)
+      plankGradient.addColorStop(1, i % 2 === 0 ? woodDark : woodBrown)
+      ctx.fillStyle = plankGradient
       ctx.fillRect(0, y, size, plankHeight)
 
-      // Wood grain lines
-      ctx.strokeStyle = woodDark
+      // Wood grain lines (more natural curves)
+      ctx.strokeStyle = grainDark
       ctx.lineWidth = 1
-      for (let j = 0; j < 4; j++) {
-        const grainX = j * 16 + (i * 8)
+      ctx.globalAlpha = 0.3
+      for (let j = 0; j < 5; j++) {
+        const grainX = j * 13 + (i * 7)
         ctx.beginPath()
-        ctx.moveTo(grainX, y + 2)
-        ctx.quadraticCurveTo(grainX + 8, y + plankHeight / 2, grainX + 4, y + plankHeight - 2)
+        ctx.moveTo(grainX - 5, y + 2)
+        ctx.quadraticCurveTo(grainX, y + plankHeight / 3, grainX - 3, y + plankHeight / 2)
+        ctx.quadraticCurveTo(grainX + 2, y + (plankHeight * 2) / 3, grainX, y + plankHeight - 2)
         ctx.stroke()
       }
+      ctx.globalAlpha = 1.0
 
-      // Plank separators
-      ctx.strokeStyle = woodDark
-      ctx.lineWidth = 2
+      // Subtle grain texture lines
+      ctx.strokeStyle = woodLight
+      ctx.lineWidth = 0.5
+      ctx.globalAlpha = 0.2
+      for (let j = 0; j < 8; j++) {
+        ctx.beginPath()
+        ctx.moveTo(j * 8, y + plankHeight / 2)
+        ctx.lineTo(j * 8 + 8, y + plankHeight / 2 + (Math.random() - 0.5) * 2)
+        ctx.stroke()
+      }
+      ctx.globalAlpha = 1.0
+
+      // Plank separators with shadow
+      ctx.strokeStyle = grainDark
+      ctx.lineWidth = 3
       ctx.beginPath()
-      ctx.moveTo(0, y + plankHeight)
-      ctx.lineTo(size, y + plankHeight)
+      ctx.moveTo(0, y + plankHeight - 1)
+      ctx.lineTo(size, y + plankHeight - 1)
       ctx.stroke()
 
-      // Knots in wood
-      if (i === 1) {
+      // Separator highlight (beveled edge)
+      ctx.strokeStyle = woodHighlight
+      ctx.lineWidth = 1
+      ctx.globalAlpha = 0.4
+      ctx.beginPath()
+      ctx.moveTo(0, y + 1)
+      ctx.lineTo(size, y + 1)
+      ctx.stroke()
+      ctx.globalAlpha = 1.0
+
+      // Wood knots (more realistic)
+      if (i === 1 || (i === 0 && Math.random() > 0.5)) {
+        const knotX = 15 + Math.random() * 30
+        const knotY = y + plankHeight / 2
+
+        // Knot shadow
+        ctx.fillStyle = grainDark
+        ctx.beginPath()
+        ctx.ellipse(knotX, knotY, 4, 3, Math.random() * Math.PI, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Knot center
         ctx.fillStyle = woodDark
         ctx.beginPath()
-        ctx.ellipse(20 + variation, y + plankHeight / 2, 3, 2, 0, 0, Math.PI * 2)
+        ctx.ellipse(knotX, knotY, 2.5, 1.5, Math.random() * Math.PI, 0, Math.PI * 2)
         ctx.fill()
+
+        // Knot grain rings
+        ctx.strokeStyle = grainDark
+        ctx.lineWidth = 0.5
+        ctx.globalAlpha = 0.5
+        for (let ring = 0; ring < 2; ring++) {
+          ctx.beginPath()
+          ctx.ellipse(knotX, knotY, 3 + ring, 2 + ring, 0, 0, Math.PI * 2)
+          ctx.stroke()
+        }
+        ctx.globalAlpha = 1.0
       }
     }
+
+    // Overall texture variation (subtle noise)
+    ctx.fillStyle = woodDark
+    ctx.globalAlpha = 0.05
+    for (let i = 0; i < 50; i++) {
+      const x = Math.random() * size
+      const y = Math.random() * size
+      ctx.fillRect(x, y, 1 + Math.random(), 1 + Math.random())
+    }
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
