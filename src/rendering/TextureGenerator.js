@@ -105,68 +105,142 @@ export class TextureGenerator {
       ctx.fillRect(centerX - 7, centerY + 11 + legPos, 1, 1)
       ctx.fillRect(centerX - 3, centerY + 11 - legPos, 1, 1)
 
-      // Head (more cat-like with pointed face)
-      ctx.fillStyle = catOrange
+      // Head (more cat-like with pointed face) with gradient shading
+      const headGradient = ctx.createRadialGradient(centerX + 6, centerY - 3, 1, centerX + 6, centerY - 2, 6)
+      headGradient.addColorStop(0, catHighlight)
+      headGradient.addColorStop(0.4, catLight)
+      headGradient.addColorStop(0.8, catOrange)
+      headGradient.addColorStop(1, catDark)
+      ctx.fillStyle = headGradient
       ctx.beginPath()
       ctx.ellipse(centerX + 6, centerY - 2, 6, 5, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Snout/muzzle (white)
+      // Face marking (white chest patch)
+      ctx.fillStyle = white
+      ctx.globalAlpha = 0.8
+      ctx.beginPath()
+      ctx.ellipse(centerX + 1, centerY + 4, 3, 4, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Snout/muzzle (white) with shading
       ctx.fillStyle = white
       ctx.beginPath()
-      ctx.ellipse(centerX + 8, centerY + 1, 3, 2, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 8, centerY + 1, 3, 2.5, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Ears (triangular, more prominent)
+      // Muzzle shadow
+      ctx.fillStyle = catLight
+      ctx.globalAlpha = 0.3
+      ctx.beginPath()
+      ctx.ellipse(centerX + 8, centerY + 2, 2, 1.5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Ears (triangular, more prominent) with inner pink
+      // Left ear
       ctx.fillStyle = catOrange
       ctx.beginPath()
       ctx.moveTo(centerX + 2 + earAngle, centerY - 6)
       ctx.lineTo(centerX + 4 + earAngle, centerY - 11)
       ctx.lineTo(centerX + 6 + earAngle, centerY - 6)
+      ctx.closePath()
       ctx.fill()
 
+      // Left ear shadow
+      ctx.fillStyle = catDark
+      ctx.beginPath()
+      ctx.moveTo(centerX + 2 + earAngle, centerY - 6)
+      ctx.lineTo(centerX + 3 + earAngle, centerY - 9)
+      ctx.lineTo(centerX + 4 + earAngle, centerY - 6)
+      ctx.closePath()
+      ctx.fill()
+
+      // Right ear
+      ctx.fillStyle = catOrange
       ctx.beginPath()
       ctx.moveTo(centerX + 7 - earAngle, centerY - 6)
       ctx.lineTo(centerX + 9 - earAngle, centerY - 11)
       ctx.lineTo(centerX + 11 - earAngle, centerY - 6)
+      ctx.closePath()
+      ctx.fill()
+
+      // Right ear shadow
+      ctx.fillStyle = catDark
+      ctx.beginPath()
+      ctx.moveTo(centerX + 8 - earAngle, centerY - 6)
+      ctx.lineTo(centerX + 9 - earAngle, centerY - 9)
+      ctx.lineTo(centerX + 10 - earAngle, centerY - 6)
+      ctx.closePath()
       ctx.fill()
 
       // Inner ears (pink)
       ctx.fillStyle = pink
       ctx.beginPath()
-      ctx.moveTo(centerX + 3 + earAngle, centerY - 7)
+      ctx.moveTo(centerX + 3.5 + earAngle, centerY - 7)
       ctx.lineTo(centerX + 4 + earAngle, centerY - 9)
-      ctx.lineTo(centerX + 5 + earAngle, centerY - 7)
+      ctx.lineTo(centerX + 4.5 + earAngle, centerY - 7)
+      ctx.closePath()
       ctx.fill()
 
       ctx.beginPath()
-      ctx.moveTo(centerX + 8 - earAngle, centerY - 7)
+      ctx.moveTo(centerX + 8.5 - earAngle, centerY - 7)
       ctx.lineTo(centerX + 9 - earAngle, centerY - 9)
-      ctx.lineTo(centerX + 10 - earAngle, centerY - 7)
+      ctx.lineTo(centerX + 9.5 - earAngle, centerY - 7)
+      ctx.closePath()
       ctx.fill()
 
-      // Eyes (cat-like slits)
-      ctx.fillStyle = black
-      ctx.fillRect(centerX + 4, centerY - 3, 2, 3)
-      ctx.fillRect(centerX + 8, centerY - 3, 2, 3)
-
-      // Eye shine
+      // Eyes (cat-like with more detail)
+      // Eye whites
       ctx.fillStyle = white
-      ctx.fillRect(centerX + 4, centerY - 3, 1, 1)
-      ctx.fillRect(centerX + 8, centerY - 3, 1, 1)
+      ctx.beginPath()
+      ctx.ellipse(centerX + 4, centerY - 2.5, 1.5, 2, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(centerX + 8, centerY - 2.5, 1.5, 2, 0, 0, Math.PI * 2)
+      ctx.fill()
 
-      // Nose (small triangle)
-      ctx.fillStyle = pink
+      // Pupils (vertical slits)
+      ctx.fillStyle = black
+      ctx.fillRect(centerX + 3.5, centerY - 3, 1, 3)
+      ctx.fillRect(centerX + 7.5, centerY - 3, 1, 3)
+
+      // Eye shine (green reflection)
+      ctx.fillStyle = '#90EE90'
+      ctx.fillRect(centerX + 3.8, centerY - 2.5, 0.8, 1)
+      ctx.fillRect(centerX + 7.8, centerY - 2.5, 0.8, 1)
+
+      // Nose (small triangle) with shading
+      ctx.fillStyle = nose
       ctx.beginPath()
       ctx.moveTo(centerX + 8, centerY)
-      ctx.lineTo(centerX + 7, centerY + 1)
-      ctx.lineTo(centerX + 9, centerY + 1)
+      ctx.lineTo(centerX + 7, centerY + 1.2)
+      ctx.lineTo(centerX + 9, centerY + 1.2)
+      ctx.closePath()
       ctx.fill()
 
-      // Whiskers (thin lines)
-      ctx.strokeStyle = black
+      // Nose highlight
+      ctx.fillStyle = pink
+      ctx.fillRect(centerX + 7.5, centerY + 0.3, 1, 0.5)
+
+      // Mouth (subtle line)
+      ctx.strokeStyle = catDark
       ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(centerX + 8, centerY + 1.2)
+      ctx.lineTo(centerX + 8, centerY + 2)
+      ctx.moveTo(centerX + 8, centerY + 2)
+      ctx.quadraticCurveTo(centerX + 7, centerY + 2.5, centerX + 6, centerY + 2)
+      ctx.moveTo(centerX + 8, centerY + 2)
+      ctx.quadraticCurveTo(centerX + 9, centerY + 2.5, centerX + 10, centerY + 2)
+      ctx.stroke()
+
+      // Whiskers (thin lines)
+      ctx.strokeStyle = white
+      ctx.lineWidth = 0.5
       // Left whiskers
+      ctx.globalAlpha = 0.8
       ctx.beginPath()
       ctx.moveTo(centerX + 5, centerY)
       ctx.lineTo(centerX + 1, centerY - 1)
@@ -184,16 +258,27 @@ export class TextureGenerator {
       ctx.moveTo(centerX + 11, centerY + 1)
       ctx.lineTo(centerX + 15, centerY + 2)
       ctx.stroke()
+      ctx.globalAlpha = 1.0
 
-      // Front legs
+      // Front legs with shading
       ctx.fillStyle = catOrange
       ctx.fillRect(centerX + 2, centerY + 6 - legPos, 2, 5)
       ctx.fillRect(centerX + 5, centerY + 6 + legPos, 2, 5)
 
-      // Paws (front)
+      // Leg highlights
+      ctx.fillStyle = catLight
+      ctx.fillRect(centerX + 2, centerY + 6 - legPos, 1, 5)
+      ctx.fillRect(centerX + 5, centerY + 6 + legPos, 1, 5)
+
+      // Paws (front) with toe beans
       ctx.fillStyle = catLight
       ctx.fillRect(centerX + 2, centerY + 10 - legPos, 2, 2)
       ctx.fillRect(centerX + 5, centerY + 10 + legPos, 2, 2)
+
+      // Toe beans (front)
+      ctx.fillStyle = pink
+      ctx.fillRect(centerX + 2.5, centerY + 11 - legPos, 1, 1)
+      ctx.fillRect(centerX + 5.5, centerY + 11 + legPos, 1, 1)
     }
 
     // Row 0: Idle and Walk animations
