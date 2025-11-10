@@ -22,6 +22,8 @@ export class Player extends Entity {
     this.isCrouching = false
     this.isHiding = false
     this.isDetected = false
+    this.wasInAir = false // Track if player was in air last frame (for landing animation)
+    this.landingTimer = 0 // Timer for landing animation
 
     // Sound detection radius (changes based on movement)
     this.soundRadius = 0
@@ -39,6 +41,11 @@ export class Player extends Entity {
       this.updateHiding()
       super.update(deltaTime)
       return
+    }
+
+    // Update landing timer
+    if (this.landingTimer > 0) {
+      this.landingTimer -= deltaTime
     }
 
     // Horizontal movement
