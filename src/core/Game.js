@@ -8,6 +8,7 @@ import { CameraController } from './CameraController.js'
 import { PhysicsSystem } from '../systems/PhysicsSystem.js'
 import { DetectionSystem } from '../systems/DetectionSystem.js'
 import { VisionConeRenderer } from '../rendering/VisionConeRenderer.js'
+import { LabelSystem } from '../rendering/LabelSystem.js'
 import { Player } from '../entities/Player.js'
 import { Platform } from '../entities/Platform.js'
 import { Human } from '../entities/Human.js'
@@ -29,6 +30,7 @@ export class Game {
     this.physicsSystem = new PhysicsSystem()
     this.detectionSystem = null // Will be initialized after player
     this.visionConeRenderer = null
+    this.labelSystem = null
 
     // Game entities
     this.player = null
