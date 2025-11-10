@@ -65,6 +65,7 @@ export class Game {
     this.setupScene()
     this.setupCamera()
     this.setupRenderer()
+    this.setupLabelSystem()
     this.setupPlayer()
     this.setupStealthSystems()
     this.setupEnvironment()
@@ -79,6 +80,7 @@ export class Game {
     console.log('  Hide: E (near hiding spot)')
     console.log('  Pause: P')
     console.log('  Debug: I')
+    console.log('  Toggle Labels: L')
   }
 
   setupScene() {
@@ -115,6 +117,12 @@ export class Game {
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     this.renderer.setPixelRatio(Config.RENDER.PIXEL_RATIO)
     this.renderer.setClearColor(Config.RENDER.CLEAR_COLOR)
+  }
+
+  setupLabelSystem() {
+    this.labelSystem = new LabelSystem(this.scene)
+    this.labelsVisible = true
+    console.log('🏷️  Label system initialized (Press L to toggle)')
   }
 
   setupPlayer() {
