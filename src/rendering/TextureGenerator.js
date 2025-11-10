@@ -1187,14 +1187,28 @@ export class TextureGenerator {
     const vasePink = '#FF69B4'
     const vaseDark = '#C71585'
     const vaseLight = '#FFB6C1'
+    const vaseHighlight = '#FFD0DD'
     const white = '#FFFFFF'
 
-    // Vase base
-    ctx.fillStyle = vaseDark
+    // Vase base with gradient
+    const baseGradient = ctx.createLinearGradient(20, 54, 44, 54)
+    baseGradient.addColorStop(0, vaseDark)
+    baseGradient.addColorStop(0.5, vasePink)
+    baseGradient.addColorStop(1, vaseDark)
+    ctx.fillStyle = baseGradient
     ctx.fillRect(20, 54, 24, 6)
 
-    // Vase body (curved)
-    ctx.fillStyle = vasePink
+    // Base shadow underneath
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
+    ctx.fillRect(19, 59, 26, 2)
+
+    // Vase body (curved) with realistic gradient
+    const bodyGradient = ctx.createRadialGradient(28, 40, 5, 32, 40, 15)
+    bodyGradient.addColorStop(0, vaseHighlight)
+    bodyGradient.addColorStop(0.3, vaseLight)
+    bodyGradient.addColorStop(0.6, vasePink)
+    bodyGradient.addColorStop(1, vaseDark)
+    ctx.fillStyle = bodyGradient
     ctx.beginPath()
     ctx.moveTo(22, 54)
     ctx.quadraticCurveTo(18, 40, 22, 26)
@@ -1202,27 +1216,73 @@ export class TextureGenerator {
     ctx.quadraticCurveTo(46, 40, 42, 54)
     ctx.fill()
 
-    // Vase neck
+    // Vase texture (subtle ceramic pattern)
+    ctx.strokeStyle = vaseDark
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.1
+    for (let i = 0; i < 8; i++) {
+      ctx.beginPath()
+      ctx.arc(32, 30 + i * 3, 8 - i * 0.5, 0, Math.PI * 2)
+      ctx.stroke()
+    }
+    ctx.globalAlpha = 1.0
+
+    // Vase neck with gradient
+    const neckGradient = ctx.createLinearGradient(26, 18, 38, 18)
+    neckGradient.addColorStop(0, vaseDark)
+    neckGradient.addColorStop(0.3, vasePink)
+    neckGradient.addColorStop(0.7, vasePink)
+    neckGradient.addColorStop(1, vaseDark)
+    ctx.fillStyle = neckGradient
     ctx.fillRect(26, 18, 12, 8)
 
-    // Vase rim
+    // Vase rim with depth
     ctx.fillStyle = vaseDark
     ctx.fillRect(24, 16, 16, 2)
 
-    // Shine/highlight
+    // Rim highlight
     ctx.fillStyle = vaseLight
+    ctx.globalAlpha = 0.6
+    ctx.fillRect(24, 16, 16, 1)
+    ctx.globalAlpha = 1.0
+
+    // Prominent shine/highlight (ceramic reflection)
+    const shineGradient = ctx.createRadialGradient(28, 32, 0, 28, 35, 10)
+    shineGradient.addColorStop(0, white)
+    shineGradient.addColorStop(0.3, vaseHighlight)
+    shineGradient.addColorStop(1, 'rgba(255, 255, 255, 0)')
+    ctx.fillStyle = shineGradient
     ctx.beginPath()
-    ctx.ellipse(28, 35, 4, 8, 0, 0, Math.PI * 2)
+    ctx.ellipse(28, 35, 5, 12, 0, 0, Math.PI * 2)
     ctx.fill()
 
-    // Decorative pattern
+    // Secondary smaller shine
+    ctx.fillStyle = white
+    ctx.globalAlpha = 0.4
+    ctx.beginPath()
+    ctx.ellipse(27, 30, 2, 4, 0, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Decorative pattern with shadow
     ctx.strokeStyle = white
     ctx.lineWidth = 2
+    ctx.globalAlpha = 0.5
     ctx.beginPath()
     ctx.arc(32, 42, 6, 0, Math.PI * 2)
     ctx.stroke()
+    ctx.globalAlpha = 1.0
 
-    // Flowers in vase (optional)
+    // Pattern shadow
+    ctx.strokeStyle = vaseDark
+    ctx.lineWidth = 2
+    ctx.globalAlpha = 0.2
+    ctx.beginPath()
+    ctx.arc(33, 43, 6, 0, Math.PI * 2)
+    ctx.stroke()
+    ctx.globalAlpha = 1.0
+
+    // Flowers in vase
     ctx.fillStyle = '#FF6347'
     ctx.beginPath()
     ctx.arc(28, 12, 3, 0, Math.PI * 2)
@@ -1231,9 +1291,20 @@ export class TextureGenerator {
     ctx.arc(36, 10, 3, 0, Math.PI * 2)
     ctx.fill()
 
-    // Flower stems
+    // Flower highlights
+    ctx.fillStyle = '#FF8C69'
+    ctx.globalAlpha = 0.6
+    ctx.beginPath()
+    ctx.arc(27, 11, 1.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(35, 9, 1.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Flower stems with thickness variation
     ctx.strokeStyle = '#228B22'
-    ctx.lineWidth = 1
+    ctx.lineWidth = 2
     ctx.beginPath()
     ctx.moveTo(28, 12)
     ctx.lineTo(28, 20)
@@ -1242,6 +1313,15 @@ export class TextureGenerator {
     ctx.moveTo(36, 10)
     ctx.lineTo(36, 20)
     ctx.stroke()
+
+    // Leaves on stems
+    ctx.fillStyle = '#32CD32'
+    ctx.beginPath()
+    ctx.ellipse(26, 16, 2, 3, -0.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(38, 15, 2, 3, 0.5, 0, Math.PI * 2)
+    ctx.fill()
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
