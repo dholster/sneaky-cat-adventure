@@ -113,14 +113,20 @@ export class Distraction extends Entity {
         piece.mesh.position.y += piece.velocityY * deltaTime
         piece.mesh.position.x += piece.velocityX * deltaTime
 
+        // Bounce off ground
+        if (piece.mesh.position.y < this.groundY) {
+          piece.mesh.position.y = this.groundY
+          piece.velocityY = Math.abs(piece.velocityY) * 0.3 // Bounce with energy loss
+        }
+
         // Rotate pieces
         piece.mesh.rotation.z += deltaTime * piece.rotationSpeed
 
         // Fade out
         piece.mesh.material.opacity -= deltaTime * 1.5
 
-        // Remove if fully faded or below ground
-        if (piece.mesh.material.opacity <= 0 || piece.mesh.position.y < this.groundY - 2) {
+        // Remove if fully faded
+        if (piece.mesh.material.opacity <= 0) {
           this.scene.remove(piece.mesh)
           piece.mesh.geometry.dispose()
           piece.mesh.material.dispose()
@@ -194,14 +200,14 @@ export class Distraction extends Entity {
     this.hasBeenKnocked = true
     this.isFalling = true
 
-    // Set ground level (assuming main floor is at y = -10)
-    this.groundY = -10
+    // Set ground level (main floor platform top is at y = 0.5)
+    this.groundY = 0.5
 
     // Give it some initial velocity (kicked away from player)
     const directionX = this.position.x - player.position.x
     const normalized = Math.sign(directionX) || 1
     this.velocity.x = normalized * 3 // Kicked sideways
-    this.velocity.y = 2 // Initial upward velocity
+    this.velocity.y = -1 // Start falling immediately
 
     if (this.sprite) {
       this.sprite.material.transparent = true
