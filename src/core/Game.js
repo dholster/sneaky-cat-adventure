@@ -43,6 +43,13 @@ export class Game {
     // Game state
     this.paused = false
     this.lives = Config.GAME.LIVES
+    this.isRestarting = false
+
+    // Store initial positions for restart
+    this.initialPositions = {
+      player: { x: -15, y: 1 },
+      enemies: []
+    }
 
     // Time tracking
     this.clock = new THREE.Clock()
