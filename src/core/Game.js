@@ -697,8 +697,26 @@ export class Game {
       }
     })
 
-    // Hiding spot labels are static, no need to update
-    // Goal label is static too
+    // Update hiding spot labels (in case they moved or weren't positioned correctly)
+    this.hidingSpots.forEach(spot => {
+      if (spot.label) {
+        this.labelSystem.updateLabelPosition(spot.label, spot.position, 2.5)
+      }
+    })
+
+    // Update distraction labels
+    this.distractions.forEach(dist => {
+      if (dist.label && !dist.hasBeenKnocked) {
+        this.labelSystem.updateLabelPosition(dist.label, dist.position, 2)
+      }
+    })
+
+    // Update goal label position (in case it's animating)
+    if (this.goalLabel) {
+      this.labelSystem.updateLabelPosition(this.goalLabel,
+        new THREE.Vector3(this.goalPosition.x, this.goalPosition.y + 2.5, 0),
+        0)
+    }
   }
 
   checkGoal() {
