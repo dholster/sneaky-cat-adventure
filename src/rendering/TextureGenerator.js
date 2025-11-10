@@ -2757,9 +2757,13 @@ export class TextureGenerator {
 
     const brickRed = '#8B4C4C'
     const brickDark = '#6B3C3C'
+    const brickLight = '#AB6C6C'
+    const brickHighlight = '#BB7C7C'
     const mortar = '#B0A090'
+    const mortarDark = '#908070'
+    const mortarLight = '#C8B8A8'
 
-    // Draw bricks in offset pattern
+    // Draw bricks in offset pattern with realistic depth
     const brickHeight = 16
     const brickWidth = 32
 
@@ -2770,25 +2774,104 @@ export class TextureGenerator {
         const x = col * brickWidth + offsetX
         const y = row * brickHeight
 
-        // Mortar (background)
-        ctx.fillStyle = mortar
+        // Mortar (background) with gradient
+        const mortarGradient = ctx.createLinearGradient(x, y, x + brickWidth, y + brickHeight)
+        mortarGradient.addColorStop(0, mortarDark)
+        mortarGradient.addColorStop(0.5, mortar)
+        mortarGradient.addColorStop(1, mortarLight)
+        ctx.fillStyle = mortarGradient
         ctx.fillRect(x, y, brickWidth, brickHeight)
 
-        // Brick
-        ctx.fillStyle = brickRed
+        // Mortar depth (shadow at bottom and right)
+        ctx.fillStyle = mortarDark
+        ctx.globalAlpha = 0.4
+        ctx.fillRect(x, y + brickHeight - 1, brickWidth, 1)
+        ctx.fillRect(x + brickWidth - 1, y, 1, brickHeight)
+        ctx.globalAlpha = 1.0
+
+        // Brick with realistic gradient for roundness
+        const brickGradient = ctx.createRadialGradient(
+          x + brickWidth / 2, y + brickHeight / 2, 2,
+          x + brickWidth / 2, y + brickHeight / 2, brickWidth * 0.6
+        )
+        brickGradient.addColorStop(0, brickLight)
+        brickGradient.addColorStop(0.5, brickRed)
+        brickGradient.addColorStop(1, brickDark)
+        ctx.fillStyle = brickGradient
         ctx.fillRect(x + 1, y + 1, brickWidth - 2, brickHeight - 2)
 
-        // Brick texture
+        // Brick highlight (top-left edge)
+        ctx.fillStyle = brickHighlight
+        ctx.globalAlpha = 0.4
+        ctx.fillRect(x + 1, y + 1, brickWidth - 2, 1)
+        ctx.fillRect(x + 1, y + 1, 1, brickHeight - 2)
+        ctx.globalAlpha = 1.0
+
+        // Brick shadow (bottom-right edge for depth)
         ctx.fillStyle = brickDark
-        for (let i = 0; i < 3; i++) {
-          ctx.fillRect(
-            x + 3 + Math.random() * (brickWidth - 6),
-            y + 3 + Math.random() * (brickHeight - 6),
-            2, 1
-          )
+        ctx.globalAlpha = 0.5
+        ctx.fillRect(x + 1, y + brickHeight - 2, brickWidth - 2, 1)
+        ctx.fillRect(x + brickWidth - 2, y + 1, 1, brickHeight - 2)
+        ctx.globalAlpha = 1.0
+
+        // Brick texture (weathering and irregularities)
+        ctx.fillStyle = brickDark
+        ctx.globalAlpha = 0.2
+        for (let i = 0; i < 5; i++) {
+          const tx = x + 3 + Math.random() * (brickWidth - 6)
+          const ty = y + 3 + Math.random() * (brickHeight - 6)
+          const width = 1 + Math.random() * 3
+          const height = 1 + Math.random() * 2
+          ctx.fillRect(tx, ty, width, height)
+        }
+        ctx.globalAlpha = 1.0
+
+        // Brick cracks/chips (random weathering)
+        if (Math.random() > 0.7) {
+          ctx.strokeStyle = brickDark
+          ctx.lineWidth = 1
+          ctx.globalAlpha = 0.5
+          const crackX = x + 5 + Math.random() * (brickWidth - 10)
+          const crackY = y + 5 + Math.random() * (brickHeight - 10)
+          ctx.beginPath()
+          ctx.moveTo(crackX, crackY)
+          ctx.lineTo(crackX + 3 + Math.random() * 4, crackY + Math.random() * 4 - 2)
+          ctx.stroke()
+          ctx.globalAlpha = 1.0
+        }
+
+        // Brick color variation (some bricks darker/lighter)
+        if (Math.random() > 0.8) {
+          ctx.fillStyle = Math.random() > 0.5 ? brickDark : brickLight
+          ctx.globalAlpha = 0.15
+          ctx.fillRect(x + 2, y + 2, brickWidth - 4, brickHeight - 4)
+          ctx.globalAlpha = 1.0
         }
       }
     }
+
+    // Mortar weathering/texture
+    ctx.fillStyle = mortarDark
+    ctx.globalAlpha = 0.15
+    for (let i = 0; i < 40; i++) {
+      const x = Math.random() * size
+      const y = Math.random() * size
+      ctx.fillRect(x, y, 1, 1)
+    }
+    ctx.globalAlpha = 1.0
+
+    // Overall wall aging/dirt
+    ctx.fillStyle = brickDark
+    ctx.globalAlpha = 0.05
+    for (let i = 0; i < 25; i++) {
+      const x = Math.random() * size
+      const y = Math.random() * size
+      const radius = 2 + Math.random() * 4
+      ctx.beginPath()
+      ctx.arc(x, y, radius, 0, Math.PI * 2)
+      ctx.fill()
+    }
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
