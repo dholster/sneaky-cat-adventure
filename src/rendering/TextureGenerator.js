@@ -2501,9 +2501,12 @@ export class TextureGenerator {
 
     const tileWhite = '#E8E8E8'
     const tileGray = '#D0D0D0'
+    const tileLight = '#F5F5F5'
+    const tileDark = '#C0C0C0'
     const grout = '#A0A0A0'
+    const groutDark = '#808080'
 
-    // Draw 2x2 tiles
+    // Draw 2x2 tiles with depth
     const tileSize = size / 2
 
     for (let row = 0; row < 2; row++) {
@@ -2511,16 +2514,83 @@ export class TextureGenerator {
         const x = col * tileSize
         const y = row * tileSize
 
-        // Checkerboard pattern
-        ctx.fillStyle = (row + col) % 2 === 0 ? tileWhite : tileGray
+        // Grout base (full tile area)
+        ctx.fillStyle = grout
+        ctx.fillRect(x, y, tileSize, tileSize)
+
+        // Grout shadow
+        ctx.fillStyle = groutDark
+        ctx.fillRect(x, y + tileSize - 1, tileSize, 1)
+        ctx.fillRect(x + tileSize - 1, y, 1, tileSize)
+
+        // Tile with gradient for shine
+        const isWhite = (row + col) % 2 === 0
+        const tileGradient = ctx.createRadialGradient(
+          x + tileSize / 2, y + tileSize / 2, 2,
+          x + tileSize / 2, y + tileSize / 2, tileSize * 0.7
+        )
+        if (isWhite) {
+          tileGradient.addColorStop(0, tileLight)
+          tileGradient.addColorStop(0.6, tileWhite)
+          tileGradient.addColorStop(1, tileGray)
+        } else {
+          tileGradient.addColorStop(0, tileWhite)
+          tileGradient.addColorStop(0.6, tileGray)
+          tileGradient.addColorStop(1, tileDark)
+        }
+
+        ctx.fillStyle = tileGradient
         ctx.fillRect(x + 1, y + 1, tileSize - 2, tileSize - 2)
 
-        // Grout lines
-        ctx.strokeStyle = grout
+        // Tile shine (ceramic gloss)
+        ctx.fillStyle = tileLight
+        ctx.globalAlpha = 0.4
+        ctx.beginPath()
+        ctx.ellipse(
+          x + tileSize * 0.35, y + tileSize * 0.35,
+          tileSize * 0.25, tileSize * 0.2,
+          -0.3, 0, Math.PI * 2
+        )
+        ctx.fill()
+        ctx.globalAlpha = 1.0
+
+        // Tile texture (subtle specks)
+        ctx.fillStyle = isWhite ? tileDark : tileWhite
+        ctx.globalAlpha = 0.1
+        for (let i = 0; i < 8; i++) {
+          const tx = x + 2 + Math.random() * (tileSize - 4)
+          const ty = y + 2 + Math.random() * (tileSize - 4)
+          ctx.fillRect(tx, ty, 1, 1)
+        }
+        ctx.globalAlpha = 1.0
+
+        // Grout lines with depth
+        ctx.strokeStyle = groutDark
         ctx.lineWidth = 2
         ctx.strokeRect(x, y, tileSize, tileSize)
+
+        // Grout highlight (beveled effect)
+        ctx.strokeStyle = grout
+        ctx.lineWidth = 1
+        ctx.globalAlpha = 0.5
+        ctx.beginPath()
+        ctx.moveTo(x + 1, y + tileSize)
+        ctx.lineTo(x + 1, y + 1)
+        ctx.lineTo(x + tileSize, y + 1)
+        ctx.stroke()
+        ctx.globalAlpha = 1.0
       }
     }
+
+    // Overall floor texture variation
+    ctx.fillStyle = tileDark
+    ctx.globalAlpha = 0.05
+    for (let i = 0; i < 20; i++) {
+      const x = Math.random() * size
+      const y = Math.random() * size
+      ctx.fillRect(x, y, 1, 1)
+    }
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
