@@ -193,7 +193,7 @@ export class TextureGenerator {
   }
 
   /**
-   * Create a simple guard sprite sheet (placeholder)
+   * Create a recognizable human guard sprite sheet
    * 4 columns x 2 rows = 8 frames
    */
   static createGuardSpriteSheet() {
@@ -208,43 +208,101 @@ export class TextureGenerator {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     // Colors
-    const uniformGray = '#4a4a6a'
+    const uniformBlue = '#3a4a7a'
+    const uniformDark = '#2a3a5a'
     const skinTone = '#FFD0A0'
-    const black = '#000000'
+    const hairBrown = '#4a3020'
+    const black = '#222222'
+    const white = '#FFFFFF'
+    const bootBlack = '#1a1a1a'
 
-    const drawGuardFrame = (col, row, legOffset = 0) => {
+    const drawGuardFrame = (col, row, legOffset = 0, armSwing = 0) => {
       const x = col * frameSize
       const y = row * frameSize
       const centerX = x + frameSize / 2
       const centerY = y + frameSize / 2
 
-      // Body (rectangle - uniform)
-      ctx.fillStyle = uniformGray
-      ctx.fillRect(centerX - 8, centerY - 4, 16, 20)
-
-      // Head (circle)
+      // Back arm
+      ctx.fillStyle = uniformBlue
+      ctx.fillRect(centerX - 8 - armSwing, centerY + 2, 3, 8)
       ctx.fillStyle = skinTone
+      ctx.fillRect(centerX - 8 - armSwing, centerY + 10, 3, 3)
+
+      // Legs with boots
+      ctx.fillStyle = uniformDark
+      // Left leg
+      ctx.fillRect(centerX - 4 + legOffset, centerY + 10, 3, 6)
+      // Right leg
+      ctx.fillRect(centerX + 1 - legOffset, centerY + 10, 3, 6)
+
+      // Boots
+      ctx.fillStyle = bootBlack
+      ctx.fillRect(centerX - 4 + legOffset, centerY + 15, 4, 3)
+      ctx.fillRect(centerX + 1 - legOffset, centerY + 15, 4, 3)
+
+      // Body/torso (uniform)
+      ctx.fillStyle = uniformBlue
+      ctx.fillRect(centerX - 6, centerY - 2, 12, 12)
+
+      // Belt
+      ctx.fillStyle = uniformDark
+      ctx.fillRect(centerX - 6, centerY + 8, 12, 2)
+
+      // Badge/button
+      ctx.fillStyle = '#FFD700' // gold
+      ctx.fillRect(centerX - 1, centerY + 2, 2, 2)
+
+      // Neck
+      ctx.fillStyle = skinTone
+      ctx.fillRect(centerX - 2, centerY - 4, 4, 3)
+
+      // Head
       ctx.beginPath()
-      ctx.arc(centerX, centerY - 10, 6, 0, Math.PI * 2)
+      ctx.ellipse(centerX, centerY - 8, 5, 6, 0, 0, Math.PI * 2)
       ctx.fill()
+
+      // Hair
+      ctx.fillStyle = hairBrown
+      ctx.fillRect(centerX - 5, centerY - 13, 10, 5)
+
+      // Ears
+      ctx.fillStyle = skinTone
+      ctx.fillRect(centerX - 6, centerY - 8, 2, 3)
+      ctx.fillRect(centerX + 4, centerY - 8, 2, 3)
 
       // Eyes
       ctx.fillStyle = black
-      ctx.fillRect(centerX - 3, centerY - 11, 2, 1)
-      ctx.fillRect(centerX + 1, centerY - 11, 2, 1)
+      ctx.fillRect(centerX - 3, centerY - 9, 2, 2)
+      ctx.fillRect(centerX + 1, centerY - 9, 2, 2)
 
-      // Legs
-      ctx.fillStyle = uniformGray
-      ctx.fillRect(centerX - 6 + legOffset, centerY + 16, 4, 8)
-      ctx.fillRect(centerX + 2 - legOffset, centerY + 16, 4, 8)
+      // Eye whites
+      ctx.fillStyle = white
+      ctx.fillRect(centerX - 3, centerY - 9, 1, 1)
+      ctx.fillRect(centerX + 1, centerY - 9, 1, 1)
+
+      // Nose
+      ctx.fillStyle = '#FFBB88'
+      ctx.fillRect(centerX - 1, centerY - 6, 2, 3)
+
+      // Mouth
+      ctx.fillStyle = black
+      ctx.fillRect(centerX - 2, centerY - 4, 4, 1)
+
+      // Front arm
+      ctx.fillStyle = uniformBlue
+      ctx.fillRect(centerX + 5 + armSwing, centerY + 2, 3, 8)
+      ctx.fillStyle = skinTone
+      ctx.fillRect(centerX + 5 + armSwing, centerY + 10, 3, 3)
     }
 
-    // Idle and patrol animations
+    // Patrol animations with walking motion
     for (let i = 0; i < 8; i++) {
       const col = i % columns
       const row = Math.floor(i / columns)
-      const legOffset = Math.sin(i * Math.PI / 2) * 2
-      drawGuardFrame(col, row, legOffset)
+      const phase = (i % 4) / 4 * Math.PI * 2
+      const legOffset = Math.sin(phase) * 2
+      const armSwing = Math.sin(phase) * 1.5
+      drawGuardFrame(col, row, legOffset, armSwing)
     }
 
     const texture = new THREE.CanvasTexture(canvas)
