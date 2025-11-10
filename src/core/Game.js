@@ -36,6 +36,9 @@ export class Game {
     this.platforms = [] // Static platforms for collision
     this.enemies = [] // Human, dog enemies
     this.hidingSpots = [] // Interactive hiding spots
+    this.goalMarker = null
+    this.goalPosition = null
+    this.goalReached = false
 
     // Game state
     this.paused = false
