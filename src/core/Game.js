@@ -133,6 +133,14 @@ export class Game {
     // Create a temporary colored sprite for the player (cat)
     this.player.createColorSprite(0xffaa66, 1, 1) // Orange color for cat
 
+    // Add label
+    this.player.label = this.labelSystem.createLabel(
+      'YOU (CAT)',
+      new THREE.Vector3(-15, 3, 0),
+      '#ffaa66',
+      48
+    )
+
     // Register with physics system
     this.physicsSystem.registerEntity(this.player)
 
@@ -191,6 +199,14 @@ export class Game {
 
     // Create visual representation (dark gray rectangle for now)
     human.createColorSprite(0x4a4a6a, 1, 2)
+
+    // Add label
+    human.label = this.labelSystem.createLabel(
+      'GUARD (Vision Cone)',
+      new THREE.Vector3(x, y + 3, 0),
+      '#ff4444',
+      40
+    )
 
     // Register with systems
     this.enemies.push(human)
