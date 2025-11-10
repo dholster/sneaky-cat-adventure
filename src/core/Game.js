@@ -237,7 +237,7 @@ export class Game {
 
     // Setup camera controller to follow player
     this.cameraController = new CameraController(this.camera, this.player)
-    this.cameraController.setBounds(-20, 50, 0, 15) // Wider bounds for Phase 2 level
+    this.cameraController.setBounds(-20, 130, 0, 15) // Extended bounds for longer level
 
     console.log('🐱 Player created at position:', this.player.position)
   }
