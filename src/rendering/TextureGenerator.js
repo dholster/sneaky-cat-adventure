@@ -330,11 +330,15 @@ export class TextureGenerator {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // Colors
+    // Colors - more realistic with shading
     const uniformBlue = '#3a4a7a'
     const uniformDark = '#2a3a5a'
+    const uniformLight = '#4a5a8a'
     const skinTone = '#FFD0A0'
+    const skinDark = '#E8B080'
+    const skinLight = '#FFE8C0'
     const hairBrown = '#4a3020'
+    const hairLight = '#6a4a30'
     const black = '#222222'
     const white = '#FFFFFF'
     const bootBlack = '#1a1a1a'
@@ -345,11 +349,28 @@ export class TextureGenerator {
       const centerX = x + frameSize / 2
       const centerY = y + frameSize / 2
 
-      // Back arm
-      ctx.fillStyle = uniformBlue
+      // Back arm with gradient shading
+      const backArmGradient = ctx.createLinearGradient(centerX - 8 - armSwing, centerY + 2, centerX - 5 - armSwing, centerY + 2)
+      backArmGradient.addColorStop(0, uniformDark)
+      backArmGradient.addColorStop(1, uniformBlue)
+      ctx.fillStyle = backArmGradient
       ctx.fillRect(centerX - 8 - armSwing, centerY + 2, 3, 8)
+
+      // Arm shadow
+      ctx.fillStyle = uniformDark
+      ctx.globalAlpha = 0.3
+      ctx.fillRect(centerX - 8 - armSwing, centerY + 5, 1, 5)
+      ctx.globalAlpha = 1.0
+
+      // Back hand
       ctx.fillStyle = skinTone
       ctx.fillRect(centerX - 8 - armSwing, centerY + 10, 3, 3)
+
+      // Hand shading
+      ctx.fillStyle = skinDark
+      ctx.globalAlpha = 0.4
+      ctx.fillRect(centerX - 8 - armSwing, centerY + 12, 3, 1)
+      ctx.globalAlpha = 1.0
 
       // Legs with boots
       ctx.fillStyle = uniformDark
