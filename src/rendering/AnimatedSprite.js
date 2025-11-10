@@ -71,14 +71,14 @@ export class AnimatedSprite {
     const vMin = frame.v
     const vMax = frame.v + frame.vSize
 
-    // Top-left
-    uvAttribute.setXY(0, uMin, vMax)
+    // Top-left (flip V: top gets vMin)
+    uvAttribute.setXY(0, uMin, vMin)
     // Top-right
-    uvAttribute.setXY(1, uMax, vMax)
-    // Bottom-left
-    uvAttribute.setXY(2, uMin, vMin)
+    uvAttribute.setXY(1, uMax, vMin)
+    // Bottom-left (flip V: bottom gets vMax)
+    uvAttribute.setXY(2, uMin, vMax)
     // Bottom-right
-    uvAttribute.setXY(3, uMax, vMin)
+    uvAttribute.setXY(3, uMax, vMax)
 
     uvAttribute.needsUpdate = true
   }
