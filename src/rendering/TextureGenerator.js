@@ -372,42 +372,135 @@ export class TextureGenerator {
       ctx.fillRect(centerX - 8 - armSwing, centerY + 12, 3, 1)
       ctx.globalAlpha = 1.0
 
-      // Legs with boots
-      ctx.fillStyle = uniformDark
+      // Legs with gradient shading
+      const legGradient = ctx.createLinearGradient(centerX - 4, centerY + 10, centerX - 1, centerY + 10)
+      legGradient.addColorStop(0, uniformDark)
+      legGradient.addColorStop(0.6, uniformBlue)
+      legGradient.addColorStop(1, uniformLight)
+      ctx.fillStyle = legGradient
+
       // Left leg
       ctx.fillRect(centerX - 4 + legOffset, centerY + 10, 3, 6)
       // Right leg
       ctx.fillRect(centerX + 1 - legOffset, centerY + 10, 3, 6)
 
-      // Boots
-      ctx.fillStyle = bootBlack
+      // Leg highlights (fabric shine)
+      ctx.fillStyle = uniformLight
+      ctx.globalAlpha = 0.3
+      ctx.fillRect(centerX - 2 + legOffset, centerY + 11, 1, 4)
+      ctx.fillRect(centerX + 3 - legOffset, centerY + 11, 1, 4)
+      ctx.globalAlpha = 1.0
+
+      // Boots with gradient
+      const bootGradient = ctx.createLinearGradient(centerX - 4, centerY + 15, centerX, centerY + 15)
+      bootGradient.addColorStop(0, bootBlack)
+      bootGradient.addColorStop(0.5, '#2a2a2a')
+      bootGradient.addColorStop(1, bootBlack)
+      ctx.fillStyle = bootGradient
       ctx.fillRect(centerX - 4 + legOffset, centerY + 15, 4, 3)
       ctx.fillRect(centerX + 1 - legOffset, centerY + 15, 4, 3)
 
-      // Body/torso (uniform)
-      ctx.fillStyle = uniformBlue
+      // Boot shine
+      ctx.fillStyle = '#444444'
+      ctx.fillRect(centerX - 3 + legOffset, centerY + 15, 1, 2)
+      ctx.fillRect(centerX + 2 - legOffset, centerY + 15, 1, 2)
+
+      // Body/torso with gradient for fabric depth
+      const bodyGradient = ctx.createRadialGradient(centerX - 2, centerY + 2, 2, centerX, centerY + 4, 10)
+      bodyGradient.addColorStop(0, uniformLight)
+      bodyGradient.addColorStop(0.5, uniformBlue)
+      bodyGradient.addColorStop(1, uniformDark)
+      ctx.fillStyle = bodyGradient
       ctx.fillRect(centerX - 6, centerY - 2, 12, 12)
 
-      // Belt
+      // Uniform folds/shadows
+      ctx.fillStyle = uniformDark
+      ctx.globalAlpha = 0.4
+      // Vertical fold
+      ctx.fillRect(centerX, centerY, 1, 10)
+      // Side shadows
+      ctx.fillRect(centerX - 6, centerY + 2, 1, 8)
+      ctx.fillRect(centerX + 5, centerY + 2, 1, 8)
+      ctx.globalAlpha = 1.0
+
+      // Collar highlights
+      ctx.fillStyle = uniformLight
+      ctx.globalAlpha = 0.5
+      ctx.fillRect(centerX - 4, centerY - 2, 8, 1)
+      ctx.globalAlpha = 1.0
+
+      // Belt with buckle detail
       ctx.fillStyle = uniformDark
       ctx.fillRect(centerX - 6, centerY + 8, 12, 2)
 
-      // Badge/button
+      // Belt buckle
+      ctx.fillStyle = '#C0C0C0' // silver
+      ctx.fillRect(centerX - 1, centerY + 8, 2, 2)
+      ctx.strokeStyle = '#888888'
+      ctx.lineWidth = 1
+      ctx.strokeRect(centerX - 1, centerY + 8, 2, 2)
+
+      // Badge/button with shine
       ctx.fillStyle = '#FFD700' // gold
       ctx.fillRect(centerX - 1, centerY + 2, 2, 2)
 
-      // Neck
-      ctx.fillStyle = skinTone
+      // Badge shine
+      ctx.fillStyle = '#FFED4E'
+      ctx.globalAlpha = 0.6
+      ctx.fillRect(centerX - 0.5, centerY + 2, 1, 1)
+      ctx.globalAlpha = 1.0
+
+      // Neck with gradient
+      const neckGradient = ctx.createLinearGradient(centerX - 2, centerY - 4, centerX + 2, centerY - 4)
+      neckGradient.addColorStop(0, skinDark)
+      neckGradient.addColorStop(0.5, skinTone)
+      neckGradient.addColorStop(1, skinDark)
+      ctx.fillStyle = neckGradient
       ctx.fillRect(centerX - 2, centerY - 4, 4, 3)
 
-      // Head
+      // Neck shadow
+      ctx.fillStyle = skinDark
+      ctx.globalAlpha = 0.3
+      ctx.fillRect(centerX - 2, centerY - 2, 4, 1)
+      ctx.globalAlpha = 1.0
+
+      // Head with realistic skin gradient
+      const headGradient = ctx.createRadialGradient(centerX - 1, centerY - 9, 2, centerX, centerY - 7, 6)
+      headGradient.addColorStop(0, skinLight)
+      headGradient.addColorStop(0.5, skinTone)
+      headGradient.addColorStop(1, skinDark)
+      ctx.fillStyle = headGradient
       ctx.beginPath()
       ctx.ellipse(centerX, centerY - 8, 5, 6, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Hair
-      ctx.fillStyle = hairBrown
+      // Face shadow on side
+      ctx.fillStyle = skinDark
+      ctx.globalAlpha = 0.3
+      ctx.beginPath()
+      ctx.ellipse(centerX + 3, centerY - 8, 2, 5, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Hair with gradient and texture
+      const hairGradient = ctx.createLinearGradient(centerX - 5, centerY - 13, centerX + 5, centerY - 13)
+      hairGradient.addColorStop(0, hairBrown)
+      hairGradient.addColorStop(0.5, hairLight)
+      hairGradient.addColorStop(1, hairBrown)
+      ctx.fillStyle = hairGradient
       ctx.fillRect(centerX - 5, centerY - 13, 10, 5)
+
+      // Hair texture lines
+      ctx.strokeStyle = hairBrown
+      ctx.lineWidth = 1
+      ctx.globalAlpha = 0.5
+      for (let i = 0; i < 5; i++) {
+        ctx.beginPath()
+        ctx.moveTo(centerX - 4 + i * 2, centerY - 13)
+        ctx.lineTo(centerX - 3 + i * 2, centerY - 9)
+        ctx.stroke()
+      }
+      ctx.globalAlpha = 1.0
 
       // Ears
       ctx.fillStyle = skinTone
