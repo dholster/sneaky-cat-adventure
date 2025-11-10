@@ -60,15 +60,25 @@ export class AnimatedSprite {
     const frame = this.spriteSheet.getFrameUV(frameIndex)
     const uvAttribute = this.geometry.attributes.uv
 
-    // Update UV coordinates
-    // Bottom-left
-    uvAttribute.setXY(0, frame.u, frame.v)
-    // Bottom-right
-    uvAttribute.setXY(1, frame.u + frame.uSize, frame.v)
-    // Top-right
-    uvAttribute.setXY(2, frame.u + frame.uSize, frame.v + frame.vSize)
+    // PlaneGeometry UV order (verified):
+    // Index 0: top-left
+    // Index 1: top-right
+    // Index 2: bottom-left
+    // Index 3: bottom-right
+
+    const uMin = frame.u
+    const uMax = frame.u + frame.uSize
+    const vMin = frame.v
+    const vMax = frame.v + frame.vSize
+
     // Top-left
-    uvAttribute.setXY(3, frame.u, frame.v + frame.vSize)
+    uvAttribute.setXY(0, uMin, vMax)
+    // Top-right
+    uvAttribute.setXY(1, uMax, vMax)
+    // Bottom-left
+    uvAttribute.setXY(2, uMin, vMin)
+    // Bottom-right
+    uvAttribute.setXY(3, uMax, vMin)
 
     uvAttribute.needsUpdate = true
   }
