@@ -4,6 +4,7 @@
  */
 
 import { Entity } from './Entity.js'
+import { TextureGenerator } from '../rendering/TextureGenerator.js'
 
 export class Distraction extends Entity {
   constructor(scene, x, y, type = 'vase') {
@@ -28,33 +29,38 @@ export class Distraction extends Entity {
   }
 
   setupVisual(type) {
+    let texture
     switch (type) {
       case 'vase':
         this.size = { width: 1.5, height: 2.0 }
-        this.createColorSprite(0xFF1493, this.size.width, this.size.height) // BRIGHT PINK vase
+        texture = TextureGenerator.createVaseSprite()
+        this.createSprite(texture, this.size.width, this.size.height)
         break
       case 'book':
         this.size = { width: 1.5, height: 1.0 }
-        this.createColorSprite(0xFF4500, this.size.width, this.size.height) // BRIGHT ORANGE book
+        texture = TextureGenerator.createBookSprite()
+        this.createSprite(texture, this.size.width, this.size.height)
         break
       case 'frame':
         this.size = { width: 2.0, height: 2.5 }
-        this.createColorSprite(0xFFD700, this.size.width, this.size.height) // BRIGHT GOLD frame
+        texture = TextureGenerator.createFrameSprite()
+        this.createSprite(texture, this.size.width, this.size.height)
         break
       case 'plant':
         this.size = { width: 1.5, height: 2.5 }
-        this.createColorSprite(0x00FF00, this.size.width, this.size.height) // BRIGHT GREEN plant
+        texture = TextureGenerator.createPlantSprite()
+        this.createSprite(texture, this.size.width, this.size.height)
         break
       default:
         this.size = { width: 1.5, height: 2.0 }
-        this.createColorSprite(0xFF1493, this.size.width, this.size.height)
+        texture = TextureGenerator.createVaseSprite()
+        this.createSprite(texture, this.size.width, this.size.height)
     }
 
     if (this.sprite) {
-      this.sprite.position.copy(this.position) // Sync position again
-      this.sprite.position.z = 2.5 // In front of everything!
-      this.sprite.material.transparent = false
-      console.log(`   → Distraction sprite at x=${this.sprite.position.x}, y=${this.sprite.position.y}`)
+      this.sprite.position.copy(this.position)
+      this.sprite.position.z = 2.5
+      console.log(`   → ${type} distraction sprite at x=${this.sprite.position.x}, y=${this.sprite.position.y}`)
     }
   }
 
