@@ -373,6 +373,9 @@ export class Game {
     // Check if goal is reached
     this.checkGoal()
 
+    // Update labels to follow objects
+    this.updateLabels()
+
     // Animate goal marker
     if (this.goalMarker && !this.goalReached) {
       this.goalMarker.material.opacity = 0.6 + Math.sin(elapsedTime * 3) * 0.2
@@ -420,6 +423,23 @@ export class Game {
 
     // Store nearest spot for potential UI prompts later
     this.nearestHidingSpot = nearestSpot
+  }
+
+  updateLabels() {
+    // Update player label
+    if (this.player.label) {
+      this.labelSystem.updateLabelPosition(this.player.label, this.player.position, 2)
+    }
+
+    // Update enemy labels
+    this.enemies.forEach(enemy => {
+      if (enemy.label) {
+        this.labelSystem.updateLabelPosition(enemy.label, enemy.position, 3.5)
+      }
+    })
+
+    // Hiding spot labels are static, no need to update
+    // Goal label is static too
   }
 
   checkGoal() {
