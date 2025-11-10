@@ -7,7 +7,7 @@ import * as THREE from 'three'
 
 export class TextureGenerator {
   /**
-   * Create a simple cat sprite sheet (placeholder)
+   * Create a recognizable cat sprite sheet
    * 6 columns x 2 rows = 12 frames
    * Row 1: idle (2 frames), walk (4 frames)
    * Row 2: run (4 frames), crouch (2 frames)
@@ -27,67 +27,136 @@ export class TextureGenerator {
 
     // Colors
     const catOrange = '#FF8844'
-    const catDark = '#CC6622'
-    const catLight = '#FFAA66'
+    const catDark = '#CC5522'
+    const catLight = '#FFAA77'
     const white = '#FFFFFF'
-    const black = '#000000'
+    const black = '#222222'
+    const pink = '#FFB6C1'
 
-    // Helper to draw a frame
-    const drawCatFrame = (col, row, offsetX = 0, offsetY = 0, earLeft = 0, earRight = 0) => {
+    // Helper to draw a cat frame with more detail
+    const drawCatFrame = (col, row, offsetX = 0, offsetY = 0, earAngle = 0, tailCurve = 0, legPos = 0) => {
       const x = col * frameSize
       const y = row * frameSize
       const centerX = x + frameSize / 2 + offsetX
       const centerY = y + frameSize / 2 + offsetY
 
-      // Body (rounded square)
-      ctx.fillStyle = catOrange
-      ctx.fillRect(centerX - 10, centerY - 6, 20, 12)
-
-      // Head (circle)
-      ctx.beginPath()
-      ctx.arc(centerX + 10, centerY - 2, 8, 0, Math.PI * 2)
-      ctx.fill()
-
-      // Ears
-      ctx.fillStyle = catDark
-      // Left ear
-      ctx.beginPath()
-      ctx.moveTo(centerX + 5 + earLeft, centerY - 8)
-      ctx.lineTo(centerX + 8 + earLeft, centerY - 12)
-      ctx.lineTo(centerX + 10 + earLeft, centerY - 8)
-      ctx.fill()
-      // Right ear
-      ctx.beginPath()
-      ctx.moveTo(centerX + 12 + earRight, centerY - 8)
-      ctx.lineTo(centerX + 14 + earRight, centerY - 12)
-      ctx.lineTo(centerX + 17 + earRight, centerY - 8)
-      ctx.fill()
-
-      // Eye
-      ctx.fillStyle = black
-      ctx.fillRect(centerX + 13, centerY - 3, 2, 2)
-
-      // Tail
+      // Tail (behind body) - curved and fluffy
       ctx.strokeStyle = catOrange
-      ctx.lineWidth = 3
+      ctx.lineWidth = 4
+      ctx.lineCap = 'round'
       ctx.beginPath()
-      ctx.moveTo(centerX - 10, centerY)
-      ctx.quadraticCurveTo(centerX - 15, centerY - 8, centerX - 12, centerY - 12)
+      ctx.moveTo(centerX - 8, centerY + 2)
+      ctx.quadraticCurveTo(
+        centerX - 14, centerY - 4 + tailCurve,
+        centerX - 10, centerY - 10 + tailCurve
+      )
       ctx.stroke()
 
-      // Legs (simple lines)
-      ctx.strokeStyle = catDark
-      ctx.lineWidth = 2
-      // Front legs
+      // Body (oval, more compact and cat-like)
+      ctx.fillStyle = catOrange
       ctx.beginPath()
-      ctx.moveTo(centerX + 5, centerY + 6)
-      ctx.lineTo(centerX + 5, centerY + 10)
-      ctx.stroke()
+      ctx.ellipse(centerX - 2, centerY + 2, 8, 6, 0, 0, Math.PI * 2)
+      ctx.fill()
+
       // Back legs
+      ctx.fillStyle = catDark
+      ctx.fillRect(centerX - 8, centerY + 6 + legPos, 3, 5)
+      ctx.fillRect(centerX - 4, centerY + 6 - legPos, 3, 5)
+
+      // Paws (back)
+      ctx.fillStyle = catLight
+      ctx.fillRect(centerX - 8, centerY + 10 + legPos, 3, 2)
+      ctx.fillRect(centerX - 4, centerY + 10 - legPos, 3, 2)
+
+      // Head (more cat-like with pointed face)
+      ctx.fillStyle = catOrange
       ctx.beginPath()
-      ctx.moveTo(centerX - 5, centerY + 6)
-      ctx.lineTo(centerX - 5, centerY + 10)
+      ctx.ellipse(centerX + 6, centerY - 2, 6, 5, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Snout/muzzle (white)
+      ctx.fillStyle = white
+      ctx.beginPath()
+      ctx.ellipse(centerX + 8, centerY + 1, 3, 2, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Ears (triangular, more prominent)
+      ctx.fillStyle = catOrange
+      ctx.beginPath()
+      ctx.moveTo(centerX + 2 + earAngle, centerY - 6)
+      ctx.lineTo(centerX + 4 + earAngle, centerY - 11)
+      ctx.lineTo(centerX + 6 + earAngle, centerY - 6)
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.moveTo(centerX + 7 - earAngle, centerY - 6)
+      ctx.lineTo(centerX + 9 - earAngle, centerY - 11)
+      ctx.lineTo(centerX + 11 - earAngle, centerY - 6)
+      ctx.fill()
+
+      // Inner ears (pink)
+      ctx.fillStyle = pink
+      ctx.beginPath()
+      ctx.moveTo(centerX + 3 + earAngle, centerY - 7)
+      ctx.lineTo(centerX + 4 + earAngle, centerY - 9)
+      ctx.lineTo(centerX + 5 + earAngle, centerY - 7)
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.moveTo(centerX + 8 - earAngle, centerY - 7)
+      ctx.lineTo(centerX + 9 - earAngle, centerY - 9)
+      ctx.lineTo(centerX + 10 - earAngle, centerY - 7)
+      ctx.fill()
+
+      // Eyes (cat-like slits)
+      ctx.fillStyle = black
+      ctx.fillRect(centerX + 4, centerY - 3, 2, 3)
+      ctx.fillRect(centerX + 8, centerY - 3, 2, 3)
+
+      // Eye shine
+      ctx.fillStyle = white
+      ctx.fillRect(centerX + 4, centerY - 3, 1, 1)
+      ctx.fillRect(centerX + 8, centerY - 3, 1, 1)
+
+      // Nose (small triangle)
+      ctx.fillStyle = pink
+      ctx.beginPath()
+      ctx.moveTo(centerX + 8, centerY)
+      ctx.lineTo(centerX + 7, centerY + 1)
+      ctx.lineTo(centerX + 9, centerY + 1)
+      ctx.fill()
+
+      // Whiskers (thin lines)
+      ctx.strokeStyle = black
+      ctx.lineWidth = 1
+      // Left whiskers
+      ctx.beginPath()
+      ctx.moveTo(centerX + 5, centerY)
+      ctx.lineTo(centerX + 1, centerY - 1)
       ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(centerX + 5, centerY + 1)
+      ctx.lineTo(centerX + 1, centerY + 2)
+      ctx.stroke()
+      // Right whiskers
+      ctx.beginPath()
+      ctx.moveTo(centerX + 11, centerY)
+      ctx.lineTo(centerX + 15, centerY - 1)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(centerX + 11, centerY + 1)
+      ctx.lineTo(centerX + 15, centerY + 2)
+      ctx.stroke()
+
+      // Front legs
+      ctx.fillStyle = catOrange
+      ctx.fillRect(centerX + 2, centerY + 6 - legPos, 2, 5)
+      ctx.fillRect(centerX + 5, centerY + 6 + legPos, 2, 5)
+
+      // Paws (front)
+      ctx.fillStyle = catLight
+      ctx.fillRect(centerX + 2, centerY + 10 - legPos, 2, 2)
+      ctx.fillRect(centerX + 5, centerY + 10 + legPos, 2, 2)
     }
 
     // Row 0: Idle and Walk animations
