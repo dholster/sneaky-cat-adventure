@@ -51,6 +51,17 @@ export class Entity {
    */
   createSprite(texture, width, height) {
     const geometry = new THREE.PlaneGeometry(width, height)
+
+    // Fix UVs for flipY = false textures (canvas textures)
+    // PlaneGeometry UV order: [0] top-left, [1] top-right, [2] bottom-left, [3] bottom-right
+    const uvAttribute = geometry.attributes.uv
+    // Flip V coordinates: top gets 0, bottom gets 1
+    uvAttribute.setXY(0, 0, 0) // top-left
+    uvAttribute.setXY(1, 1, 0) // top-right
+    uvAttribute.setXY(2, 0, 1) // bottom-left
+    uvAttribute.setXY(3, 1, 1) // bottom-right
+    uvAttribute.needsUpdate = true
+
     const material = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
