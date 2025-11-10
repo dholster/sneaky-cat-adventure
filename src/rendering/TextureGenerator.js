@@ -185,6 +185,7 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter // Pixel-perfect scaling
     texture.minFilter = THREE.NearestFilter
+    texture.flipY = false // Don't flip canvas texture
     texture.needsUpdate = true
 
     console.log('🎨 Created cat sprite sheet:', columns, 'x', rows, 'frames')
