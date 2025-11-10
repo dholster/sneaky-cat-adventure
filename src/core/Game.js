@@ -424,6 +424,19 @@ export class Game {
     // Create visual representation (dark gray box for camera)
     camera.createColorSprite(0x333333, camera.size.width, camera.size.height)
 
+    // Add spotlight effect if lighting system is available
+    if (this.lightingSystem) {
+      // Spotlight shines downward from camera
+      camera.spotlight = this.lightingSystem.createSpotlight(
+        x,
+        y,
+        2, // direction = down
+        60, // wide angle
+        8, // distance
+        0xFFFFCC // warm white light
+      )
+    }
+
     // Add label
     camera.label = this.labelSystem.createLabel(
       'CAMERA (Rotating)',
