@@ -765,6 +765,16 @@ export class Game {
     // Check if player is trying to drop through platforms
     const wantsToDropThrough = this.inputManager.down && this.player.isGrounded
 
+    // If player wants to drop through, unground them immediately
+    if (wantsToDropThrough) {
+      this.player.isGrounded = false
+      this.player.velocity.y = -0.5 // Small downward velocity to start falling
+      console.log('🔽 Dropping through platform')
+    }
+
+    // Track if player is actually on a platform
+    let onPlatform = false
+
     this.platforms.forEach(platform => {
       const platformBounds = platform.getBounds()
 
@@ -798,6 +808,7 @@ export class Game {
           this.player.position.y = platformBounds.y + platformBounds.height + playerBounds.height / 2
           this.player.velocity.y = 0
           this.player.isGrounded = true
+          onPlatform = true
         } else if (minOverlap === overlapBottom && this.player.velocity.y > 0) {
           // Hitting bottom of platform (bonking head)
           this.player.position.y = platformBounds.y - playerBounds.height / 2
@@ -819,6 +830,32 @@ export class Game {
         }
       }
     })
+
+    // If player was grounded but is no longer on any platform, unground them (fixes floating)
+    if (this.player.isGrounded && !onPlatform && !wantsToDropThrough) {
+      // Check if player is truly over a platform (small tolerance for edge walking)
+      const centerX = this.player.position.x
+      const feetY = this.player.position.y - playerBounds.height / 2
+
+      let overPlatform = false
+      this.platforms.forEach(platform => {
+        const platformBounds = platform.getBounds()
+        const platLeft = platformBounds.x
+        const platRight = platformBounds.x + platformBounds.width
+        const platTop = platformBounds.y + platformBounds.height
+
+        // Check if player's feet are near the platform top and horizontally aligned
+        if (centerX > platLeft && centerX < platRight &&
+            Math.abs(feetY - platTop) < 0.5) {
+          overPlatform = true
+        }
+      })
+
+      if (!overPlatform) {
+        this.player.isGrounded = false
+        console.log('🌊 Player walked off platform edge')
+      }
+    }
   }
 
   render() {
