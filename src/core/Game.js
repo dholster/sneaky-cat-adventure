@@ -536,8 +536,10 @@ export class Game {
     // Check hiding spot interactions (BEFORE clearing input!)
     this.checkHidingSpots()
 
-    // Check distraction interactions
-    this.checkDistractions()
+    // Check distraction interactions (only if not interacting with hiding spot)
+    if (!this.player.isHiding) {
+      this.checkDistractions()
+    }
 
     // Check if goal is reached
     this.checkGoal()
