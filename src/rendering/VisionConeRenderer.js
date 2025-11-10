@@ -41,12 +41,12 @@ export class VisionConeRenderer {
     })
 
     const cone = new THREE.Mesh(geometry, material)
-    cone.position.z = -0.5 // Behind everything - purely visual
+    cone.position.z = 0.5 // In front of ground, behind entities
     cone.rotation.z = Math.PI / 2 // Rotate to face right initially
 
     // Make sure vision cones don't interact with raycasting or collision
     cone.userData.isVisionCone = true // Tag for exclusion
-    cone.layers.set(1) // Put on different layer
+    cone.renderOrder = 1 // Render after ground but before entities
 
     this.scene.add(cone)
 
