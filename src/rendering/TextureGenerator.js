@@ -309,6 +309,7 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
     texture.minFilter = THREE.NearestFilter
+    texture.flipY = false // Don't flip canvas texture
     texture.needsUpdate = true
 
     console.log('🎨 Created guard sprite sheet')
@@ -445,6 +446,7 @@ export class TextureGenerator {
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
     texture.minFilter = THREE.NearestFilter
+    texture.flipY = false // Don't flip canvas texture
     texture.needsUpdate = true
 
     console.log('🎨 Created dog sprite sheet')
