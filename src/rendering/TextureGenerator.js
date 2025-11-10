@@ -1019,49 +1019,135 @@ export class TextureGenerator {
     const woodBrown = '#654321'
     const woodLight = '#8B6F47'
     const woodDark = '#4a3419'
-    const shadow = 'rgba(0, 0, 0, 0.5)'
+    const woodHighlight = '#A68A5C'
+    const shadow = 'rgba(0, 0, 0, 0.6)'
+    const shadowLight = 'rgba(0, 0, 0, 0.3)'
 
     // Table/furniture (side view with space underneath)
-    // Table top
-    ctx.fillStyle = woodBrown
+    // Table top with realistic wood gradient
+    const topGradient = ctx.createLinearGradient(4, 18, 4, 24)
+    topGradient.addColorStop(0, woodHighlight)
+    topGradient.addColorStop(0.3, woodLight)
+    topGradient.addColorStop(0.8, woodBrown)
+    topGradient.addColorStop(1, woodDark)
+    ctx.fillStyle = topGradient
     ctx.fillRect(4, 18, 56, 6)
 
-    // Table top edge (3D effect)
-    ctx.fillStyle = woodLight
-    ctx.fillRect(4, 18, 56, 2)
+    // Table top edge (3D effect) - top beveled edge
+    ctx.fillStyle = woodHighlight
+    ctx.beginPath()
+    ctx.moveTo(4, 18)
+    ctx.lineTo(60, 18)
+    ctx.lineTo(58, 19)
+    ctx.lineTo(6, 19)
+    ctx.fill()
 
-    // Wood grain
+    // Table top front edge (3D depth)
+    ctx.fillStyle = woodDark
+    ctx.beginPath()
+    ctx.moveTo(4, 24)
+    ctx.lineTo(60, 24)
+    ctx.lineTo(60, 26)
+    ctx.lineTo(4, 26)
+    ctx.fill()
+
+    // Wood grain lines on table top
     ctx.strokeStyle = woodDark
     ctx.lineWidth = 1
+    ctx.globalAlpha = 0.3
     for (let i = 0; i < 6; i++) {
       ctx.beginPath()
-      ctx.moveTo(8 + i * 10, 20)
-      ctx.lineTo(12 + i * 10, 24)
+      ctx.moveTo(8 + i * 9, 20)
+      ctx.quadraticCurveTo(10 + i * 9, 21, 12 + i * 9, 22)
       ctx.stroke()
     }
+    ctx.globalAlpha = 1.0
 
-    // Left leg
-    ctx.fillStyle = woodBrown
+    // Wood knots on table top
+    ctx.fillStyle = woodDark
+    ctx.globalAlpha = 0.4
+    ctx.beginPath()
+    ctx.ellipse(25, 21, 2, 1.5, 0.3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(45, 21, 2, 1.5, -0.3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Left leg with gradient for roundness
+    const leftLegGradient = ctx.createLinearGradient(8, 24, 14, 24)
+    leftLegGradient.addColorStop(0, woodDark)
+    leftLegGradient.addColorStop(0.3, woodBrown)
+    leftLegGradient.addColorStop(0.7, woodLight)
+    leftLegGradient.addColorStop(1, woodBrown)
+    ctx.fillStyle = leftLegGradient
     ctx.fillRect(8, 24, 6, 36)
-    ctx.fillStyle = woodDark
-    ctx.fillRect(8, 24, 2, 36)
 
-    // Right leg
-    ctx.fillStyle = woodBrown
+    // Left leg shadow (inner side)
+    ctx.fillStyle = woodDark
+    ctx.globalAlpha = 0.4
+    ctx.fillRect(8, 26, 2, 34)
+    ctx.globalAlpha = 1.0
+
+    // Left leg highlight (outer side)
+    ctx.fillStyle = woodLight
+    ctx.globalAlpha = 0.3
+    ctx.fillRect(12, 26, 1, 34)
+    ctx.globalAlpha = 1.0
+
+    // Right leg with gradient
+    const rightLegGradient = ctx.createLinearGradient(50, 24, 56, 24)
+    rightLegGradient.addColorStop(0, woodBrown)
+    rightLegGradient.addColorStop(0.3, woodLight)
+    rightLegGradient.addColorStop(0.7, woodBrown)
+    rightLegGradient.addColorStop(1, woodDark)
+    ctx.fillStyle = rightLegGradient
     ctx.fillRect(50, 24, 6, 36)
-    ctx.fillStyle = woodDark
-    ctx.fillRect(50, 24, 2, 36)
 
-    // Shadow underneath (hiding space)
-    ctx.fillStyle = shadow
+    // Right leg shadow (inner side)
+    ctx.fillStyle = woodDark
+    ctx.globalAlpha = 0.4
+    ctx.fillRect(54, 26, 2, 34)
+    ctx.globalAlpha = 1.0
+
+    // Right leg highlight (outer side)
+    ctx.fillStyle = woodLight
+    ctx.globalAlpha = 0.3
+    ctx.fillRect(51, 26, 1, 34)
+    ctx.globalAlpha = 1.0
+
+    // Shadow underneath (hiding space) with gradient
+    const shadowGradient = ctx.createRadialGradient(32, 40, 5, 32, 45, 18)
+    shadowGradient.addColorStop(0, shadow)
+    shadowGradient.addColorStop(0.6, shadowLight)
+    shadowGradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)')
+    ctx.fillStyle = shadowGradient
     ctx.fillRect(14, 32, 36, 24)
 
-    // Hide here indicator (subtle)
+    // Darker shadow in the very center (deepest part)
+    ctx.fillStyle = shadow
+    ctx.globalAlpha = 0.8
+    ctx.beginPath()
+    ctx.ellipse(32, 44, 12, 8, 0, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1.0
+
+    // Hide here indicator (subtle, dashed outline)
     ctx.strokeStyle = '#FFFFFF'
     ctx.lineWidth = 2
+    ctx.globalAlpha = 0.6
     ctx.setLineDash([4, 4])
     ctx.strokeRect(16, 34, 32, 20)
     ctx.setLineDash([])
+    ctx.globalAlpha = 1.0
+
+    // Add "cat icon" or indicator in hiding spot
+    ctx.fillStyle = '#FFFFFF'
+    ctx.globalAlpha = 0.3
+    ctx.font = 'bold 12px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText('🐱', 32, 46)
+    ctx.globalAlpha = 1.0
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter
