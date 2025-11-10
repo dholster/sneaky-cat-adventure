@@ -8,14 +8,15 @@ import * as THREE from 'three'
 export class TextureGenerator {
   /**
    * Create a recognizable cat sprite sheet
-   * 6 columns x 2 rows = 12 frames
+   * 6 columns x 3 rows = 18 frames
    * Row 1: idle (2 frames), walk (4 frames)
    * Row 2: run (4 frames), crouch (2 frames)
+   * Row 3: jump (4 frames), land (2 frames)
    */
   static createCatSpriteSheet() {
     const frameSize = 32
     const columns = 6
-    const rows = 2
+    const rows = 3
     const canvas = document.createElement('canvas')
     canvas.width = frameSize * columns
     canvas.height = frameSize * rows
