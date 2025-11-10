@@ -111,7 +111,7 @@ export class Game {
   setupPlayer() {
     // Create player
     this.player = new Player(this.scene, this.inputManager)
-    this.player.position.set(-20, 1, 0) // Start on ground with small offset
+    this.player.position.set(-15, 1, 0) // Start on left side
 
     // Create a temporary colored sprite for the player (cat)
     this.player.createColorSprite(0xffaa66, 1, 1) // Orange color for cat
@@ -121,7 +121,7 @@ export class Game {
 
     // Setup camera controller to follow player
     this.cameraController = new CameraController(this.camera, this.player)
-    this.cameraController.setBounds(-60, 60, 0, 25)
+    this.cameraController.setBounds(-20, 30, 0, 15)
 
     console.log('🐱 Player created at position:', this.player.position)
   }
