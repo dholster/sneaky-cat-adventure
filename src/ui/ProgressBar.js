@@ -124,11 +124,10 @@ export class ProgressBar {
     // Update player marker position
     this.playerMarker.position.x = -barWidth / 2 + (barWidth * progress)
 
-    // Position the entire UI at bottom of screen
-    // Camera frustum is 20 units tall, so bottom is at camera.y - 10
+    // Position just below the main floor (floor is at y=0)
     this.group.position.x = this.camera.position.x
-    this.group.position.y = this.camera.position.y - 8.5 // Near bottom of screen
-    this.group.position.z = 25 // In front of everything
+    this.group.position.y = -1.5 // Just below the floor
+    this.group.position.z = 5 // In front of background but behind gameplay
   }
 
   destroy() {
