@@ -80,6 +80,7 @@ export class Player extends Entity {
     if (this.input.jump && this.isGrounded && this.velocity.y <= 0.1) {
       this.velocity.y = this.jumpForce
       this.isGrounded = false
+      this.wasInAir = true
       console.log('🐱 Jump! From position:', this.position.y.toFixed(2))
     }
 
@@ -87,6 +88,18 @@ export class Player extends Entity {
     // Note: This will be moved to PhysicsSystem later
     if (!this.isGrounded) {
       this.velocity.y += this.gravity * deltaTime
+    }
+
+    // Detect landing (was in air, now grounded)
+    if (this.wasInAir && this.isGrounded && this.velocity.y >= 0) {
+      this.landingTimer = 0.2 // Landing animation duration
+      this.wasInAir = false
+      console.log('🐱 Landed!')
+    }
+
+    // Track if we're in the air
+    if (!this.isGrounded) {
+      this.wasInAir = true
     }
 
     // Update animation state
@@ -107,7 +120,10 @@ export class Player extends Entity {
 
   updateAnimation() {
     // Determine current animation based on state
-    if (!this.isGrounded) {
+    // Landing animation takes priority
+    if (this.landingTimer > 0) {
+      this.setAnimation('land')
+    } else if (!this.isGrounded) {
       this.setAnimation('jump')
     } else if (this.velocity.x !== 0) {
       if (this.isCrouching) {
