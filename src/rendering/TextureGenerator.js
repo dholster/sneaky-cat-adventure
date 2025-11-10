@@ -2633,128 +2633,36 @@ export class TextureGenerator {
     const ctx = canvas.getContext('2d')
     ctx.clearRect(0, 0, size, size)
 
-    const wallBlue = '#4A5A7A'
-    const wallDark = '#3A4A6A'
-    const wallLight = '#6A7A9A'
-    const wallHighlight = '#8A9ABA'
+    // Muted, neutral colors - much less saturated
+    const wallBase = '#5A6A7A'
+    const wallDark = '#4A5A6A'
+    const wallLight = '#6A7A8A'
 
-    // Base wallpaper color with subtle gradient for texture
-    const baseGradient = ctx.createLinearGradient(0, 0, size, size)
+    // Solid base with very subtle gradient
+    const baseGradient = ctx.createLinearGradient(0, 0, 0, size)
     baseGradient.addColorStop(0, wallLight)
-    baseGradient.addColorStop(0.5, wallBlue)
+    baseGradient.addColorStop(0.5, wallBase)
     baseGradient.addColorStop(1, wallDark)
     ctx.fillStyle = baseGradient
     ctx.fillRect(0, 0, size, size)
 
-    // Paper texture (subtle noise)
-    ctx.fillStyle = wallLight
-    ctx.globalAlpha = 0.1
-    for (let i = 0; i < 50; i++) {
+    // Very subtle paper texture (minimal noise)
+    ctx.fillStyle = wallDark
+    ctx.globalAlpha = 0.03
+    for (let i = 0; i < 30; i++) {
       ctx.fillRect(Math.random() * size, Math.random() * size, 1, 1)
     }
     ctx.globalAlpha = 1.0
 
-    // Damask pattern (simplified) - Vertical stripes with shadows
-    ctx.lineWidth = 2
-
+    // Extremely subtle vertical lines (barely visible)
+    ctx.strokeStyle = wallDark
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.05
     for (let x = 0; x < size; x += 16) {
-      // Stripe shadow
-      ctx.strokeStyle = wallDark
-      ctx.globalAlpha = 0.4
-      ctx.beginPath()
-      ctx.moveTo(x + 1, 0)
-      ctx.lineTo(x + 1, size)
-      ctx.stroke()
-      ctx.globalAlpha = 1.0
-
-      // Main stripe
-      ctx.strokeStyle = wallDark
       ctx.beginPath()
       ctx.moveTo(x, 0)
       ctx.lineTo(x, size)
       ctx.stroke()
-
-      // Stripe highlight
-      ctx.strokeStyle = wallLight
-      ctx.lineWidth = 1
-      ctx.globalAlpha = 0.3
-      ctx.beginPath()
-      ctx.moveTo(x - 1, 0)
-      ctx.lineTo(x - 1, size)
-      ctx.stroke()
-      ctx.globalAlpha = 1.0
-      ctx.lineWidth = 2
-    }
-
-    // Decorative flourishes (ornate pattern) with depth
-    ctx.lineWidth = 1.5
-    for (let x = 8; x < size; x += 16) {
-      for (let y = 8; y < size; y += 16) {
-        // Flourish shadow
-        ctx.strokeStyle = wallDark
-        ctx.globalAlpha = 0.3
-        ctx.beginPath()
-        ctx.arc(x + 1, y + 1, 3.5, 0, Math.PI * 2)
-        ctx.stroke()
-        ctx.globalAlpha = 1.0
-
-        // Small flower pattern
-        ctx.strokeStyle = wallLight
-        ctx.beginPath()
-        ctx.arc(x, y, 3, 0, Math.PI * 2)
-        ctx.stroke()
-
-        // Flower center
-        ctx.fillStyle = wallHighlight
-        ctx.globalAlpha = 0.6
-        ctx.beginPath()
-        ctx.arc(x, y, 1.5, 0, Math.PI * 2)
-        ctx.fill()
-        ctx.globalAlpha = 1.0
-
-        // Petals with highlights
-        for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 2) {
-          // Petal shadow
-          ctx.strokeStyle = wallDark
-          ctx.lineWidth = 1
-          ctx.globalAlpha = 0.2
-          ctx.beginPath()
-          ctx.moveTo(x + 1, y + 1)
-          ctx.lineTo(x + Math.cos(angle) * 5 + 1, y + Math.sin(angle) * 5 + 1)
-          ctx.stroke()
-          ctx.globalAlpha = 1.0
-
-          // Main petal
-          ctx.strokeStyle = wallLight
-          ctx.lineWidth = 1.5
-          ctx.beginPath()
-          ctx.moveTo(x, y)
-          ctx.lineTo(x + Math.cos(angle) * 5, y + Math.sin(angle) * 5)
-          ctx.stroke()
-
-          // Petal highlight
-          ctx.strokeStyle = wallHighlight
-          ctx.lineWidth = 1
-          ctx.globalAlpha = 0.5
-          ctx.beginPath()
-          ctx.moveTo(x, y)
-          ctx.lineTo(x + Math.cos(angle) * 3, y + Math.sin(angle) * 3)
-          ctx.stroke()
-          ctx.globalAlpha = 1.0
-        }
-      }
-    }
-
-    // Overall paper aging effect
-    ctx.fillStyle = wallDark
-    ctx.globalAlpha = 0.05
-    for (let i = 0; i < 30; i++) {
-      const x = Math.random() * size
-      const y = Math.random() * size
-      const radius = 1 + Math.random() * 2
-      ctx.beginPath()
-      ctx.arc(x, y, radius, 0, Math.PI * 2)
-      ctx.fill()
     }
     ctx.globalAlpha = 1.0
 
