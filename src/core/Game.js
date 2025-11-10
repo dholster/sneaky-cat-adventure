@@ -23,6 +23,7 @@ import { Distraction } from '../entities/Distraction.js'
 import { Config } from '../utils/Config.js'
 
 import { Background } from '../entities/Background.js'
+import { ProgressBar } from '../ui/ProgressBar.js'
 
 export class Game {
   constructor(canvas) {
@@ -41,6 +42,7 @@ export class Game {
     this.visionConeRenderer = null
     this.labelSystem = null
     this.ui = null // UI/HUD system
+    this.progressBar = null // Progress bar showing distance to goal
 
     // Game entities
     this.player = null
