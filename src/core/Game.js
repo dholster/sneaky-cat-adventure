@@ -130,32 +130,28 @@ export class Game {
     // Initialize vision cone renderer
     this.visionConeRenderer = new VisionConeRenderer(this.scene)
 
-    // Create human enemies with patrols
-    this.createHuman(-10, 1, [
-      { x: -15, y: 1 },
-      { x: -5, y: 1 }
+    // Create ONE human enemy for tutorial
+    this.createHuman(5, 1, [
+      { x: 0, y: 1 },
+      { x: 10, y: 1 }
     ])
 
-    this.createHuman(20, 1, [
-      { x: 15, y: 1 },
-      { x: 25, y: 1 },
-      { x: 25, y: 5 },
-      { x: 15, y: 5 }
-    ])
+    // Create hiding spots along the path
+    this.createHidingSpot(-5, 1, 'box')
+    this.createHidingSpot(5, 1, 'shadow')
+    this.createHidingSpot(15, 1, 'box')
 
-    // Create hiding spots
-    this.createHidingSpot(-18, 1, 'box')
-    this.createHidingSpot(-2, 1, 'box')
-    this.createHidingSpot(12, 1, 'shadow')
-    this.createHidingSpot(28, 5, 'furniture')
+    // Create goal marker
+    this.createGoal(25, 1)
 
     // Register platforms as obstacles for vision blocking
     this.platforms.forEach(platform => {
       this.detectionSystem.registerObstacle(platform)
     })
 
-    console.log(`🕵️  Created ${this.enemies.length} human enemies`)
+    console.log(`🕵️  Created ${this.enemies.length} human enemy`)
     console.log(`📦 Created ${this.hidingSpots.length} hiding spots`)
+    console.log(`🎯 Goal is at x=25 - Try to reach it without being detected!`)
   }
 
   createHuman(x, y, patrolPath) {
@@ -179,6 +175,26 @@ export class Game {
     const spot = new HidingSpot(this.scene, x, y, type)
     this.hidingSpots.push(spot)
     return spot
+  }
+
+  createGoal(x, y) {
+    // Create a bright glowing goal marker
+    const geometry = new THREE.PlaneGeometry(2, 3)
+    const material = new THREE.MeshBasicMaterial({
+      color: Config.COLORS.SAFE_GREEN,
+      transparent: true,
+      opacity: 0.8
+    })
+
+    this.goalMarker = new THREE.Mesh(geometry, material)
+    this.goalMarker.position.set(x, y + 1.5, 1)
+    this.scene.add(this.goalMarker)
+
+    // Store goal position
+    this.goalPosition = new THREE.Vector2(x, y)
+    this.goalReached = false
+
+    console.log('🎯 Goal created at:', x, y)
   }
 
   setupEnvironment() {
