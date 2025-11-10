@@ -58,10 +58,6 @@ export class Entity {
       transparent: false
     })
 
-    // Add support for emissive (glowing) effects
-    material.emissive = new THREE.Color(0x000000)
-    material.emissiveIntensity = 0
-
     this.sprite = new THREE.Mesh(geometry, material)
     this.sprite.position.z = 1
     this.scene.add(this.sprite)
