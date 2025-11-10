@@ -758,7 +758,7 @@ export class Game {
   }
 
   checkPlatformCollisions() {
-    // Simple AABB collision detection
+    // Simple AABB collision detection with edge tolerance
     const playerBounds = this.player.getBounds()
 
     this.platforms.forEach(platform => {
@@ -780,6 +780,9 @@ export class Game {
         // Find minimum overlap (this is the collision side)
         const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom)
 
+        // Edge tolerance - ignore tiny side collisions when falling
+        const edgeTolerance = 0.3
+
         // Resolve collision on the side with minimum overlap
         if (minOverlap === overlapTop && this.player.velocity.y <= 0) {
           // Landing on top of platform
@@ -790,14 +793,20 @@ export class Game {
           // Hitting bottom of platform (bonking head)
           this.player.position.y = platformBounds.y - playerBounds.height / 2
           this.player.velocity.y = 0
-        } else if (minOverlap === overlapLeft) {
-          // Hitting from the left
-          this.player.position.x = platformBounds.x - playerBounds.width / 2
-          this.player.velocity.x = 0
-        } else if (minOverlap === overlapRight) {
-          // Hitting from the right
-          this.player.position.x = platformBounds.x + platformBounds.width + playerBounds.width / 2
-          this.player.velocity.x = 0
+        } else if (minOverlap === overlapLeft && overlapLeft > edgeTolerance) {
+          // Hitting from the left - only if overlap is significant
+          // AND player is actually moving into the platform
+          if (this.player.velocity.x > 0) {
+            this.player.position.x = platformBounds.x - playerBounds.width / 2
+            this.player.velocity.x = 0
+          }
+        } else if (minOverlap === overlapRight && overlapRight > edgeTolerance) {
+          // Hitting from the right - only if overlap is significant
+          // AND player is actually moving into the platform
+          if (this.player.velocity.x < 0) {
+            this.player.position.x = platformBounds.x + platformBounds.width + playerBounds.width / 2
+            this.player.velocity.x = 0
+          }
         }
       }
     })
