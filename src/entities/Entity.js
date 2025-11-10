@@ -59,6 +59,7 @@ export class Entity {
     })
 
     this.sprite = new THREE.Mesh(geometry, material)
+    this.sprite.position.copy(this.position) // Sync immediately!
     this.sprite.position.z = 1
     this.scene.add(this.sprite)
 

@@ -517,8 +517,14 @@ export class Game {
     // Update enemies
     this.enemies.forEach(enemy => enemy.update(deltaTime))
 
+    // Update hiding spots (syncs sprite positions)
+    this.hidingSpots.forEach(spot => spot.update(deltaTime))
+
     // Update distractions
     this.distractions.forEach(dist => dist.update(deltaTime))
+
+    // Update platforms (syncs sprite positions)
+    this.platforms.forEach(platform => platform.update(deltaTime))
 
     // Update detection system
     this.detectionSystem.update(deltaTime)
