@@ -534,10 +534,10 @@ export class Game {
     this.visionConeRenderer.update(elapsedTime)
 
     // Check hiding spot interactions (BEFORE clearing input!)
-    this.checkHidingSpots()
+    const hidingSpotsHandledInteraction = this.checkHidingSpots()
 
-    // Check distraction interactions (only if not interacting with hiding spot)
-    if (!this.player.isHiding) {
+    // Check distraction interactions (only if hiding spots didn't handle it)
+    if (!this.player.isHiding && !hidingSpotsHandledInteraction) {
       this.checkDistractions()
     }
 
@@ -618,10 +618,12 @@ export class Game {
             spot.exit(this.player)
           }
         })
+        return true // Handled interaction
       } else if (nearestSpot) {
         // Enter hiding
         console.log('📦 Entering hiding spot!')
         nearestSpot.enter(this.player)
+        return true // Handled interaction
       } else {
         console.log('❌ No hiding spot nearby!')
         console.log(`   Interaction range: 1.5 units`)
@@ -635,6 +637,7 @@ export class Game {
 
     // Store nearest spot for potential UI prompts later
     this.nearestHidingSpot = nearestSpot
+    return false // Did not handle interaction
   }
 
   checkDistractions() {
