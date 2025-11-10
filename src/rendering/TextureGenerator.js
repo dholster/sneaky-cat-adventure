@@ -509,31 +509,57 @@ export class TextureGenerator {
       }
       ctx.globalAlpha = 1.0
 
-      // Back legs
-      ctx.fillStyle = dogDark
+      // Back legs with shading
+      const backLegGradient = ctx.createLinearGradient(centerX - 9, centerY + 5, centerX - 7, centerY + 5)
+      backLegGradient.addColorStop(0, dogDark)
+      backLegGradient.addColorStop(1, dogBrown)
+      ctx.fillStyle = backLegGradient
       ctx.fillRect(centerX - 9, centerY + 5 + Math.sin(legPhase) * 2, 2, 5)
       ctx.fillRect(centerX - 6, centerY + 5 - Math.sin(legPhase) * 2, 2, 5)
+
+      // Leg highlights
+      ctx.fillStyle = dogLight
+      ctx.fillRect(centerX - 8, centerY + 6 + Math.sin(legPhase) * 2, 1, 4)
+      ctx.fillRect(centerX - 5, centerY + 6 - Math.sin(legPhase) * 2, 1, 4)
 
       // Paws (back)
       ctx.fillStyle = black
       ctx.fillRect(centerX - 9, centerY + 9 + Math.sin(legPhase) * 2, 2, 2)
       ctx.fillRect(centerX - 6, centerY + 9 - Math.sin(legPhase) * 2, 2, 2)
 
-      // Chest/neck area
-      ctx.fillStyle = dogLight
+      // Chest/neck area with gradient
+      const chestGradient = ctx.createRadialGradient(centerX + 5, centerY - 1, 1, centerX + 5, centerY + 1, 4)
+      chestGradient.addColorStop(0, dogHighlight)
+      chestGradient.addColorStop(0.6, dogLight)
+      chestGradient.addColorStop(1, dogBrown)
+      ctx.fillStyle = chestGradient
       ctx.beginPath()
       ctx.ellipse(centerX + 5, centerY, 4, 4, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Head
-      ctx.fillStyle = dogBrown
+      // Head with gradient shading
+      const headGradient = ctx.createRadialGradient(centerX + 9, centerY - 2, 1, centerX + 9, centerY, 5)
+      headGradient.addColorStop(0, dogLight)
+      headGradient.addColorStop(0.6, dogBrown)
+      headGradient.addColorStop(1, dogDark)
+      ctx.fillStyle = headGradient
       ctx.beginPath()
       ctx.ellipse(centerX + 9, centerY - 1, 5, 4, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Snout (elongated)
-      ctx.fillStyle = dogLight
+      // Snout (elongated) with gradient
+      const snoutGradient = ctx.createLinearGradient(centerX + 11, centerY - 1, centerX + 15, centerY - 1)
+      snoutGradient.addColorStop(0, dogLight)
+      snoutGradient.addColorStop(0.7, dogLight)
+      snoutGradient.addColorStop(1, dogBrown)
+      ctx.fillStyle = snoutGradient
       ctx.fillRect(centerX + 11, centerY - 1, 4, 3)
+
+      // Snout shadow underneath
+      ctx.fillStyle = dogDark
+      ctx.globalAlpha = 0.3
+      ctx.fillRect(centerX + 11, centerY + 1, 4, 1)
+      ctx.globalAlpha = 1.0
 
       // Nose (black, prominent)
       ctx.fillStyle = black
