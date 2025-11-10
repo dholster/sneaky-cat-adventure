@@ -147,12 +147,12 @@ export class Distraction extends Entity {
     // Hide original sprite
     this.sprite.visible = false
 
-    // Create 4-6 break pieces
-    const numPieces = 4 + Math.floor(Math.random() * 3)
+    // Create 6-8 break pieces (more dramatic)
+    const numPieces = 6 + Math.floor(Math.random() * 3)
 
     for (let i = 0; i < numPieces; i++) {
-      // Create smaller piece
-      const pieceSize = this.size.width / 3 + Math.random() * 0.3
+      // Create smaller piece with varied sizes
+      const pieceSize = this.size.width / 4 + Math.random() * 0.5
       const geometry = new THREE.PlaneGeometry(pieceSize, pieceSize)
 
       // Use same texture as original
@@ -167,8 +167,8 @@ export class Distraction extends Entity {
 
       // Position near break point with some randomness
       piece.position.set(
-        this.position.x + (Math.random() - 0.5) * 1,
-        this.position.y + (Math.random() - 0.5) * 0.5,
+        this.position.x + (Math.random() - 0.5) * 1.5,
+        this.position.y + (Math.random() - 0.5) * 0.8,
         this.sprite.position.z
       )
 
@@ -177,14 +177,16 @@ export class Distraction extends Entity {
 
       this.scene.add(piece)
 
-      // Store piece data
+      // Store piece data with more dramatic velocities
       this.breakPieces.push({
         mesh: piece,
-        velocityX: (Math.random() - 0.5) * 4, // Scatter sideways
-        velocityY: Math.random() * 2 + 1, // Bounce up slightly
-        rotationSpeed: (Math.random() - 0.5) * 10
+        velocityX: (Math.random() - 0.5) * 6, // Faster scatter sideways
+        velocityY: Math.random() * 3 + 2, // Higher bounce up
+        rotationSpeed: (Math.random() - 0.5) * 15 // Faster rotation
       })
     }
+
+    console.log(`💥 ${this.type} shattered into ${numPieces} pieces!`)
   }
 
   canInteract(player) {
