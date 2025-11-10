@@ -683,6 +683,15 @@ export class Game {
     })
     this.ui.updateDetectionLevel(maxDetectionLevel)
 
+    // Update lighting system
+    if (this.lightingSystem) {
+      this.lightingSystem.update(deltaTime)
+
+      // Set danger level based on detection (0 = safe, 1 = fully detected)
+      const dangerLevel = maxDetectionLevel
+      this.lightingSystem.setDanger(dangerLevel)
+    }
+
     // Debug info
     if (this.debugMode) {
       this.showDebugInfo()
