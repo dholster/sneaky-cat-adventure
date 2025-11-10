@@ -15,8 +15,18 @@ export class Platform extends Entity {
     this.collider.size.x = width
     this.collider.size.y = height
 
-    // Create visual representation
+    // Create visual representation with brighter color
     this.createColorSprite(color, width, height)
+
+    // Make platforms more visible
+    if (this.sprite) {
+      this.sprite.position.z = 0.5 // Behind entities but visible
+      // Brighten the color by 50%
+      const c = this.sprite.material.color
+      c.r = Math.min(1, c.r * 1.5)
+      c.g = Math.min(1, c.g * 1.5)
+      c.b = Math.min(1, c.b * 1.5)
+    }
 
     // Platforms don't move
     this.isStatic = true
