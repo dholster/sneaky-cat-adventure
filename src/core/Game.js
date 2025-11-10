@@ -12,7 +12,10 @@ import { LabelSystem } from '../rendering/LabelSystem.js'
 import { Player } from '../entities/Player.js'
 import { Platform } from '../entities/Platform.js'
 import { Human } from '../entities/Human.js'
+import { Dog } from '../entities/Dog.js'
+import { Camera } from '../entities/Camera.js'
 import { HidingSpot } from '../entities/HidingSpot.js'
+import { Distraction } from '../entities/Distraction.js'
 import { Config } from '../utils/Config.js'
 
 export class Game {
@@ -36,8 +39,9 @@ export class Game {
     this.player = null
     this.entities = []
     this.platforms = [] // Static platforms for collision
-    this.enemies = [] // Human, dog enemies
+    this.enemies = [] // Human, dog, camera enemies
     this.hidingSpots = [] // Interactive hiding spots
+    this.distractions = [] // Objects that can be knocked over for distraction
     this.goalMarker = null
     this.goalPosition = null
     this.goalReached = false
@@ -381,6 +385,9 @@ export class Game {
     // Update enemies
     this.enemies.forEach(enemy => enemy.update(deltaTime))
 
+    // Update distractions
+    this.distractions.forEach(dist => dist.update(deltaTime))
+
     // Update detection system
     this.detectionSystem.update(deltaTime)
 
@@ -389,6 +396,9 @@ export class Game {
 
     // Check hiding spot interactions (BEFORE clearing input!)
     this.checkHidingSpots()
+
+    // Check distraction interactions
+    this.checkDistractions()
 
     // Check if goal is reached
     this.checkGoal()
