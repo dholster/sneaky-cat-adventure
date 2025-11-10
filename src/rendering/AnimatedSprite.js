@@ -105,6 +105,13 @@ export class AnimatedSprite {
   }
 
   /**
+   * Set sprite color (for effects like greyscale when hiding)
+   */
+  setColor(color) {
+    this.material.color.setHex(color)
+  }
+
+  /**
    * Get current animation name
    */
   getCurrentAnimation() {
