@@ -130,7 +130,7 @@ export class DetectionSystem {
 
     // Check for intersections with obstacles
     const intersectObjects = this.obstacles
-      .filter(obs => obs.sprite) // Only check objects with sprites
+      .filter(obs => obs.sprite && !obs.sprite.userData.isVisionCone) // Exclude vision cones
       .map(obs => obs.sprite)
 
     const intersects = this.raycaster.intersectObjects(intersectObjects, false)
