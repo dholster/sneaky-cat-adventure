@@ -100,6 +100,9 @@ export class Game {
       console.log('  → Setting up stealth systems...')
       this.setupStealthSystems()
 
+      console.log('  → Setting up progress bar...')
+      this.setupProgressBar()
+
       console.log('  → Setting up environment...')
       this.setupEnvironment()
 
@@ -169,6 +172,12 @@ export class Game {
   setupUI() {
     this.ui = new UI()
     console.log('📊 UI system initialized')
+  }
+
+  setupProgressBar() {
+    // Create progress bar (will be positioned after goal is set)
+    this.progressBar = new ProgressBar(this.scene, this.camera)
+    console.log('📊 Progress bar initialized')
   }
 
   setupPlayer() {
