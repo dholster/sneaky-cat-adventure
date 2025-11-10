@@ -51,8 +51,10 @@ export class Distraction extends Entity {
     }
 
     if (this.sprite) {
+      this.sprite.position.copy(this.position) // Sync position again
       this.sprite.position.z = 2.5 // In front of everything!
       this.sprite.material.transparent = false
+      console.log(`   → Distraction sprite at x=${this.sprite.position.x}, y=${this.sprite.position.y}`)
     }
   }
 

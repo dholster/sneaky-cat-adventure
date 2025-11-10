@@ -50,11 +50,13 @@ export class HidingSpot extends Entity {
         this.createColorSprite(0xFF8800, this.size.width, this.size.height)
     }
 
-    // Make sure sprite is visible and in front
+    // Make sure sprite is visible and in front - set AFTER createColorSprite
     if (this.sprite) {
+      this.sprite.position.copy(this.position) // Sync position again
       this.sprite.position.z = 2.0 // Even higher z to be in front of everything
       this.sprite.material.opacity = 1.0 // Fully opaque
       this.sprite.material.transparent = false
+      console.log(`   → Sprite created at x=${this.sprite.position.x}, y=${this.sprite.position.y}, z=${this.sprite.position.z}`)
     }
   }
 
