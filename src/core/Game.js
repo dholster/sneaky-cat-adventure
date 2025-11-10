@@ -280,6 +280,15 @@ export class Game {
     // Check hiding spot interactions
     this.checkHidingSpots()
 
+    // Check if goal is reached
+    this.checkGoal()
+
+    // Animate goal marker
+    if (this.goalMarker && !this.goalReached) {
+      this.goalMarker.material.opacity = 0.6 + Math.sin(elapsedTime * 3) * 0.2
+      this.goalMarker.position.y = 2.5 + Math.sin(elapsedTime * 2) * 0.3
+    }
+
     // Update camera
     this.cameraController.update(deltaTime)
 
@@ -321,6 +330,33 @@ export class Game {
 
     // Store nearest spot for potential UI prompts later
     this.nearestHidingSpot = nearestSpot
+  }
+
+  checkGoal() {
+    if (this.goalReached || !this.goalPosition) return
+
+    // Check if player is near goal
+    const distance = this.player.position.distanceTo(
+      new THREE.Vector3(this.goalPosition.x, this.goalPosition.y, 0)
+    )
+
+    if (distance < 3) {
+      this.goalReached = true
+      console.log('🎉🎉🎉 LEVEL COMPLETE! 🎉🎉🎉')
+      console.log('You successfully reached the goal!')
+
+      // Make goal marker brighter
+      if (this.goalMarker) {
+        this.goalMarker.material.opacity = 1.0
+        this.goalMarker.scale.set(1.5, 1.5, 1.5)
+      }
+
+      // Pause game after short delay
+      setTimeout(() => {
+        this.paused = true
+        console.log('🎊 Well done! Press P to continue or refresh to try again.')
+      }, 1000)
+    }
   }
 
   checkPlatformCollisions() {
