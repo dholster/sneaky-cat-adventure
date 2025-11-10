@@ -41,8 +41,13 @@ export class VisionConeRenderer {
     })
 
     const cone = new THREE.Mesh(geometry, material)
-    cone.position.z = 0.1 // Just above floor, below entities
+    cone.position.z = -0.5 // Behind everything - purely visual
     cone.rotation.z = Math.PI / 2 // Rotate to face right initially
+
+    // Make sure vision cones don't interact with raycasting or collision
+    cone.userData.isVisionCone = true // Tag for exclusion
+    cone.layers.set(1) // Put on different layer
+
     this.scene.add(cone)
 
     this.cones.push({ mesh: cone, enemy: enemy })
