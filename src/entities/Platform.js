@@ -1,26 +1,27 @@
 /**
- * Platform - Simple static platform for testing
+ * Platform - Static platform with tiled textures
  */
 
+import * as THREE from 'three'
 import { Entity } from './Entity.js'
+import { TextureGenerator } from '../rendering/TextureGenerator.js'
 
 export class Platform extends Entity {
-  constructor(scene, x, y, width, height, color = 0x415a77) {
+  constructor(scene, x, y, width, height, tileType = 'wood') {
     super(scene)
 
     this.position.set(x, y, 0)
     this.size = { width, height }
+    this.tileType = tileType
 
     // Set collider to match platform size
     this.collider.size.x = width
     this.collider.size.y = height
 
-    // Create visual representation with MUCH brighter color
-    // Triple the brightness for visibility
-    const brightColor = this.brightenColor(color, 3.0)
-    this.createColorSprite(brightColor, width, height)
+    // Create tiled visual representation
+    this.createTiledSprite(tileType, width, height)
 
-    // Make platforms very visible
+    // Make platforms visible
     if (this.sprite) {
       this.sprite.position.copy(this.position) // Sync position immediately
       this.sprite.position.z = 0.5 // Behind entities but visible
@@ -30,16 +31,60 @@ export class Platform extends Entity {
     this.isStatic = true
   }
 
-  brightenColor(color, factor) {
-    const r = ((color >> 16) & 0xFF) / 255
-    const g = ((color >> 8) & 0xFF) / 255
-    const b = (color & 0xFF) / 255
+  createTiledSprite(tileType, width, height) {
+    // Get the appropriate tile texture
+    let texture
+    switch (tileType) {
+      case 'wood':
+        texture = TextureGenerator.createWoodFloorTile()
+        break
+      case 'carpet':
+        texture = TextureGenerator.createCarpetTile()
+        break
+      case 'tile':
+        texture = TextureGenerator.createTileFloorTile()
+        break
+      case 'wallpaper':
+        texture = TextureGenerator.createWallpaperTile()
+        break
+      case 'brick':
+        texture = TextureGenerator.createBrickWallTile()
+        break
+      default:
+        texture = TextureGenerator.createWoodFloorTile()
+    }
 
-    const newR = Math.min(1, r * factor)
-    const newG = Math.min(1, g * factor)
-    const newB = Math.min(1, b * factor)
+    // Create geometry
+    const geometry = new THREE.PlaneGeometry(width, height)
 
-    return (Math.floor(newR * 255) << 16) | (Math.floor(newG * 255) << 8) | Math.floor(newB * 255)
+    // Calculate UV repeat based on size (tile texture is 64x64 pixels, each unit = 1)
+    const repeatX = width / 1  // Repeat every 1 unit
+    const repeatY = height / 1
+
+    // Set UV repeating
+    texture.repeat.set(repeatX, repeatY)
+
+    // Fix UVs for flipY = false textures
+    const uvAttribute = geometry.attributes.uv
+    uvAttribute.setXY(0, 0, 0)              // top-left
+    uvAttribute.setXY(1, repeatX, 0)        // top-right
+    uvAttribute.setXY(2, 0, repeatY)        // bottom-left
+    uvAttribute.setXY(3, repeatX, repeatY)  // bottom-right
+    uvAttribute.needsUpdate = true
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      transparent: false,
+      side: THREE.DoubleSide
+    })
+
+    this.sprite = new THREE.Mesh(geometry, material)
+    this.sprite.position.z = 0.5
+    this.scene.add(this.sprite)
+
+    console.log(`🎨 Created ${tileType} platform (${width}x${height})`)
+
+    return this.sprite
   }
 
   update(deltaTime) {
