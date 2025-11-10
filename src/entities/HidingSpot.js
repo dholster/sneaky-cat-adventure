@@ -64,14 +64,7 @@ export class HidingSpot extends Entity {
 
   canInteract(player) {
     const distance = this.position.distanceTo(player.position)
-    const canInteract = distance < this.interactionRange && !this.isOccupied
-
-    // Debug logging
-    if (distance < this.interactionRange + 1) {
-      console.log(`Near hiding spot: distance=${distance.toFixed(2)}, can interact=${canInteract}`)
-    }
-
-    return canInteract
+    return distance < this.interactionRange && !this.isOccupied
   }
 
   enter(player) {
