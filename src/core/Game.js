@@ -182,48 +182,41 @@ export class Game {
   }
 
   setupEnvironment() {
-    // Add simple ambient light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.0)
+    // Dim ambient light for nighttime atmosphere
+    const ambientLight = new THREE.AmbientLight(Config.COLORS.MOONLIGHT_BLUE, 0.3)
     this.scene.add(ambientLight)
 
-    // Create main ground platform
-    this.createPlatform(-30, 0, 100, 1, Config.COLORS.SHADOW_BLUE)
+    // Add moonlight (directional light)
+    const moonlight = new THREE.DirectionalLight(0xaabbcc, 0.4)
+    moonlight.position.set(10, 20, 5)
+    this.scene.add(moonlight)
 
-    // Tutorial section - Easy jumps (left side)
-    this.createPlatform(-25, 3, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(-20, 5, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(-15, 7, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(-10, 5, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(-5, 3, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    // Create main ground platform (darker, nighttime color)
+    this.createPlatform(-30, 0, 100, 1, 0x1a1a2e)
 
-    // Center platforms - Medium difficulty
-    this.createPlatform(0, 8, 6, 0.5, Config.COLORS.SAFE_GREEN)
-    this.createPlatform(-3, 11, 3, 0.5, Config.COLORS.ALERT_YELLOW)
-    this.createPlatform(3, 11, 3, 0.5, Config.COLORS.ALERT_YELLOW)
-    this.createPlatform(0, 14, 4, 0.5, Config.COLORS.ROOM_LIGHT)
+    // Fewer, more strategic platforms for stealth gameplay
+    // Left side - tutorial area
+    this.createPlatform(-25, 3, 4, 0.5, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(-20, 5, 4, 0.5, Config.COLORS.SHADOW_BLUE)
 
-    // Right side - Varied heights
-    this.createPlatform(8, 2, 5, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(14, 4, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(19, 6, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(24, 8, 5, 0.5, Config.COLORS.MOONLIGHT_BLUE)
-    this.createPlatform(30, 10, 4, 0.5, Config.COLORS.SAFE_GREEN)
+    // Center area - main gameplay
+    this.createPlatform(-5, 3, 6, 0.5, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(5, 5, 5, 0.5, Config.COLORS.SHADOW_BLUE)
 
-    // Floating platforms high up
-    this.createPlatform(10, 16, 3, 0.5, Config.COLORS.SECURITY_RED)
-    this.createPlatform(16, 18, 3, 0.5, Config.COLORS.SECURITY_RED)
-    this.createPlatform(22, 20, 4, 0.5, Config.COLORS.SECURITY_RED)
+    // Right side - challenge area
+    this.createPlatform(18, 3, 5, 0.5, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(28, 5, 6, 0.5, Config.COLORS.SHADOW_BLUE)
+    this.createPlatform(40, 3, 8, 0.5, Config.COLORS.SHADOW_BLUE)
 
-    // Wall-like platforms (tall obstacles)
-    this.createPlatform(35, 2, 1, 6, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(40, 4, 1, 8, Config.COLORS.SHADOW_BLUE)
+    // Vertical platforms
+    this.createPlatform(10, 8, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
+    this.createPlatform(35, 8, 4, 0.5, Config.COLORS.MOONLIGHT_BLUE)
 
-    // Far right landing area
-    this.createPlatform(45, 0, 20, 1, Config.COLORS.SHADOW_BLUE)
-    this.createPlatform(50, 5, 6, 0.5, Config.COLORS.ROOM_LIGHT)
-    this.createPlatform(55, 8, 4, 0.5, Config.COLORS.SAFE_GREEN)
+    // Create "rooms" with walls
+    this.createPlatform(-12, 3, 0.5, 6, 0x2d3e50) // Wall
+    this.createPlatform(8, 3, 0.5, 6, 0x2d3e50) // Wall
 
-    console.log(`🏗️  Created ${this.platforms.length} platforms for testing`)
+    console.log(`🏗️  Created ${this.platforms.length} platforms`)
   }
 
   createPlatform(x, y, width, height, color) {
