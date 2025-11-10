@@ -304,6 +304,27 @@ export class TextureGenerator {
     drawCatFrame(4, 1, 0, 3, 1, 3, 0) // crouched low
     drawCatFrame(5, 1, 0, 4, 1, 4, 0) // even lower
 
+    // Row 2: Jump and Land animations
+    // Jump (frames 12-15) - ascending, mid-air, descending
+    // Frame 12: Crouch before jump (preparing to leap)
+    drawCatFrame(0, 2, 0, 2, 1, 1, -2) // crouched, ready to jump
+
+    // Frame 13: Jump start (pushing off, extended)
+    drawCatFrame(1, 2, 0, 0, -1, -3, -2) // extended body, tail down
+
+    // Frame 14: Mid-air (stretched out, flying)
+    drawCatFrame(2, 2, 1, -2, -2, -4, 0) // fully extended, ears back, horizontal
+
+    // Frame 15: Descent (body curling for landing)
+    drawCatFrame(3, 2, 0, 0, 1, -2, 2) // curling, tail up
+
+    // Land (frames 16-17) - landing and recovery
+    // Frame 16: Impact (compressed on landing)
+    drawCatFrame(4, 2, 0, 3, 1, 2, 1) // compressed, absorbing impact
+
+    // Frame 17: Recovery (straightening up)
+    drawCatFrame(5, 2, 0, 1, 0, 1, 0) // returning to normal stance
+
     // Create texture
     const texture = new THREE.CanvasTexture(canvas)
     texture.magFilter = THREE.NearestFilter // Pixel-perfect scaling
