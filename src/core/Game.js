@@ -242,6 +242,14 @@ export class Game {
     // Attach to player
     this.player.createAnimatedSprite(catSprite)
 
+    // Add black outline to player sprite for cartoon look
+    if (this.player.sprite) {
+      const playerOutline = OutlineEffect.addOutline(this.player.sprite, 0.08, 0x000000)
+      this.scene.add(playerOutline)
+      this.player.outlineMesh = playerOutline
+      this.outlines.push({ mesh: playerOutline, parent: this.player.sprite })
+    }
+
     console.log('🎨 Player now using animated sprite!')
 
     // Add label
