@@ -766,6 +766,23 @@ export class Game {
   }
 
   checkHidingSpots() {
+    // Check if player wants to exit via movement
+    if (this.player.isHiding) {
+      const wantsToMove = this.inputManager.left || this.inputManager.right ||
+                          this.inputManager.jump || this.inputManager.run
+
+      if (wantsToMove) {
+        // Exit hiding via movement
+        console.log('🚪 Exiting hiding via movement...')
+        this.hidingSpots.forEach(spot => {
+          if (spot.occupant === this.player) {
+            spot.exit(this.player)
+          }
+        })
+        return true // Handled interaction
+      }
+    }
+
     // Find nearest hiding spot
     let nearestSpot = null
     let nearestDistance = Infinity

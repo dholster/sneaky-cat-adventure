@@ -45,16 +45,11 @@ export class Player extends Entity {
   update(deltaTime) {
     if (!this.active) return
 
-    // If hiding, check for any movement input to exit
+    // If hiding, don't process movement (Game.js will handle exit)
     if (this.isHiding) {
-      // Exit hiding if player presses any movement key
-      if (this.input.left || this.input.right || this.input.jump || this.input.run) {
-        this.exitHiding()
-      } else {
-        // Stay in hiding, just update sprite
-        super.update(deltaTime)
-        return
-      }
+      // Stay in hiding, just update sprite
+      super.update(deltaTime)
+      return
     }
 
     // Update landing timer
