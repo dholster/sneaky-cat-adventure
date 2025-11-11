@@ -1,0 +1,51 @@
+# Git credentials and tokens
+# Note: Personal access tokens are stored in .git/config which is already ignored
+.git-credentials
+*.token
+*_TOKEN*
+.env.local
+.env.*.local
+
+# Environment variables (may contain secrets)
+.env
+.env.production
+.env.development
+
+# Claude Code internal files
+.dotclaude/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Build outputs
+dist/
+build/
+*.log
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# Secret/config files that might contain tokens
+secrets.json
+config.local.js
+credentials.json
+auth.json
