@@ -62,6 +62,10 @@ export class CameraController {
 
     // Only apply look-ahead if velocity is significant
     if (this.target.velocity.length() > 0.5) {
+      // Reduce vertical look-ahead by 50% when jumping/in air
+      if (!this.target.isGrounded) {
+        lookAhead.y *= 0.5
+      }
       targetPos.add(lookAhead)
     }
 
@@ -72,10 +76,20 @@ export class CameraController {
       this.smoothness
     )
 
+    // Raise camera view by 50% for better centering (was +1, now +2.5)
+    // When jumping/in air, reduce vertical camera movement by 50%
+    let verticalOffset = 2.5
+    let verticalSmoothness = this.smoothness
+
+    if (!this.target.isGrounded) {
+      // Much slower vertical follow when in air (reduces jump camera movement)
+      verticalSmoothness = this.smoothness * 0.5
+    }
+
     this.camera.position.y = THREE.MathUtils.lerp(
       this.camera.position.y,
-      targetPos.y + 1, // Lowered offset to bring view down 20%
-      this.smoothness
+      targetPos.y + verticalOffset,
+      verticalSmoothness
     )
 
     // Keep z position fixed for 3D perspective
