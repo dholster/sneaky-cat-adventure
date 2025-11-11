@@ -391,6 +391,13 @@ export class Game {
    * Clear current level content
    */
   clearLevel() {
+    // Clear dynamic shadow system
+    if (this.dynamicShadowSystem) {
+      this.dynamicShadowSystem.dispose()
+      // Reinitialize for next level
+      this.dynamicShadowSystem = new DynamicShadowSystem(this.scene)
+    }
+
     // Remove all outlines
     this.outlines.forEach(outline => {
       if (outline.mesh) {
@@ -1043,6 +1050,11 @@ export class Game {
         OutlineEffect.updateOutline(outline.mesh, outline.parent, 0.08)
       }
     })
+
+    // Update dynamic shadow system
+    if (this.dynamicShadowSystem) {
+      this.dynamicShadowSystem.update(deltaTime)
+    }
 
     // Update parallax background
     if (this.parallaxBackground) {
