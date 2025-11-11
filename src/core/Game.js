@@ -161,6 +161,63 @@ export class Game {
     // Ambient light for base visibility
     const ambientLight = new THREE.AmbientLight(0x6688aa, 0.4)
     this.scene.add(ambientLight)
+
+    // Add visible light beams for dramatic effect
+    this.createLightBeams()
+  }
+
+  /**
+   * Create visible light beams from overhead lighting
+   */
+  createLightBeams() {
+    // Create volumetric light beams
+    const beamCount = 5
+    const beamWidth = 3
+    const beamLength = 15
+
+    for (let i = 0; i < beamCount; i++) {
+      const x = -20 + i * 30
+
+      // Create beam geometry
+      const geometry = new THREE.PlaneGeometry(beamWidth, beamLength)
+
+      // Create semi-transparent material for light beam
+      const material = new THREE.MeshBasicMaterial({
+        color: 0xffffaa,
+        transparent: true,
+        opacity: 0.08,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      })
+
+      const beam = new THREE.Mesh(geometry, material)
+
+      // Position beam coming down from above
+      beam.position.set(x, 8, 2)
+      beam.rotation.x = -Math.PI / 2.3 // Angle the beam down
+      beam.renderOrder = 100 // Render on top
+
+      this.scene.add(beam)
+
+      // Add second, brighter beam in center for more visible effect
+      if (i === 2) {
+        const brightGeometry = new THREE.PlaneGeometry(beamWidth * 1.5, beamLength)
+        const brightMaterial = new THREE.MeshBasicMaterial({
+          color: 0xffffe0,
+          transparent: true,
+          opacity: 0.12,
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        })
+        const brightBeam = new THREE.Mesh(brightGeometry, brightMaterial)
+        brightBeam.position.set(x, 8, 2.5)
+        brightBeam.rotation.x = -Math.PI / 2.3
+        brightBeam.renderOrder = 99
+        this.scene.add(brightBeam)
+      }
+    }
   }
 
   setupCamera() {
