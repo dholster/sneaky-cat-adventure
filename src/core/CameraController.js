@@ -65,7 +65,7 @@ export class CameraController {
       targetPos.add(lookAhead)
     }
 
-    // Smooth lerp to target position
+    // Smooth lerp to target position (only x and y, keep z for 3D perspective)
     this.camera.position.x = THREE.MathUtils.lerp(
       this.camera.position.x,
       targetPos.x,
@@ -74,9 +74,12 @@ export class CameraController {
 
     this.camera.position.y = THREE.MathUtils.lerp(
       this.camera.position.y,
-      targetPos.y,
+      targetPos.y + 3, // Offset to keep view centered with tilt
       this.smoothness
     )
+
+    // Keep z position fixed for 3D perspective
+    this.camera.position.z = 20
 
     // Apply bounds
     this.camera.position.x = THREE.MathUtils.clamp(
@@ -90,6 +93,9 @@ export class CameraController {
       this.bounds.minY,
       this.bounds.maxY
     )
+
+    // Keep rotation fixed for 3D tilt
+    this.camera.rotation.x = -Math.PI / 12
   }
 
   onResize(width, height) {
