@@ -949,17 +949,22 @@ export class TextureGenerator {
   }
 
   /**
-   * Create a recognizable dog sprite sheet
+   * Create a HIGH-RESOLUTION recognizable dog sprite sheet
    * 4 columns x 1 row = 4 frames
+   * 64x64 per frame (2x resolution upgrade)
    */
   static createDogSpriteSheet() {
-    const frameSize = 32
+    const frameSize = 64 // Upgraded from 32 to 64 (2x resolution)
     const columns = 4
     const rows = 1
     const canvas = document.createElement('canvas')
     canvas.width = frameSize * columns
     canvas.height = frameSize * rows
     const ctx = canvas.getContext('2d')
+
+    // Enable anti-aliasing for smooth rendering
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -975,113 +980,170 @@ export class TextureGenerator {
       const x = col * frameSize
       const y = 0
       const centerX = x + frameSize / 2
-      const centerY = y + frameSize / 2 + 2
+      const centerY = y + frameSize / 2 + 4 // Adjusted for 64x64
+
+      // Scale factor for 64x64 (2x from original 32x32)
+      const s = 2
+
+      ctx.save()
 
       // Tail (behind body) - wagging with gradient
-      const tailGradient = ctx.createLinearGradient(centerX - 10, centerY + 1, centerX - 14, centerY - 3 + tailWag)
+      const tailGradient = ctx.createLinearGradient(
+        centerX - 10 * s, centerY + 1 * s,
+        centerX - 14 * s, centerY - 3 * s + tailWag * s
+      )
       tailGradient.addColorStop(0, dogDark)
       tailGradient.addColorStop(0.5, dogBrown)
       tailGradient.addColorStop(1, dogLight)
       ctx.strokeStyle = tailGradient
-      ctx.lineWidth = 4
+      ctx.lineWidth = 4 * s
       ctx.lineCap = 'round'
       ctx.beginPath()
-      ctx.moveTo(centerX - 10, centerY + 1)
-      ctx.lineTo(centerX - 14, centerY - 3 + tailWag)
+      ctx.moveTo(centerX - 10 * s, centerY + 1 * s)
+      ctx.lineTo(centerX - 14 * s, centerY - 3 * s + tailWag * s)
       ctx.stroke()
 
-      // Tail tip highlight
-      ctx.fillStyle = dogLight
+      // Tail tip highlight with gradient
+      const tailTipGradient = ctx.createRadialGradient(
+        centerX - 14 * s, centerY - 3 * s + tailWag * s, 0.5 * s,
+        centerX - 14 * s, centerY - 3 * s + tailWag * s, 2 * s
+      )
+      tailTipGradient.addColorStop(0, dogHighlight)
+      tailTipGradient.addColorStop(0.6, dogLight)
+      tailTipGradient.addColorStop(1, dogBrown)
+      ctx.fillStyle = tailTipGradient
       ctx.beginPath()
-      ctx.arc(centerX - 14, centerY - 3 + tailWag, 2, 0, Math.PI * 2)
+      ctx.arc(centerX - 14 * s, centerY - 3 * s + tailWag * s, 2 * s, 0, Math.PI * 2)
       ctx.fill()
 
       // Body (elongated, dog-like) with gradient for depth
-      const bodyGradient = ctx.createRadialGradient(centerX - 3, centerY - 1, 2, centerX - 3, centerY + 2, 10)
+      const bodyGradient = ctx.createRadialGradient(
+        centerX - 3 * s, centerY - 1 * s, 2 * s,
+        centerX - 3 * s, centerY + 2 * s, 10 * s
+      )
       bodyGradient.addColorStop(0, dogHighlight)
       bodyGradient.addColorStop(0.5, dogBrown)
       bodyGradient.addColorStop(1, dogDark)
       ctx.fillStyle = bodyGradient
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.2)'
+      ctx.shadowBlur = 4 * s
+      ctx.shadowOffsetY = 2 * s
       ctx.beginPath()
-      ctx.ellipse(centerX - 3, centerY + 1, 10, 5, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX - 3 * s, centerY + 1 * s, 10 * s, 5 * s, 0, 0, Math.PI * 2)
       ctx.fill()
+      ctx.shadowColor = 'transparent'
 
       // Body fur texture (subtle stripes)
       ctx.strokeStyle = dogDark
-      ctx.lineWidth = 1
+      ctx.lineWidth = 1 * s
       ctx.globalAlpha = 0.2
       for (let i = 0; i < 4; i++) {
         ctx.beginPath()
-        ctx.moveTo(centerX - 10 + i * 3, centerY - 2)
-        ctx.lineTo(centerX - 8 + i * 3, centerY + 4)
+        ctx.moveTo(centerX - 10 * s + i * 3 * s, centerY - 2 * s)
+        ctx.lineTo(centerX - 8 * s + i * 3 * s, centerY + 4 * s)
         ctx.stroke()
       }
       ctx.globalAlpha = 1.0
 
       // Back legs with shading
-      const backLegGradient = ctx.createLinearGradient(centerX - 9, centerY + 5, centerX - 7, centerY + 5)
+      const backLegGradient = ctx.createLinearGradient(
+        centerX - 9 * s, centerY + 5 * s,
+        centerX - 7 * s, centerY + 5 * s
+      )
       backLegGradient.addColorStop(0, dogDark)
-      backLegGradient.addColorStop(1, dogBrown)
+      backLegGradient.addColorStop(0.5, dogBrown)
+      backLegGradient.addColorStop(1, dogLight)
       ctx.fillStyle = backLegGradient
-      ctx.fillRect(centerX - 9, centerY + 5 + Math.sin(legPhase) * 2, 2, 5)
-      ctx.fillRect(centerX - 6, centerY + 5 - Math.sin(legPhase) * 2, 2, 5)
+      ctx.fillRect(centerX - 9 * s, centerY + 5 * s + Math.sin(legPhase) * 2 * s, 2 * s, 5 * s)
+      ctx.fillRect(centerX - 6 * s, centerY + 5 * s - Math.sin(legPhase) * 2 * s, 2 * s, 5 * s)
 
       // Leg highlights
       ctx.fillStyle = dogLight
-      ctx.fillRect(centerX - 8, centerY + 6 + Math.sin(legPhase) * 2, 1, 4)
-      ctx.fillRect(centerX - 5, centerY + 6 - Math.sin(legPhase) * 2, 1, 4)
+      ctx.globalAlpha = 0.6
+      ctx.fillRect(centerX - 8 * s, centerY + 6 * s + Math.sin(legPhase) * 2 * s, 1 * s, 4 * s)
+      ctx.fillRect(centerX - 5 * s, centerY + 6 * s - Math.sin(legPhase) * 2 * s, 1 * s, 4 * s)
+      ctx.globalAlpha = 1.0
 
-      // Paws (back)
-      ctx.fillStyle = black
-      ctx.fillRect(centerX - 9, centerY + 9 + Math.sin(legPhase) * 2, 2, 2)
-      ctx.fillRect(centerX - 6, centerY + 9 - Math.sin(legPhase) * 2, 2, 2)
+      // Paws (back) with gradient
+      const pawGradient = ctx.createLinearGradient(
+        centerX - 9 * s, centerY + 9 * s,
+        centerX - 7 * s, centerY + 11 * s
+      )
+      pawGradient.addColorStop(0, '#1a1a1a')
+      pawGradient.addColorStop(1, black)
+      ctx.fillStyle = pawGradient
+      ctx.fillRect(centerX - 9 * s, centerY + 9 * s + Math.sin(legPhase) * 2 * s, 2 * s, 2 * s)
+      ctx.fillRect(centerX - 6 * s, centerY + 9 * s - Math.sin(legPhase) * 2 * s, 2 * s, 2 * s)
 
       // Chest/neck area with gradient
-      const chestGradient = ctx.createRadialGradient(centerX + 5, centerY - 1, 1, centerX + 5, centerY + 1, 4)
+      const chestGradient = ctx.createRadialGradient(
+        centerX + 5 * s, centerY - 1 * s, 1 * s,
+        centerX + 5 * s, centerY + 1 * s, 4 * s
+      )
       chestGradient.addColorStop(0, dogHighlight)
       chestGradient.addColorStop(0.6, dogLight)
       chestGradient.addColorStop(1, dogBrown)
       ctx.fillStyle = chestGradient
       ctx.beginPath()
-      ctx.ellipse(centerX + 5, centerY, 4, 4, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 5 * s, centerY, 4 * s, 4 * s, 0, 0, Math.PI * 2)
       ctx.fill()
 
       // Head with gradient shading
-      const headGradient = ctx.createRadialGradient(centerX + 9, centerY - 2, 1, centerX + 9, centerY, 5)
+      const headGradient = ctx.createRadialGradient(
+        centerX + 9 * s, centerY - 2 * s, 1 * s,
+        centerX + 9 * s, centerY, 5 * s
+      )
       headGradient.addColorStop(0, dogLight)
       headGradient.addColorStop(0.6, dogBrown)
       headGradient.addColorStop(1, dogDark)
       ctx.fillStyle = headGradient
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.2)'
+      ctx.shadowBlur = 3 * s
+      ctx.shadowOffsetY = 1.5 * s
       ctx.beginPath()
-      ctx.ellipse(centerX + 9, centerY - 1, 5, 4, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 9 * s, centerY - 1 * s, 5 * s, 4 * s, 0, 0, Math.PI * 2)
       ctx.fill()
+      ctx.shadowColor = 'transparent'
 
       // Snout (elongated) with gradient
-      const snoutGradient = ctx.createLinearGradient(centerX + 11, centerY - 1, centerX + 15, centerY - 1)
+      const snoutGradient = ctx.createLinearGradient(
+        centerX + 11 * s, centerY - 1 * s,
+        centerX + 15 * s, centerY - 1 * s
+      )
       snoutGradient.addColorStop(0, dogLight)
       snoutGradient.addColorStop(0.7, dogLight)
       snoutGradient.addColorStop(1, dogBrown)
       ctx.fillStyle = snoutGradient
-      ctx.fillRect(centerX + 11, centerY - 1, 4, 3)
+      ctx.fillRect(centerX + 11 * s, centerY - 1 * s, 4 * s, 3 * s)
 
       // Snout shadow underneath
       ctx.fillStyle = dogDark
       ctx.globalAlpha = 0.3
-      ctx.fillRect(centerX + 11, centerY + 1, 4, 1)
+      ctx.fillRect(centerX + 11 * s, centerY + 1 * s, 4 * s, 1 * s)
       ctx.globalAlpha = 1.0
 
       // Nose (black, prominent) with shine
-      ctx.fillStyle = black
-      ctx.fillRect(centerX + 14, centerY - 1, 2, 2)
+      const noseGradient = ctx.createRadialGradient(
+        centerX + 14.5 * s, centerY - 0.5 * s, 0.3 * s,
+        centerX + 15 * s, centerY + 0.5 * s, 1.5 * s
+      )
+      noseGradient.addColorStop(0, '#3a3a3a')
+      noseGradient.addColorStop(0.6, black)
+      noseGradient.addColorStop(1, '#0a0a0a')
+      ctx.fillStyle = noseGradient
+      ctx.fillRect(centerX + 14 * s, centerY - 1 * s, 2 * s, 2 * s)
 
       // Nose shine
       ctx.fillStyle = white
-      ctx.globalAlpha = 0.6
-      ctx.fillRect(centerX + 14.5, centerY - 0.5, 1, 1)
+      ctx.globalAlpha = 0.8
+      ctx.fillRect(centerX + 14.5 * s, centerY - 0.5 * s, 1 * s, 1 * s)
       ctx.globalAlpha = 1.0
 
       // Ears (floppy) with gradient shading
-      const earGradient = ctx.createRadialGradient(centerX + 6, centerY - 3, 0, centerX + 6, centerY - 1, 4)
+      const earGradient = ctx.createRadialGradient(
+        centerX + 6 * s, centerY - 3 * s, 0,
+        centerX + 6 * s, centerY - 1 * s, 4 * s
+      )
       earGradient.addColorStop(0, dogDark)
       earGradient.addColorStop(0.5, dogBrown)
       earGradient.addColorStop(1, dogLight)
@@ -1089,95 +1151,143 @@ export class TextureGenerator {
       // Left ear
       ctx.fillStyle = earGradient
       ctx.beginPath()
-      ctx.ellipse(centerX + 6, centerY - 3, 2, 4, -0.3, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 6 * s, centerY - 3 * s, 2 * s, 4 * s, -0.3, 0, Math.PI * 2)
       ctx.fill()
 
       // Left ear inner/highlight
       ctx.fillStyle = dogLight
       ctx.globalAlpha = 0.4
       ctx.beginPath()
-      ctx.ellipse(centerX + 6.5, centerY - 3, 1, 3, -0.3, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 6.5 * s, centerY - 3 * s, 1 * s, 3 * s, -0.3, 0, Math.PI * 2)
       ctx.fill()
       ctx.globalAlpha = 1.0
 
       // Right ear
-      const earGradient2 = ctx.createRadialGradient(centerX + 11, centerY - 3, 0, centerX + 11, centerY - 1, 4)
+      const earGradient2 = ctx.createRadialGradient(
+        centerX + 11 * s, centerY - 3 * s, 0,
+        centerX + 11 * s, centerY - 1 * s, 4 * s
+      )
       earGradient2.addColorStop(0, dogDark)
       earGradient2.addColorStop(0.5, dogBrown)
       earGradient2.addColorStop(1, dogLight)
       ctx.fillStyle = earGradient2
       ctx.beginPath()
-      ctx.ellipse(centerX + 11, centerY - 3, 2, 4, 0.3, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 11 * s, centerY - 3 * s, 2 * s, 4 * s, 0.3, 0, Math.PI * 2)
       ctx.fill()
 
       // Right ear inner/highlight
       ctx.fillStyle = dogLight
       ctx.globalAlpha = 0.4
       ctx.beginPath()
-      ctx.ellipse(centerX + 10.5, centerY - 3, 1, 3, 0.3, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 10.5 * s, centerY - 3 * s, 1 * s, 3 * s, 0.3, 0, Math.PI * 2)
       ctx.fill()
       ctx.globalAlpha = 1.0
 
       // Eye with more detail
       ctx.fillStyle = white
       ctx.beginPath()
-      ctx.ellipse(centerX + 9.5, centerY - 2, 1.5, 1.8, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 9.5 * s, centerY - 2 * s, 1.5 * s, 1.8 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Iris with gradient
+      const irisGradient = ctx.createRadialGradient(
+        centerX + 9.5 * s, centerY - 1.8 * s, 0.3 * s,
+        centerX + 9.5 * s, centerY - 1.8 * s, 1 * s
+      )
+      irisGradient.addColorStop(0, '#5C4033')
+      irisGradient.addColorStop(0.7, '#3E2723')
+      irisGradient.addColorStop(1, black)
+      ctx.fillStyle = irisGradient
+      ctx.beginPath()
+      ctx.arc(centerX + 9.5 * s, centerY - 1.8 * s, 1 * s, 0, Math.PI * 2)
       ctx.fill()
 
       // Pupil
       ctx.fillStyle = black
       ctx.beginPath()
-      ctx.arc(centerX + 9.5, centerY - 1.8, 1, 0, Math.PI * 2)
+      ctx.arc(centerX + 9.5 * s, centerY - 1.8 * s, 0.6 * s, 0, Math.PI * 2)
       ctx.fill()
 
       // Eye shine
       ctx.fillStyle = white
-      ctx.fillRect(centerX + 9, centerY - 2.2, 1, 1)
+      ctx.globalAlpha = 0.9
+      ctx.beginPath()
+      ctx.arc(centerX + 9 * s, centerY - 2.2 * s, 0.6 * s, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
 
       // Eyebrow/expression
       ctx.strokeStyle = dogDark
-      ctx.lineWidth = 1
+      ctx.lineWidth = 1.5 * s
+      ctx.lineCap = 'round'
       ctx.globalAlpha = 0.4
       ctx.beginPath()
-      ctx.moveTo(centerX + 7.5, centerY - 3)
-      ctx.lineTo(centerX + 10.5, centerY - 3.5)
+      ctx.moveTo(centerX + 7.5 * s, centerY - 3 * s)
+      ctx.lineTo(centerX + 10.5 * s, centerY - 3.5 * s)
       ctx.stroke()
       ctx.globalAlpha = 1.0
 
       // Mouth line with curve
       ctx.strokeStyle = black
-      ctx.lineWidth = 1
+      ctx.lineWidth = 1.5 * s
       ctx.beginPath()
-      ctx.moveTo(centerX + 14, centerY + 1)
-      ctx.quadraticCurveTo(centerX + 13, centerY + 2, centerX + 12, centerY + 2)
+      ctx.moveTo(centerX + 14 * s, centerY + 1 * s)
+      ctx.quadraticCurveTo(centerX + 13 * s, centerY + 2 * s, centerX + 12 * s, centerY + 2 * s)
       ctx.stroke()
 
       // Front legs with shading
-      const frontLegGradient = ctx.createLinearGradient(centerX + 2, centerY + 4, centerX + 4, centerY + 4)
+      const frontLegGradient = ctx.createLinearGradient(
+        centerX + 2 * s, centerY + 4 * s,
+        centerX + 4 * s, centerY + 4 * s
+      )
       frontLegGradient.addColorStop(0, dogDark)
       frontLegGradient.addColorStop(0.5, dogBrown)
       frontLegGradient.addColorStop(1, dogLight)
       ctx.fillStyle = frontLegGradient
-      ctx.fillRect(centerX + 2, centerY + 4 - Math.sin(legPhase) * 2, 2, 6)
-      ctx.fillRect(centerX + 5, centerY + 4 + Math.sin(legPhase) * 2, 2, 6)
+      ctx.fillRect(centerX + 2 * s, centerY + 4 * s - Math.sin(legPhase) * 2 * s, 2 * s, 6 * s)
+      ctx.fillRect(centerX + 5 * s, centerY + 4 * s + Math.sin(legPhase) * 2 * s, 2 * s, 6 * s)
 
       // Front leg highlights
       ctx.fillStyle = dogLight
-      ctx.fillRect(centerX + 3, centerY + 5 - Math.sin(legPhase) * 2, 1, 4)
-      ctx.fillRect(centerX + 6, centerY + 5 + Math.sin(legPhase) * 2, 1, 4)
+      ctx.globalAlpha = 0.6
+      ctx.fillRect(centerX + 3 * s, centerY + 5 * s - Math.sin(legPhase) * 2 * s, 1 * s, 4 * s)
+      ctx.fillRect(centerX + 6 * s, centerY + 5 * s + Math.sin(legPhase) * 2 * s, 1 * s, 4 * s)
+      ctx.globalAlpha = 1.0
 
-      // Paws (front)
-      ctx.fillStyle = black
-      ctx.fillRect(centerX + 2, centerY + 9 - Math.sin(legPhase) * 2, 2, 2)
-      ctx.fillRect(centerX + 5, centerY + 9 + Math.sin(legPhase) * 2, 2, 2)
+      // Paws (front) with gradient
+      ctx.fillStyle = pawGradient
+      ctx.fillRect(centerX + 2 * s, centerY + 9 * s - Math.sin(legPhase) * 2 * s, 2 * s, 2 * s)
+      ctx.fillRect(centerX + 5 * s, centerY + 9 * s + Math.sin(legPhase) * 2 * s, 2 * s, 2 * s)
 
-      // Collar (optional detail)
-      ctx.fillStyle = '#FF4444'
-      ctx.fillRect(centerX + 4, centerY - 1, 4, 2)
+      // Collar (optional detail) with gradient
+      const collarGradient = ctx.createLinearGradient(
+        centerX + 4 * s, centerY - 1 * s,
+        centerX + 4 * s, centerY + 1 * s
+      )
+      collarGradient.addColorStop(0, '#FF6666')
+      collarGradient.addColorStop(0.5, '#FF4444')
+      collarGradient.addColorStop(1, '#CC3333')
+      ctx.fillStyle = collarGradient
+      ctx.fillRect(centerX + 4 * s, centerY - 1 * s, 4 * s, 2 * s)
 
-      // Collar tag
-      ctx.fillStyle = '#FFD700'
-      ctx.fillRect(centerX + 5, centerY + 1, 2, 2)
+      // Collar tag with shine
+      const tagGradient = ctx.createRadialGradient(
+        centerX + 5.5 * s, centerY + 1 * s, 0.5 * s,
+        centerX + 6 * s, centerY + 2 * s, 1.5 * s
+      )
+      tagGradient.addColorStop(0, '#FFED4E')
+      tagGradient.addColorStop(0.5, '#FFD700')
+      tagGradient.addColorStop(1, '#CCA000')
+      ctx.fillStyle = tagGradient
+      ctx.fillRect(centerX + 5 * s, centerY + 1 * s, 2 * s, 2 * s)
+
+      // Tag shine
+      ctx.fillStyle = '#FFED4E'
+      ctx.globalAlpha = 0.8
+      ctx.fillRect(centerX + 5.3 * s, centerY + 1.3 * s, 1 * s, 1 * s)
+      ctx.globalAlpha = 1.0
+
+      ctx.restore()
     }
 
     // Walk cycle with tail wagging and leg movement
@@ -1187,13 +1297,15 @@ export class TextureGenerator {
       drawDogFrame(i, tailWag, legPhase)
     }
 
+    // Create texture with LINEAR filtering for smooth, anti-aliased appearance
     const texture = new THREE.CanvasTexture(canvas)
-    texture.magFilter = THREE.NearestFilter
-    texture.minFilter = THREE.NearestFilter
+    texture.magFilter = THREE.LinearFilter // Smooth scaling (upgraded from NearestFilter)
+    texture.minFilter = THREE.LinearMipmapLinearFilter // Smooth min with mipmaps
+    texture.generateMipmaps = true // Enable mipmaps for better quality at distance
     texture.flipY = false // Don't flip canvas texture
     texture.needsUpdate = true
 
-    console.log('🎨 Created dog sprite sheet')
+    console.log('🎨 Created HIGH-RES dog sprite sheet:', columns, 'x', rows, 'frames at', frameSize, 'x', frameSize, 'px')
 
     return { texture, frameSize, columns, rows }
   }
