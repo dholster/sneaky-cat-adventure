@@ -260,11 +260,11 @@ export class Game {
     }
 
     // Add black outline to player sprite for cartoon look
-    if (this.player.sprite) {
-      const playerOutline = OutlineEffect.addOutline(this.player.sprite, 0.08, 0x000000)
+    if (this.player.animatedSprite && this.player.animatedSprite.mesh) {
+      const playerOutline = OutlineEffect.addOutline(this.player.animatedSprite.mesh, 0.08, 0x000000)
       this.scene.add(playerOutline)
       this.player.outlineMesh = playerOutline
-      this.outlines.push({ mesh: playerOutline, parent: this.player.sprite })
+      this.outlines.push({ mesh: playerOutline, parent: this.player.animatedSprite.mesh })
     }
 
     console.log('🎨 Player now using animated sprite!')
@@ -672,11 +672,11 @@ export class Game {
     }
 
     // Add black outline to guard sprite
-    if (human.sprite) {
-      const guardOutline = OutlineEffect.addOutline(human.sprite, 0.08, 0x000000)
+    if (human.animatedSprite && human.animatedSprite.mesh) {
+      const guardOutline = OutlineEffect.addOutline(human.animatedSprite.mesh, 0.08, 0x000000)
       this.scene.add(guardOutline)
       human.outlineMesh = guardOutline
-      this.outlines.push({ mesh: guardOutline, parent: human.sprite })
+      this.outlines.push({ mesh: guardOutline, parent: human.animatedSprite.mesh })
     }
 
     console.log('🎨 Guard now using animated sprite!')
@@ -728,11 +728,11 @@ export class Game {
     }
 
     // Add black outline to dog sprite
-    if (dog.sprite) {
-      const dogOutline = OutlineEffect.addOutline(dog.sprite, 0.08, 0x000000)
+    if (dog.animatedSprite && dog.animatedSprite.mesh) {
+      const dogOutline = OutlineEffect.addOutline(dog.animatedSprite.mesh, 0.08, 0x000000)
       this.scene.add(dogOutline)
       dog.outlineMesh = dogOutline
-      this.outlines.push({ mesh: dogOutline, parent: dog.sprite })
+      this.outlines.push({ mesh: dogOutline, parent: dog.animatedSprite.mesh })
     }
 
     console.log('🎨 Dog now using animated sprite!')
