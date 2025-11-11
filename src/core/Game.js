@@ -369,6 +369,16 @@ export class Game {
    * Clear current level content
    */
   clearLevel() {
+    // Remove all outlines
+    this.outlines.forEach(outline => {
+      if (outline.mesh) {
+        this.scene.remove(outline.mesh)
+        outline.mesh.geometry?.dispose()
+        outline.mesh.material?.dispose()
+      }
+    })
+    this.outlines = []
+
     // Remove all enemies
     this.enemies.forEach(enemy => {
       if (enemy.sprite) {
@@ -994,6 +1004,13 @@ export class Game {
     if (this.particleSystem) {
       this.particleSystem.update(deltaTime)
     }
+
+    // Update all sprite outlines to match their parent sprites
+    this.outlines.forEach(outline => {
+      if (outline.mesh && outline.parent) {
+        OutlineEffect.updateOutline(outline.mesh, outline.parent, 0.08)
+      }
+    })
 
     // Update parallax background
     if (this.parallaxBackground) {
