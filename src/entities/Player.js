@@ -210,6 +210,20 @@ export class Player extends Entity {
     // This will be handled by Game manager later
   }
 
+  /**
+   * Clean up player resources
+   */
+  destroy() {
+    // Clean up alert markers
+    if (this.alertMarkers) {
+      this.alertMarkers.destroy()
+      this.alertMarkers = null
+    }
+
+    // Call parent cleanup
+    super.destroy()
+  }
+
   // Debug: Log current state
   getDebugInfo() {
     return {
