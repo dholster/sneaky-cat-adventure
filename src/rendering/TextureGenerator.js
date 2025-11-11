@@ -7,14 +7,15 @@ import * as THREE from 'three'
 
 export class TextureGenerator {
   /**
-   * Create a recognizable cat sprite sheet
+   * Create a HIGH-RESOLUTION recognizable cat sprite sheet
    * 6 columns x 3 rows = 18 frames
+   * 128x128 per frame (4x resolution upgrade from 32x32)
    * Row 1: idle (2 frames), walk (4 frames)
    * Row 2: run (4 frames), crouch (2 frames)
    * Row 3: jump (4 frames), land (2 frames)
    */
   static createCatSpriteSheet() {
-    const frameSize = 32
+    const frameSize = 128 // Upgraded from 32 to 128
     const columns = 6
     const rows = 3
     const canvas = document.createElement('canvas')
@@ -22,132 +23,441 @@ export class TextureGenerator {
     canvas.height = frameSize * rows
     const ctx = canvas.getContext('2d')
 
+    // Enable anti-aliasing for smooth rendering
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+
     // Clear canvas
     ctx.fillStyle = 'transparent'
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // Colors - more realistic cat colors
+    // Enhanced color palette with more shades
     const catOrange = '#E07B39'
-    const catDark = '#B85C2A'
+    const catDark = '#A04920'
+    const catMid = '#C86530'
     const catLight = '#F5A66D'
     const catHighlight = '#FFD4AA'
+    const catVeryLight = '#FFF5E8'
     const white = '#FFFFFF'
     const black = '#1a1a1a'
-    const pink = '#E8A1A8'
+    const darkGrey = '#3a3a3a'
+    const pink = '#FFB6C1'
+    const pinkDark = '#E8A1A8'
     const nose = '#E67E7E'
+    const eyeGreen = '#7EC850'
+    const eyeGreenDark = '#5A9C38'
 
-    // Helper to draw a cat frame with more detail
+    // Helper to draw a HIGH-RES cat frame with smooth gradients and details
     const drawCatFrame = (col, row, offsetX = 0, offsetY = 0, earAngle = 0, tailCurve = 0, legPos = 0) => {
       const x = col * frameSize
       const y = row * frameSize
       const centerX = x + frameSize / 2 + offsetX
       const centerY = y + frameSize / 2 + offsetY
 
-      // Tail (behind body) - curved and fluffy with gradient
-      const tailGradient = ctx.createLinearGradient(centerX - 12, centerY, centerX - 8, centerY - 10 + tailCurve)
+      ctx.save()
+
+      // === TAIL (behind body) - Fluffy and curved with multiple gradients ===
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'
+      ctx.shadowBlur = 4
+      ctx.shadowOffsetY = 2
+
+      // Tail base (thick)
+      const tailGradient = ctx.createLinearGradient(
+        centerX - 48, centerY,
+        centerX - 32, centerY - 40 + tailCurve
+      )
       tailGradient.addColorStop(0, catDark)
-      tailGradient.addColorStop(0.5, catOrange)
+      tailGradient.addColorStop(0.3, catMid)
+      tailGradient.addColorStop(0.6, catOrange)
       tailGradient.addColorStop(1, catLight)
+
       ctx.strokeStyle = tailGradient
-      ctx.lineWidth = 5
+      ctx.lineWidth = 20
       ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
       ctx.beginPath()
-      ctx.moveTo(centerX - 8, centerY + 2)
+      ctx.moveTo(centerX - 32, centerY + 8)
       ctx.quadraticCurveTo(
-        centerX - 14, centerY - 4 + tailCurve,
-        centerX - 10, centerY - 10 + tailCurve
+        centerX - 56, centerY - 16 + tailCurve,
+        centerX - 40, centerY - 40 + tailCurve
       )
       ctx.stroke()
 
-      // Tail tip (darker)
-      ctx.fillStyle = catDark
+      // Tail highlight stripe
+      ctx.strokeStyle = catLight
+      ctx.lineWidth = 8
       ctx.beginPath()
-      ctx.arc(centerX - 10, centerY - 10 + tailCurve, 2, 0, Math.PI * 2)
+      ctx.moveTo(centerX - 32, centerY + 8)
+      ctx.quadraticCurveTo(
+        centerX - 54, centerY - 16 + tailCurve,
+        centerX - 40, centerY - 40 + tailCurve
+      )
+      ctx.stroke()
+
+      // Tail tip (fluffy circle)
+      const tailTipGradient = ctx.createRadialGradient(
+        centerX - 40, centerY - 40 + tailCurve, 2,
+        centerX - 40, centerY - 40 + tailCurve, 10
+      )
+      tailTipGradient.addColorStop(0, catLight)
+      tailTipGradient.addColorStop(0.7, catMid)
+      tailTipGradient.addColorStop(1, catDark)
+      ctx.fillStyle = tailTipGradient
+      ctx.beginPath()
+      ctx.arc(centerX - 40, centerY - 40 + tailCurve, 8, 0, Math.PI * 2)
       ctx.fill()
 
-      // Body (oval, more compact and cat-like) with gradient
-      const bodyGradient = ctx.createRadialGradient(centerX - 2, centerY, 2, centerX - 2, centerY + 2, 8)
-      bodyGradient.addColorStop(0, catLight)
-      bodyGradient.addColorStop(0.6, catOrange)
+      ctx.shadowColor = 'transparent'
+
+      // === BODY (oval, more cat-like) with radial gradient for volume ===
+      const bodyGradient = ctx.createRadialGradient(
+        centerX - 8, centerY, 8,
+        centerX - 8, centerY + 8, 32
+      )
+      bodyGradient.addColorStop(0, catVeryLight)
+      bodyGradient.addColorStop(0.2, catHighlight)
+      bodyGradient.addColorStop(0.5, catLight)
+      bodyGradient.addColorStop(0.8, catOrange)
       bodyGradient.addColorStop(1, catDark)
+
       ctx.fillStyle = bodyGradient
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'
+      ctx.shadowBlur = 8
+      ctx.shadowOffsetY = 4
       ctx.beginPath()
-      ctx.ellipse(centerX - 2, centerY + 2, 8, 6, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX - 8, centerY + 8, 32, 24, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Body stripes (subtle)
+      ctx.shadowColor = 'transparent'
+
+      // Body fur texture (subtle stripes)
       ctx.strokeStyle = catDark
-      ctx.lineWidth = 1
-      ctx.globalAlpha = 0.3
-      for (let i = 0; i < 3; i++) {
+      ctx.lineWidth = 2
+      ctx.globalAlpha = 0.15
+      for (let i = 0; i < 5; i++) {
         ctx.beginPath()
-        ctx.arc(centerX - 2, centerY + i, 6, 0, Math.PI)
+        ctx.arc(centerX - 8, centerY + i * 4, 24, 0, Math.PI)
         ctx.stroke()
       }
       ctx.globalAlpha = 1.0
 
-      // Back legs with shading
-      ctx.fillStyle = catDark
-      ctx.fillRect(centerX - 8, centerY + 6 + legPos, 3, 5)
-      ctx.fillRect(centerX - 4, centerY + 6 - legPos, 3, 5)
+      // === BACK LEGS with gradient shading ===
+      const legGradient = ctx.createLinearGradient(centerX - 32, centerY + 24, centerX - 28, centerY + 44)
+      legGradient.addColorStop(0, catMid)
+      legGradient.addColorStop(0.5, catOrange)
+      legGradient.addColorStop(1, catDark)
+
+      // Back left leg
+      ctx.fillStyle = legGradient
+      ctx.fillRect(centerX - 32, centerY + 24 + legPos, 12, 20)
+
+      // Back right leg
+      ctx.fillRect(centerX - 16, centerY + 24 - legPos, 12, 20)
 
       // Leg highlights
-      ctx.fillStyle = catOrange
-      ctx.fillRect(centerX - 7, centerY + 6 + legPos, 1, 5)
-      ctx.fillRect(centerX - 3, centerY + 6 - legPos, 1, 5)
-
-      // Paws (back) with toe beans
       ctx.fillStyle = catLight
-      ctx.fillRect(centerX - 8, centerY + 10 + legPos, 3, 2)
-      ctx.fillRect(centerX - 4, centerY + 10 - legPos, 3, 2)
+      ctx.globalAlpha = 0.6
+      ctx.fillRect(centerX - 30, centerY + 24 + legPos, 4, 20)
+      ctx.fillRect(centerX - 14, centerY + 24 - legPos, 4, 20)
+      ctx.globalAlpha = 1.0
 
-      // Toe beans
-      ctx.fillStyle = pink
-      ctx.fillRect(centerX - 7, centerY + 11 + legPos, 1, 1)
-      ctx.fillRect(centerX - 3, centerY + 11 - legPos, 1, 1)
+      // === FRONT LEGS ===
+      ctx.fillStyle = legGradient
+      ctx.fillRect(centerX + 8, centerY + 24 + legPos, 12, 20)
+      ctx.fillRect(centerX + 24, centerY + 24 - legPos, 12, 20)
 
-      // Head (more cat-like with pointed face) with gradient shading
-      const headGradient = ctx.createRadialGradient(centerX + 6, centerY - 3, 1, centerX + 6, centerY - 2, 6)
-      headGradient.addColorStop(0, catHighlight)
-      headGradient.addColorStop(0.4, catLight)
-      headGradient.addColorStop(0.8, catOrange)
+      // Front leg highlights
+      ctx.fillStyle = catLight
+      ctx.globalAlpha = 0.6
+      ctx.fillRect(centerX + 10, centerY + 24 + legPos, 4, 20)
+      ctx.fillRect(centerX + 26, centerY + 24 - legPos, 4, 20)
+      ctx.globalAlpha = 1.0
+
+      // === PAWS with toe beans ===
+      // Back paws
+      const pawGradient = ctx.createRadialGradient(
+        centerX - 26, centerY + 42, 2,
+        centerX - 26, centerY + 42, 8
+      )
+      pawGradient.addColorStop(0, catLight)
+      pawGradient.addColorStop(1, catMid)
+
+      ctx.fillStyle = pawGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX - 26, centerY + 42 + legPos, 8, 6, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(centerX - 10, centerY + 42 - legPos, 8, 6, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Front paws
+      ctx.beginPath()
+      ctx.ellipse(centerX + 14, centerY + 42 + legPos, 8, 6, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(centerX + 30, centerY + 42 - legPos, 8, 6, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Toe beans (cute detail)
+      ctx.fillStyle = pinkDark
+      const beans = [
+        [centerX - 26, centerY + 42 + legPos],
+        [centerX - 10, centerY + 42 - legPos],
+        [centerX + 14, centerY + 42 + legPos],
+        [centerX + 30, centerY + 42 - legPos]
+      ]
+      beans.forEach(([bx, by]) => {
+        for (let i = 0; i < 3; i++) {
+          ctx.beginPath()
+          ctx.arc(bx + (i - 1) * 3, by + 2, 1.5, 0, Math.PI * 2)
+          ctx.fill()
+        }
+        ctx.beginPath()
+        ctx.arc(bx, by - 2, 2, 0, Math.PI * 2)
+        ctx.fill()
+      })
+
+      // === HEAD with sophisticated gradient ===
+      const headGradient = ctx.createRadialGradient(
+        centerX + 24, centerY - 12, 4,
+        centerX + 24, centerY - 8, 24
+      )
+      headGradient.addColorStop(0, catVeryLight)
+      headGradient.addColorStop(0.3, catHighlight)
+      headGradient.addColorStop(0.6, catLight)
+      headGradient.addColorStop(0.85, catOrange)
       headGradient.addColorStop(1, catDark)
+
       ctx.fillStyle = headGradient
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'
+      ctx.shadowBlur = 6
+      ctx.shadowOffsetY = 3
       ctx.beginPath()
-      ctx.ellipse(centerX + 6, centerY - 2, 6, 5, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 24, centerY - 8, 24, 20, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Face marking (white chest patch)
+      ctx.shadowColor = 'transparent'
+
+      // Face marking (white chest patch extending to face)
       ctx.fillStyle = white
-      ctx.globalAlpha = 0.8
+      ctx.globalAlpha = 0.9
       ctx.beginPath()
-      ctx.ellipse(centerX + 1, centerY + 4, 3, 4, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 4, centerY + 16, 12, 16, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(centerX + 16, centerY + 4, 8, 10, 0, 0, Math.PI * 2)
       ctx.fill()
       ctx.globalAlpha = 1.0
 
-      // Snout/muzzle (white) with shading
-      ctx.fillStyle = white
+      // === SNOUT/MUZZLE ===
+      const muzzleGradient = ctx.createRadialGradient(
+        centerX + 32, centerY + 4, 2,
+        centerX + 32, centerY + 4, 12
+      )
+      muzzleGradient.addColorStop(0, white)
+      muzzleGradient.addColorStop(0.7, catVeryLight)
+      muzzleGradient.addColorStop(1, catLight)
+
+      ctx.fillStyle = muzzleGradient
       ctx.beginPath()
-      ctx.ellipse(centerX + 8, centerY + 1, 3, 2.5, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 32, centerY + 4, 12, 10, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Muzzle shadow
-      ctx.fillStyle = catLight
-      ctx.globalAlpha = 0.3
+      // Muzzle shadow/definition
+      ctx.strokeStyle = catLight
+      ctx.lineWidth = 1
+      ctx.globalAlpha = 0.4
       ctx.beginPath()
-      ctx.ellipse(centerX + 8, centerY + 2, 2, 1.5, 0, 0, Math.PI * 2)
-      ctx.fill()
+      ctx.arc(centerX + 32, centerY + 4, 10, 0, Math.PI * 2)
+      ctx.stroke()
       ctx.globalAlpha = 1.0
 
-      // Ears (triangular, more prominent) with inner pink
-      // Left ear
-      ctx.fillStyle = catOrange
+      // === NOSE (detailed with highlights) ===
+      const noseGradient = ctx.createRadialGradient(
+        centerX + 32, centerY + 8, 1,
+        centerX + 32, centerY + 8, 4
+      )
+      noseGradient.addColorStop(0, pink)
+      noseGradient.addColorStop(0.5, pinkDark)
+      noseGradient.addColorStop(1, nose)
+
+      ctx.fillStyle = noseGradient
       ctx.beginPath()
-      ctx.moveTo(centerX + 2 + earAngle, centerY - 6)
-      ctx.lineTo(centerX + 4 + earAngle, centerY - 11)
-      ctx.lineTo(centerX + 6 + earAngle, centerY - 6)
+      ctx.moveTo(centerX + 32, centerY + 6)
+      ctx.lineTo(centerX + 30, centerY + 10)
+      ctx.lineTo(centerX + 34, centerY + 10)
       ctx.closePath()
       ctx.fill()
+
+      // Nose highlight
+      ctx.fillStyle = pink
+      ctx.globalAlpha = 0.8
+      ctx.beginPath()
+      ctx.arc(centerX + 31, centerY + 7, 1, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // === WHISKERS (fine lines) ===
+      ctx.strokeStyle = darkGrey
+      ctx.lineWidth = 1
+      ctx.globalAlpha = 0.6
+      const whiskerSide = [1, -1]
+      whiskerSide.forEach(side => {
+        for (let i = 0; i < 3; i++) {
+          ctx.beginPath()
+          ctx.moveTo(centerX + 30, centerY + 2 + i * 2)
+          ctx.lineTo(centerX + 30 + side * 20, centerY + i * 2 - 2)
+          ctx.stroke()
+        }
+      })
+      ctx.globalAlpha = 1.0
+
+      // === EARS (triangular with inner detail) ===
+      // Left ear
+      const earGradient = ctx.createLinearGradient(
+        centerX + 8 + earAngle, centerY - 28,
+        centerX + 8 + earAngle, centerY - 24
+      )
+      earGradient.addColorStop(0, catDark)
+      earGradient.addColorStop(0.5, catOrange)
+      earGradient.addColorStop(1, catLight)
+
+      ctx.fillStyle = earGradient
+      ctx.beginPath()
+      ctx.moveTo(centerX + 8 + earAngle, centerY - 24)
+      ctx.lineTo(centerX + 16 + earAngle, centerY - 44)
+      ctx.lineTo(centerX + 24 + earAngle, centerY - 24)
+      ctx.closePath()
+      ctx.fill()
+
+      // Left ear inner (pink)
+      ctx.fillStyle = pinkDark
+      ctx.globalAlpha = 0.7
+      ctx.beginPath()
+      ctx.moveTo(centerX + 12 + earAngle, centerY - 26)
+      ctx.lineTo(centerX + 16 + earAngle, centerY - 38)
+      ctx.lineTo(centerX + 20 + earAngle, centerY - 26)
+      ctx.closePath()
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Right ear
+      ctx.fillStyle = earGradient
+      ctx.beginPath()
+      ctx.moveTo(centerX + 24 - earAngle, centerY - 24)
+      ctx.lineTo(centerX + 32 - earAngle, centerY - 44)
+      ctx.lineTo(centerX + 40 - earAngle, centerY - 24)
+      ctx.closePath()
+      ctx.fill()
+
+      // Right ear inner (pink)
+      ctx.fillStyle = pinkDark
+      ctx.globalAlpha = 0.7
+      ctx.beginPath()
+      ctx.moveTo(centerX + 28 - earAngle, centerY - 26)
+      ctx.lineTo(centerX + 32 - earAngle, centerY - 38)
+      ctx.lineTo(centerX + 36 - earAngle, centerY - 26)
+      ctx.closePath()
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Ear tufts (fur detail)
+      ctx.strokeStyle = catLight
+      ctx.lineWidth = 2
+      ctx.globalAlpha = 0.4
+      ctx.beginPath()
+      ctx.moveTo(centerX + 16 + earAngle, centerY - 42)
+      ctx.lineTo(centerX + 14 + earAngle, centerY - 36)
+      ctx.moveTo(centerX + 16 + earAngle, centerY - 42)
+      ctx.lineTo(centerX + 18 + earAngle, centerY - 36)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(centerX + 32 - earAngle, centerY - 42)
+      ctx.lineTo(centerX + 30 - earAngle, centerY - 36)
+      ctx.moveTo(centerX + 32 - earAngle, centerY - 42)
+      ctx.lineTo(centerX + 34 - earAngle, centerY - 36)
+      ctx.stroke()
+      ctx.globalAlpha = 1.0
+
+      // === EYES (detailed with pupils and highlights) ===
+      // Left eye
+      const eyeWhiteGradient = ctx.createRadialGradient(
+        centerX + 20, centerY - 4, 2,
+        centerX + 20, centerY - 4, 6
+      )
+      eyeWhiteGradient.addColorStop(0, white)
+      eyeWhiteGradient.addColorStop(1, catVeryLight)
+
+      ctx.fillStyle = eyeWhiteGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX + 20, centerY - 4, 6, 8, -0.2, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Left eye iris
+      const irisGradient = ctx.createRadialGradient(
+        centerX + 20, centerY - 4, 1,
+        centerX + 20, centerY - 4, 5
+      )
+      irisGradient.addColorStop(0, eyeGreen)
+      irisGradient.addColorStop(0.6, eyeGreenDark)
+      irisGradient.addColorStop(1, darkGrey)
+
+      ctx.fillStyle = irisGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX + 20, centerY - 4, 4, 6, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Left eye pupil (vertical slit)
+      ctx.fillStyle = black
+      ctx.beginPath()
+      ctx.ellipse(centerX + 20, centerY - 4, 1.5, 5, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Left eye highlight
+      ctx.fillStyle = white
+      ctx.globalAlpha = 0.9
+      ctx.beginPath()
+      ctx.arc(centerX + 19, centerY - 6, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Right eye (mirrored)
+      ctx.fillStyle = eyeWhiteGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX + 28, centerY - 4, 6, 8, 0.2, 0, Math.PI * 2)
+      ctx.fill()
+
+      ctx.fillStyle = irisGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX + 28, centerY - 4, 4, 6, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      ctx.fillStyle = black
+      ctx.beginPath()
+      ctx.ellipse(centerX + 28, centerY - 4, 1.5, 5, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      ctx.fillStyle = white
+      ctx.globalAlpha = 0.9
+      ctx.beginPath()
+      ctx.arc(centerX + 27, centerY - 6, 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Eye outlines for definition
+      ctx.strokeStyle = darkGrey
+      ctx.lineWidth = 1
+      ctx.globalAlpha = 0.3
+      ctx.beginPath()
+      ctx.ellipse(centerX + 20, centerY - 4, 6, 8, -0.2, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.ellipse(centerX + 28, centerY - 4, 6, 8, 0.2, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.globalAlpha = 1.0
+
+      ctx.restore()
+    }
 
       // Left ear shadow
       ctx.fillStyle = catDark
