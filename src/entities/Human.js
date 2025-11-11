@@ -88,9 +88,11 @@ export class Human extends Entity {
       this.currentWaypoint = (this.currentWaypoint + 1) % this.patrolPath.length
       this.waitTimer = this.waypointWaitTime
 
-      // Update facing direction for next waypoint
-      const nextTarget = this.patrolPath[this.currentWaypoint]
-      this.facing = nextTarget.x > this.position.x ? 1 : -1
+      // Update facing direction for next waypoint (but not if detecting player)
+      if (this.detectionLevel <= 0) {
+        const nextTarget = this.patrolPath[this.currentWaypoint]
+        this.facing = nextTarget.x > this.position.x ? 1 : -1
+      }
     } else if (this.waitTimer <= 0) {
       // Move toward waypoint
       const direction = target.x > this.position.x ? 1 : -1

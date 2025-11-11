@@ -62,11 +62,13 @@ export class Dog extends Entity {
     this.position.x += this.velocity.x * deltaTime
     this.position.y += this.velocity.y * deltaTime
 
-    // Update facing direction
-    if (this.velocity.x > 0.1) {
-      this.facing = 1
-    } else if (this.velocity.x < -0.1) {
-      this.facing = -1
+    // Update facing direction (but not if detecting player)
+    if (this.detectionLevel <= 0) {
+      if (this.velocity.x > 0.1) {
+        this.facing = 1
+      } else if (this.velocity.x < -0.1) {
+        this.facing = -1
+      }
     }
 
     // Decay detection level when not actively detecting
