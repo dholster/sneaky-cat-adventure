@@ -145,6 +145,10 @@ export class Game {
 
     // Add fog for atmosphere
     this.scene.fog = new THREE.FogExp2(Config.COLORS.NIGHT_BLUE, 0.015)
+
+    // Initialize visual effect systems
+    this.glowEffect = new GlowEffect(this.scene)
+    this.particleSystem = new ParticleSystem(this.scene)
   }
 
   setupCamera() {
