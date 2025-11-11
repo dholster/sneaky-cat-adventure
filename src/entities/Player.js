@@ -134,6 +134,22 @@ export class Player extends Entity {
     this.position.x += this.velocity.x * deltaTime
     this.position.y += this.velocity.y * deltaTime
 
+    // Create dust trail when running on ground
+    if (this.particleSystem && this.isGrounded) {
+      const isRunning = Math.abs(this.velocity.x) > this.walkSpeed + 1
+      if (isRunning) {
+        this.dustTrailTimer -= deltaTime
+        if (this.dustTrailTimer <= 0) {
+          this.particleSystem.createDustTrail(
+            this.position.x,
+            this.position.y - this.size.height / 2,
+            this.facing
+          )
+          this.dustTrailTimer = 0.1 // Create dust every 0.1 seconds
+        }
+      }
+    }
+
     // Reset grounded state (will be set by collision detection)
     if (this.velocity.y < -0.1) {
       this.isGrounded = false

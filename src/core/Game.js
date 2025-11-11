@@ -211,6 +211,11 @@ export class Game {
     this.player = new Player(this.scene, this.inputManager)
     this.player.position.set(-15, 1, 0) // Start on left side
 
+    // Inject particle system if available
+    if (this.particleSystem) {
+      this.player.setParticleSystem(this.particleSystem)
+    }
+
     // Create animated sprite for player
     const catData = TextureGenerator.createCatSpriteSheet()
     const catSpriteSheet = new SpriteSheet(
