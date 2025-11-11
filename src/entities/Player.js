@@ -37,9 +37,20 @@ export class Player extends Entity {
     this.alertMarkers = new AlertMarkers(scene)
     this.alertMarkers.create()
 
+    // Particle system reference (injected from Game)
+    this.particleSystem = null
+    this.dustTrailTimer = 0 // Timer for dust trail particles
+
     // Set collider size
     this.collider.size.x = Config.PLAYER.SIZE.width
     this.collider.size.y = Config.PLAYER.SIZE.height
+  }
+
+  /**
+   * Set the particle system reference (called from Game)
+   */
+  setParticleSystem(particleSystem) {
+    this.particleSystem = particleSystem
   }
 
   update(deltaTime) {
@@ -104,6 +115,11 @@ export class Player extends Entity {
       this.landingTimer = 0.2 // Landing animation duration
       this.wasInAir = false
       console.log('🐱 Landed!')
+
+      // Create landing particle burst
+      if (this.particleSystem) {
+        this.particleSystem.createBurst(this.position.x, this.position.y - this.size.height / 2, 8, 0xcccccc, 2)
+      }
     }
 
     // Track if we're in the air
