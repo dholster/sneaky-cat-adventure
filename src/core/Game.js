@@ -247,6 +247,192 @@ export class Game {
     console.log('🐱 Player created at position:', this.player.position)
   }
 
+  /**
+   * Load a level from the level manager
+   */
+  loadLevel() {
+    // Clear existing level content
+    this.clearLevel()
+
+    // Get level data
+    this.currentLevelData = this.levelManager.getCurrentLevel()
+    const level = this.currentLevelData
+
+    console.log(`📍 Loading Level ${this.levelManager.currentLevel}: ${level.name}`)
+
+    // Set background color and fog
+    this.scene.background = new THREE.Color(level.backgroundColor)
+    this.scene.fog = new THREE.FogExp2(level.backgroundColor, 0.015)
+
+    // Set camera bounds
+    this.cameraController.setBounds(
+      level.cameraBounds.minX,
+      level.cameraBounds.maxX,
+      level.cameraBounds.minY,
+      level.cameraBounds.maxY
+    )
+
+    // Position player at start
+    this.player.position.set(level.playerStart.x, level.playerStart.y, 0)
+    this.initialPositions.player = { ...level.playerStart }
+
+    // Setup lighting
+    this.setupLighting()
+
+    // Setup parallax background
+    this.parallaxBackground = ParallaxBackground.createDefault(this.scene, this.camera)
+
+    // Create platforms
+    level.platforms.forEach(p => {
+      this.createPlatform(p.x, p.y, p.width, p.height, p.type)
+    })
+
+    // Initialize detection system
+    if (!this.detectionSystem) {
+      this.detectionSystem = new DetectionSystem(
+        this.scene,
+        this.player,
+        (enemy) => this.onPlayerDetected(enemy)
+      )
+    }
+
+    // Initialize vision cone renderer
+    if (!this.visionConeRenderer) {
+      this.visionConeRenderer = new VisionConeRenderer(this.scene, this.detectionSystem, this.player)
+    }
+
+    // Create enemies
+    level.enemies.forEach(e => {
+      if (e.type === 'human') {
+        this.createHuman(e.x, e.y, e.patrol)
+      } else if (e.type === 'dog') {
+        this.createDog(e.x, e.y, e.patrol)
+      } else if (e.type === 'camera') {
+        this.createCamera(e.x, e.y, e.rotationSpeed, e.rotationRange)
+      }
+    })
+
+    // Create hiding spots
+    level.hidingSpots.forEach(h => {
+      this.createHidingSpot(h.x, h.y, h.type)
+    })
+
+    // Create distractions
+    level.distractions.forEach(d => {
+      this.createDistraction(d.x, d.y, d.type)
+    })
+
+    // Create goal
+    this.createGoal(level.goalPosition.x, level.goalPosition.y)
+
+    // Register platforms as obstacles
+    this.platforms.forEach(platform => {
+      this.detectionSystem.registerObstacle(platform)
+    })
+
+    // Store initial enemy positions for restart
+    this.initialPositions.enemies = []
+    this.enemies.forEach(enemy => {
+      this.initialPositions.enemies.push({
+        position: { x: enemy.position.x, y: enemy.position.y },
+        patrol: enemy.patrolPath || null
+      })
+    })
+
+    console.log(`✅ Level loaded: ${this.enemies.length} enemies, ${this.hidingSpots.length} hiding spots, ${this.distractions.length} distractions`)
+  }
+
+  /**
+   * Clear current level content
+   */
+  clearLevel() {
+    // Remove all enemies
+    this.enemies.forEach(enemy => {
+      if (enemy.sprite) {
+        this.scene.remove(enemy.sprite)
+        enemy.sprite.geometry?.dispose()
+        enemy.sprite.material?.dispose()
+      }
+      if (enemy.animatedSprite) {
+        this.scene.remove(enemy.animatedSprite.mesh)
+        enemy.animatedSprite.mesh.geometry?.dispose()
+        enemy.animatedSprite.mesh.material?.dispose()
+      }
+      if (enemy.label) {
+        this.scene.remove(enemy.label)
+      }
+      if (enemy.spotlight) {
+        this.scene.remove(enemy.spotlight)
+      }
+    })
+    this.enemies = []
+
+    // Remove vision cones
+    if (this.visionConeRenderer) {
+      this.visionConeRenderer.dispose()
+    }
+
+    // Remove hiding spots
+    this.hidingSpots.forEach(spot => {
+      if (spot.sprite) {
+        this.scene.remove(spot.sprite)
+        spot.sprite.geometry?.dispose()
+        spot.sprite.material?.dispose()
+      }
+      if (spot.label) {
+        this.scene.remove(spot.label)
+      }
+    })
+    this.hidingSpots = []
+
+    // Remove distractions
+    this.distractions.forEach(dist => {
+      if (dist.sprite) {
+        this.scene.remove(dist.sprite)
+        dist.sprite.geometry?.dispose()
+        dist.sprite.material?.dispose()
+      }
+      if (dist.label) {
+        this.scene.remove(dist.label)
+      }
+    })
+    this.distractions = []
+
+    // Remove platforms
+    this.platforms.forEach(platform => {
+      if (platform.sprite) {
+        this.scene.remove(platform.sprite)
+        platform.sprite.geometry?.dispose()
+        platform.sprite.material?.dispose()
+      }
+    })
+    this.platforms = []
+
+    // Remove goal
+    if (this.goalMarker) {
+      this.scene.remove(this.goalMarker)
+      this.goalMarker.geometry?.dispose()
+      this.goalMarker.material?.dispose()
+      this.goalMarker = null
+    }
+    if (this.goalLabel) {
+      this.scene.remove(this.goalLabel)
+      this.goalLabel = null
+    }
+
+    // Clear parallax background
+    if (this.parallaxBackground) {
+      this.parallaxBackground.layers.forEach(layer => {
+        this.scene.remove(layer.mesh)
+        layer.mesh.geometry?.dispose()
+        layer.mesh.material?.dispose()
+      })
+      this.parallaxBackground = null
+    }
+
+    this.goalReached = false
+  }
+
   setupStealthSystems() {
     // Initialize detection system with callback
     this.detectionSystem = new DetectionSystem(
