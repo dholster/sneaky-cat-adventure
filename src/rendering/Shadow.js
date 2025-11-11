@@ -63,7 +63,8 @@ export class Shadow {
     })
 
     this.mesh = new THREE.Mesh(geometry, material)
-    this.mesh.rotation.x = -Math.PI / 2 // Rotate to lay flat on ground
+    // Rotate to lay flat on ground, then tilt back for 3D perspective
+    this.mesh.rotation.x = -Math.PI / 2 + Math.PI / 12 // Flat + 3D tilt
     this.mesh.position.z = 0.01 // Just above floor to avoid z-fighting
     this.mesh.renderOrder = -1 // Render before other objects
 
