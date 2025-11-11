@@ -1204,6 +1204,27 @@ export class Game {
   }
 
   /**
+   * Check if player fell below the map
+   */
+  checkFallDeath() {
+    if (this.isRestarting) return
+
+    // Death threshold - if player falls below this, they die
+    const deathY = -5
+
+    if (this.player.position.y < deathY) {
+      console.log('💀 Player fell off the map!')
+      this.ui.showStatus('FELL! Restarting...', '#ff4444', 2000)
+      this.isRestarting = true
+
+      // Wait 2 seconds then restart
+      setTimeout(() => {
+        this.restartLevel()
+      }, 2000)
+    }
+  }
+
+  /**
    * Update player alert markers based on nearby enemy detection
    */
   updatePlayerAlerts() {
