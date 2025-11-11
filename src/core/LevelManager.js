@@ -123,7 +123,7 @@ export class LevelManager {
       theme: 'warehouse',
       backgroundColor: 0x1a1a2e, // Darker industrial blue
       playerStart: { x: -15, y: 1 },
-      goalPosition: { x: 130, y: 10 }, // Goal is HIGH UP!
+      goalPosition: { x: 130, y: 14.8 }, // Goal is HIGH UP on the top platform!
       cameraBounds: { minX: -20, maxX: 150, minY: 0, maxY: 20 },
 
       // More vertical platforms for climbing
