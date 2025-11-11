@@ -252,8 +252,8 @@ export class Game {
       (enemy) => this.onPlayerDetected(enemy)
     )
 
-    // Initialize vision cone renderer
-    this.visionConeRenderer = new VisionConeRenderer(this.scene)
+    // Initialize vision cone renderer with detection system and player for occlusion
+    this.visionConeRenderer = new VisionConeRenderer(this.scene, this.detectionSystem, this.player)
 
     // PHASE 2 LEVEL: Multi-path with all enemy types!
 
