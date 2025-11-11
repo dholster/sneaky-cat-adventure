@@ -519,17 +519,22 @@ export class TextureGenerator {
   }
 
   /**
-   * Create a recognizable human guard sprite sheet
+   * Create a HIGH-RESOLUTION recognizable human guard sprite sheet
    * 4 columns x 2 rows = 8 frames
+   * 64x64 per frame (2x resolution upgrade)
    */
   static createGuardSpriteSheet() {
-    const frameSize = 32
+    const frameSize = 64 // Upgraded from 32 to 64 (2x resolution)
     const columns = 4
     const rows = 2
     const canvas = document.createElement('canvas')
     canvas.width = frameSize * columns
     canvas.height = frameSize * rows
     const ctx = canvas.getContext('2d')
+
+    // Enable anti-aliasing for smooth rendering
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
