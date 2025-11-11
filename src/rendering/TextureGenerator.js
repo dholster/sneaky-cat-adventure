@@ -54,7 +54,413 @@ export class TextureGenerator {
       const centerX = x + frameSize / 2 + offsetX
       const centerY = y + frameSize / 2 + offsetY
 
+      // Scale factor to adjust all coordinates (64 vs 128)
+      const s = 0.5
+
       ctx.save()
+
+      // === TAIL (behind body) - Fluffy and curved with multiple gradients ===
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'
+      ctx.shadowBlur = 2 * s
+      ctx.shadowOffsetY = 1 * s
+
+      // Tail base (thick)
+      const tailGradient = ctx.createLinearGradient(
+        centerX - 24 * s, centerY,
+        centerX - 16 * s, centerY - 20 * s + tailCurve * s
+      )
+      tailGradient.addColorStop(0, catDark)
+      tailGradient.addColorStop(0.3, catMid)
+      tailGradient.addColorStop(0.6, catOrange)
+      tailGradient.addColorStop(1, catLight)
+
+      ctx.strokeStyle = tailGradient
+      ctx.lineWidth = 10 * s
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.beginPath()
+      ctx.moveTo(centerX - 16 * s, centerY + 4 * s)
+      ctx.quadraticCurveTo(
+        centerX - 28 * s, centerY - 8 * s + tailCurve * s,
+        centerX - 20 * s, centerY - 20 * s + tailCurve * s
+      )
+      ctx.stroke()
+
+      // Tail highlight stripe
+      ctx.strokeStyle = catLight
+      ctx.lineWidth = 4 * s
+      ctx.beginPath()
+      ctx.moveTo(centerX - 16 * s, centerY + 4 * s)
+      ctx.quadraticCurveTo(
+        centerX - 27 * s, centerY - 8 * s + tailCurve * s,
+        centerX - 20 * s, centerY - 20 * s + tailCurve * s
+      )
+      ctx.stroke()
+
+      // Tail tip (fluffy circle)
+      const tailTipGradient = ctx.createRadialGradient(
+        centerX - 20 * s, centerY - 20 * s + tailCurve * s, 1 * s,
+        centerX - 20 * s, centerY - 20 * s + tailCurve * s, 5 * s
+      )
+      tailTipGradient.addColorStop(0, catLight)
+      tailTipGradient.addColorStop(0.7, catMid)
+      tailTipGradient.addColorStop(1, catDark)
+      ctx.fillStyle = tailTipGradient
+      ctx.beginPath()
+      ctx.arc(centerX - 20 * s, centerY - 20 * s + tailCurve * s, 4 * s, 0, Math.PI * 2)
+      ctx.fill()
+
+      ctx.shadowColor = 'transparent'
+
+      // === BODY (oval, more cat-like) with radial gradient for volume ===
+      const bodyGradient = ctx.createRadialGradient(
+        centerX - 4 * s, centerY, 4 * s,
+        centerX - 4 * s, centerY + 4 * s, 16 * s
+      )
+      bodyGradient.addColorStop(0, catVeryLight)
+      bodyGradient.addColorStop(0.2, catHighlight)
+      bodyGradient.addColorStop(0.5, catLight)
+      bodyGradient.addColorStop(0.8, catOrange)
+      bodyGradient.addColorStop(1, catDark)
+
+      ctx.fillStyle = bodyGradient
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'
+      ctx.shadowBlur = 4 * s
+      ctx.shadowOffsetY = 2 * s
+      ctx.beginPath()
+      ctx.ellipse(centerX - 4 * s, centerY + 4 * s, 16 * s, 12 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      ctx.shadowColor = 'transparent'
+
+      // Body fur texture (subtle stripes)
+      ctx.strokeStyle = catDark
+      ctx.lineWidth = 1 * s
+      ctx.globalAlpha = 0.15
+      for (let i = 0; i < 5; i++) {
+        ctx.beginPath()
+        ctx.arc(centerX - 4 * s, centerY + i * 2 * s, 12 * s, 0, Math.PI)
+        ctx.stroke()
+      }
+      ctx.globalAlpha = 1.0
+
+      // === BACK LEGS with gradient shading ===
+      const legGradient = ctx.createLinearGradient(centerX - 16 * s, centerY + 12 * s, centerX - 14 * s, centerY + 22 * s)
+      legGradient.addColorStop(0, catMid)
+      legGradient.addColorStop(0.5, catOrange)
+      legGradient.addColorStop(1, catDark)
+
+      // Back left leg
+      ctx.fillStyle = legGradient
+      ctx.fillRect(centerX - 16 * s, centerY + 12 * s + legPos * s, 6 * s, 10 * s)
+
+      // Back right leg
+      ctx.fillRect(centerX - 8 * s, centerY + 12 * s - legPos * s, 6 * s, 10 * s)
+
+      // Leg highlights
+      ctx.fillStyle = catLight
+      ctx.globalAlpha = 0.6
+      ctx.fillRect(centerX - 15 * s, centerY + 12 * s + legPos * s, 2 * s, 10 * s)
+      ctx.fillRect(centerX - 7 * s, centerY + 12 * s - legPos * s, 2 * s, 10 * s)
+      ctx.globalAlpha = 1.0
+
+      // === FRONT LEGS ===
+      ctx.fillStyle = legGradient
+      ctx.fillRect(centerX + 4 * s, centerY + 12 * s + legPos * s, 6 * s, 10 * s)
+      ctx.fillRect(centerX + 12 * s, centerY + 12 * s - legPos * s, 6 * s, 10 * s)
+
+      // Front leg highlights
+      ctx.fillStyle = catLight
+      ctx.globalAlpha = 0.6
+      ctx.fillRect(centerX + 5 * s, centerY + 12 * s + legPos * s, 2 * s, 10 * s)
+      ctx.fillRect(centerX + 13 * s, centerY + 12 * s - legPos * s, 2 * s, 10 * s)
+      ctx.globalAlpha = 1.0
+
+      // === PAWS with toe beans ===
+      // Back paws
+      const pawGradient = ctx.createRadialGradient(
+        centerX - 13 * s, centerY + 21 * s, 1 * s,
+        centerX - 13 * s, centerY + 21 * s, 4 * s
+      )
+      pawGradient.addColorStop(0, catLight)
+      pawGradient.addColorStop(1, catMid)
+
+      ctx.fillStyle = pawGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX - 13 * s, centerY + 21 * s + legPos * s, 4 * s, 3 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(centerX - 5 * s, centerY + 21 * s - legPos * s, 4 * s, 3 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Front paws
+      ctx.beginPath()
+      ctx.ellipse(centerX + 7 * s, centerY + 21 * s + legPos * s, 4 * s, 3 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(centerX + 15 * s, centerY + 21 * s - legPos * s, 4 * s, 3 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Toe beans (cute detail)
+      ctx.fillStyle = pinkDark
+      const beans = [
+        [centerX - 13 * s, centerY + 21 * s + legPos * s],
+        [centerX - 5 * s, centerY + 21 * s - legPos * s],
+        [centerX + 7 * s, centerY + 21 * s + legPos * s],
+        [centerX + 15 * s, centerY + 21 * s - legPos * s]
+      ]
+      beans.forEach(([bx, by]) => {
+        for (let i = 0; i < 3; i++) {
+          ctx.beginPath()
+          ctx.arc(bx + (i - 1) * 1.5 * s, by + 1 * s, 0.75 * s, 0, Math.PI * 2)
+          ctx.fill()
+        }
+        ctx.beginPath()
+        ctx.arc(bx, by - 1 * s, 1 * s, 0, Math.PI * 2)
+        ctx.fill()
+      })
+
+      // === HEAD with sophisticated gradient ===
+      const headGradient = ctx.createRadialGradient(
+        centerX + 12 * s, centerY - 6 * s, 2 * s,
+        centerX + 12 * s, centerY - 4 * s, 12 * s
+      )
+      headGradient.addColorStop(0, catVeryLight)
+      headGradient.addColorStop(0.3, catHighlight)
+      headGradient.addColorStop(0.6, catLight)
+      headGradient.addColorStop(0.85, catOrange)
+      headGradient.addColorStop(1, catDark)
+
+      ctx.fillStyle = headGradient
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'
+      ctx.shadowBlur = 3 * s
+      ctx.shadowOffsetY = 1.5 * s
+      ctx.beginPath()
+      ctx.ellipse(centerX + 12 * s, centerY - 4 * s, 12 * s, 10 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      ctx.shadowColor = 'transparent'
+
+      // Face marking (white chest patch extending to face)
+      ctx.fillStyle = white
+      ctx.globalAlpha = 0.9
+      ctx.beginPath()
+      ctx.ellipse(centerX + 2 * s, centerY + 8 * s, 6 * s, 8 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(centerX + 8 * s, centerY + 2 * s, 4 * s, 5 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // === SNOUT/MUZZLE ===
+      const muzzleGradient = ctx.createRadialGradient(
+        centerX + 16 * s, centerY + 2 * s, 1 * s,
+        centerX + 16 * s, centerY + 2 * s, 6 * s
+      )
+      muzzleGradient.addColorStop(0, white)
+      muzzleGradient.addColorStop(0.7, catVeryLight)
+      muzzleGradient.addColorStop(1, catLight)
+
+      ctx.fillStyle = muzzleGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX + 16 * s, centerY + 2 * s, 6 * s, 5 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Muzzle shadow/definition
+      ctx.strokeStyle = catLight
+      ctx.lineWidth = 0.5 * s
+      ctx.globalAlpha = 0.4
+      ctx.beginPath()
+      ctx.arc(centerX + 16 * s, centerY + 2 * s, 5 * s, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.globalAlpha = 1.0
+
+      // === NOSE (detailed with highlights) ===
+      const noseGradient = ctx.createRadialGradient(
+        centerX + 16 * s, centerY + 4 * s, 0.5 * s,
+        centerX + 16 * s, centerY + 4 * s, 2 * s
+      )
+      noseGradient.addColorStop(0, pink)
+      noseGradient.addColorStop(0.5, pinkDark)
+      noseGradient.addColorStop(1, nose)
+
+      ctx.fillStyle = noseGradient
+      ctx.beginPath()
+      ctx.moveTo(centerX + 16 * s, centerY + 3 * s)
+      ctx.lineTo(centerX + 15 * s, centerY + 5 * s)
+      ctx.lineTo(centerX + 17 * s, centerY + 5 * s)
+      ctx.closePath()
+      ctx.fill()
+
+      // Nose highlight
+      ctx.fillStyle = pink
+      ctx.globalAlpha = 0.8
+      ctx.beginPath()
+      ctx.arc(centerX + 15.5 * s, centerY + 3.5 * s, 0.5 * s, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // === WHISKERS (fine lines) ===
+      ctx.strokeStyle = darkGrey
+      ctx.lineWidth = 0.5 * s
+      ctx.globalAlpha = 0.6
+      const whiskerSide = [1, -1]
+      whiskerSide.forEach(side => {
+        for (let i = 0; i < 3; i++) {
+          ctx.beginPath()
+          ctx.moveTo(centerX + 15 * s, centerY + 1 * s + i * 1 * s)
+          ctx.lineTo(centerX + 15 * s + side * 10 * s, centerY + i * 1 * s - 1 * s)
+          ctx.stroke()
+        }
+      })
+      ctx.globalAlpha = 1.0
+
+      // === EARS (triangular with inner detail) ===
+      // Left ear
+      const earGradient = ctx.createLinearGradient(
+        centerX + 4 * s + earAngle * s, centerY - 14 * s,
+        centerX + 4 * s + earAngle * s, centerY - 12 * s
+      )
+      earGradient.addColorStop(0, catDark)
+      earGradient.addColorStop(0.5, catOrange)
+      earGradient.addColorStop(1, catLight)
+
+      ctx.fillStyle = earGradient
+      ctx.beginPath()
+      ctx.moveTo(centerX + 4 * s + earAngle * s, centerY - 12 * s)
+      ctx.lineTo(centerX + 8 * s + earAngle * s, centerY - 22 * s)
+      ctx.lineTo(centerX + 12 * s + earAngle * s, centerY - 12 * s)
+      ctx.closePath()
+      ctx.fill()
+
+      // Left ear inner (pink)
+      ctx.fillStyle = pinkDark
+      ctx.globalAlpha = 0.7
+      ctx.beginPath()
+      ctx.moveTo(centerX + 6 * s + earAngle * s, centerY - 13 * s)
+      ctx.lineTo(centerX + 8 * s + earAngle * s, centerY - 19 * s)
+      ctx.lineTo(centerX + 10 * s + earAngle * s, centerY - 13 * s)
+      ctx.closePath()
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Right ear
+      ctx.fillStyle = earGradient
+      ctx.beginPath()
+      ctx.moveTo(centerX + 12 * s - earAngle * s, centerY - 12 * s)
+      ctx.lineTo(centerX + 16 * s - earAngle * s, centerY - 22 * s)
+      ctx.lineTo(centerX + 20 * s - earAngle * s, centerY - 12 * s)
+      ctx.closePath()
+      ctx.fill()
+
+      // Right ear inner (pink)
+      ctx.fillStyle = pinkDark
+      ctx.globalAlpha = 0.7
+      ctx.beginPath()
+      ctx.moveTo(centerX + 14 * s - earAngle * s, centerY - 13 * s)
+      ctx.lineTo(centerX + 16 * s - earAngle * s, centerY - 19 * s)
+      ctx.lineTo(centerX + 18 * s - earAngle * s, centerY - 13 * s)
+      ctx.closePath()
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Ear tufts (fur detail)
+      ctx.strokeStyle = catLight
+      ctx.lineWidth = 1 * s
+      ctx.globalAlpha = 0.4
+      ctx.beginPath()
+      ctx.moveTo(centerX + 8 * s + earAngle * s, centerY - 21 * s)
+      ctx.lineTo(centerX + 7 * s + earAngle * s, centerY - 18 * s)
+      ctx.moveTo(centerX + 8 * s + earAngle * s, centerY - 21 * s)
+      ctx.lineTo(centerX + 9 * s + earAngle * s, centerY - 18 * s)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(centerX + 16 * s - earAngle * s, centerY - 21 * s)
+      ctx.lineTo(centerX + 15 * s - earAngle * s, centerY - 18 * s)
+      ctx.moveTo(centerX + 16 * s - earAngle * s, centerY - 21 * s)
+      ctx.lineTo(centerX + 17 * s - earAngle * s, centerY - 18 * s)
+      ctx.stroke()
+      ctx.globalAlpha = 1.0
+
+      // === EYES (detailed with pupils and highlights) ===
+      // Left eye
+      const eyeWhiteGradient = ctx.createRadialGradient(
+        centerX + 10 * s, centerY - 2 * s, 1 * s,
+        centerX + 10 * s, centerY - 2 * s, 3 * s
+      )
+      eyeWhiteGradient.addColorStop(0, white)
+      eyeWhiteGradient.addColorStop(1, catVeryLight)
+
+      ctx.fillStyle = eyeWhiteGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX + 10 * s, centerY - 2 * s, 3 * s, 4 * s, -0.2, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Left eye iris
+      const irisGradient = ctx.createRadialGradient(
+        centerX + 10 * s, centerY - 2 * s, 0.5 * s,
+        centerX + 10 * s, centerY - 2 * s, 2.5 * s
+      )
+      irisGradient.addColorStop(0, eyeGreen)
+      irisGradient.addColorStop(0.6, eyeGreenDark)
+      irisGradient.addColorStop(1, darkGrey)
+
+      ctx.fillStyle = irisGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX + 10 * s, centerY - 2 * s, 2 * s, 3 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Left eye pupil (vertical slit)
+      ctx.fillStyle = black
+      ctx.beginPath()
+      ctx.ellipse(centerX + 10 * s, centerY - 2 * s, 0.75 * s, 2.5 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Left eye highlight
+      ctx.fillStyle = white
+      ctx.globalAlpha = 0.9
+      ctx.beginPath()
+      ctx.arc(centerX + 9.5 * s, centerY - 3 * s, 1 * s, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Right eye (mirrored)
+      ctx.fillStyle = eyeWhiteGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX + 14 * s, centerY - 2 * s, 3 * s, 4 * s, 0.2, 0, Math.PI * 2)
+      ctx.fill()
+
+      ctx.fillStyle = irisGradient
+      ctx.beginPath()
+      ctx.ellipse(centerX + 14 * s, centerY - 2 * s, 2 * s, 3 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      ctx.fillStyle = black
+      ctx.beginPath()
+      ctx.ellipse(centerX + 14 * s, centerY - 2 * s, 0.75 * s, 2.5 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      ctx.fillStyle = white
+      ctx.globalAlpha = 0.9
+      ctx.beginPath()
+      ctx.arc(centerX + 13.5 * s, centerY - 3 * s, 1 * s, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
+
+      // Eye outlines for definition
+      ctx.strokeStyle = darkGrey
+      ctx.lineWidth = 0.5 * s
+      ctx.globalAlpha = 0.3
+      ctx.beginPath()
+      ctx.ellipse(centerX + 10 * s, centerY - 2 * s, 3 * s, 4 * s, -0.2, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.ellipse(centerX + 14 * s, centerY - 2 * s, 3 * s, 4 * s, 0.2, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.globalAlpha = 1.0
+
+      ctx.restore()
+    }
 
       // === TAIL (behind body) - Fluffy and curved with multiple gradients ===
       ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'
