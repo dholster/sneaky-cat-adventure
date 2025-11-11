@@ -38,8 +38,8 @@ export class CameraController {
     this.camera.near = 0.1
     this.camera.far = 1000
 
-    // Position camera for 3D perspective (lowered for better view)
-    this.camera.position.set(0, 1, 20)
+    // Position camera for 3D perspective (raised for better centering)
+    this.camera.position.set(0, 2.5, 20)
     this.camera.rotation.x = -Math.PI / 12 // Tilt down ~15 degrees
 
     this.camera.updateProjectionMatrix()
