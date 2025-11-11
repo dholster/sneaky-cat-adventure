@@ -141,9 +141,9 @@ export class AlertMarkers {
   update(level, position, entityHeight = 1, deltaTime = 0.016) {
     this.currentLevel = Math.min(this.maxMarkers, Math.max(0, Math.floor(level)))
 
-    // Position markers in an arch above the entity
-    const archHeight = entityHeight + 1.2
-    const archWidth = 0.8
+    // Position markers just above the entity's head (not in an arch)
+    const baseHeight = entityHeight + 0.8 // Just above the head
+    const spacing = 0.5 // Horizontal spacing between marks
     const time = Date.now() * 0.003 // For bobbing animation
 
     this.markers.forEach((marker, index) => {
@@ -160,32 +160,28 @@ export class AlertMarkers {
       marker.mesh.visible = marker.currentOpacity > 0.01
 
       if (marker.mesh.visible) {
-        // Position in arch
+        // Position in a straight horizontal line above head
         // Single mark: center
-        // Two marks: left and right
+        // Two marks: left and right of center
         // Three marks: left, center, right
         let xOffset = 0
         if (this.currentLevel === 1) {
           xOffset = 0 // Center
         } else if (this.currentLevel === 2) {
-          xOffset = (index === 0) ? -archWidth / 2 : archWidth / 2
+          xOffset = (index === 0) ? -spacing : spacing
         } else if (this.currentLevel === 3) {
-          xOffset = (index - 1) * archWidth / 2
+          xOffset = (index - 1) * spacing
         }
 
-        // Calculate arch y position (higher in center)
-        const archT = (xOffset / archWidth) * 2 // -1 to 1
-        const archYOffset = (1 - archT * archT) * 0.3 // Parabola shape
-
         // Bobbing animation
-        const bob = Math.sin(time + marker.bobOffset) * 0.1
+        const bob = Math.sin(time + marker.bobOffset) * 0.08
 
         marker.mesh.position.x = position.x + xOffset
-        marker.mesh.position.y = position.y + archHeight + archYOffset + bob
+        marker.mesh.position.y = position.y + baseHeight + bob
         marker.mesh.position.z = position.z + 2
 
         // Scale pulse based on urgency
-        const pulse = 1.0 + Math.sin(time * 3 + marker.bobOffset) * 0.1 * (this.currentLevel / 3)
+        const pulse = 1.0 + Math.sin(time * 3 + marker.bobOffset) * 0.08 * (this.currentLevel / 3)
         marker.mesh.scale.set(pulse, pulse, 1)
       }
     })
