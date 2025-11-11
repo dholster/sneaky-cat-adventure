@@ -80,6 +80,7 @@ export class Entity {
 
     this.sprite = new THREE.Mesh(geometry, material)
     this.sprite.position.z = 1 // Layer for rendering order
+    this.sprite.rotation.x = Math.PI / 12 // Tilt back for 3D perspective
     this.scene.add(this.sprite)
 
     return this.sprite
@@ -98,6 +99,7 @@ export class Entity {
     this.sprite = new THREE.Mesh(geometry, material)
     this.sprite.position.copy(this.position) // Sync immediately!
     this.sprite.position.z = 1
+    this.sprite.rotation.x = Math.PI / 12 // Tilt back for 3D perspective
     this.scene.add(this.sprite)
 
     return this.sprite
