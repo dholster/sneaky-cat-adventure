@@ -127,9 +127,9 @@ export class DetectionSystem {
   }
 
   checkLineOfSight(enemy, player) {
-    // Create ray from enemy to player
-    const origin = new THREE.Vector3(enemy.position.x, enemy.position.y, 1)
-    const target = new THREE.Vector3(player.position.x, player.position.y, 1)
+    // Create ray from enemy to player (use z=0.5 to match platform sprites)
+    const origin = new THREE.Vector3(enemy.position.x, enemy.position.y, 0.5)
+    const target = new THREE.Vector3(player.position.x, player.position.y, 0.5)
     const direction = target.clone().sub(origin).normalize()
     const distance = origin.distanceTo(target)
 
