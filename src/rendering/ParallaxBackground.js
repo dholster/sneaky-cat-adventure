@@ -82,6 +82,7 @@ export class ParallaxBackground {
     // Position based on depth (farther = more negative z)
     const zPosition = -10 - (10 * (1 - depth)) // -10 to -20
     mesh.position.set(0, yOffset, zPosition)
+    mesh.rotation.x = Math.PI / 12 // Tilt back for 3D perspective
 
     this.scene.add(mesh)
 
