@@ -425,6 +425,10 @@ export class Game {
       this.goalMarker.material?.dispose()
       this.goalMarker = null
     }
+    if (this.goalGlowMesh) {
+      this.glowEffect.removeGlow(this.goalGlowMesh)
+      this.goalGlowMesh = null
+    }
     if (this.goalLabel) {
       this.scene.remove(this.goalLabel)
       this.goalLabel = null
@@ -716,6 +720,11 @@ export class Game {
       28
     )
 
+    // Add glow effect to make distractions visible
+    if (distraction.sprite && this.glowEffect) {
+      distraction.glowMesh = this.glowEffect.addGlow(distraction.sprite, 0xFFD700, 1.3, 2.0)
+    }
+
     this.distractions.push(distraction)
     console.log(`💥 Created ${type} distraction at x=${x}, y=${y}`)
     return distraction
@@ -761,6 +770,11 @@ export class Game {
     this.goalMarker.position.set(x, y + 1.5, 1)
     this.goalMarker.rotation.x = Math.PI / 12 // Tilt back for 3D perspective
     this.scene.add(this.goalMarker)
+
+    // Add bright glow effect to make goal stand out
+    if (this.glowEffect) {
+      this.goalGlowMesh = this.glowEffect.addGlow(this.goalMarker, 0x00ff00, 2.0, 3.0)
+    }
 
     // Add label
     this.goalLabel = this.labelSystem.createLabel(
