@@ -49,6 +49,7 @@ export class VisionConeRenderer {
     const cone = new THREE.Mesh(geometry, material)
     cone.position.z = 0.5 // In front of ground, behind entities
     cone.rotation.z = 0 // Start pointing right (matches detection system angle 0)
+    cone.rotation.x = Math.PI / 12 // Tilt back for 3D perspective
 
     // Make sure vision cones don't interact with raycasting or collision
     cone.userData.isVisionCone = true // Tag for exclusion

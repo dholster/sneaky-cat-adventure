@@ -33,6 +33,7 @@ export class AlertMarkers {
       const marker = new THREE.Mesh(geometry, material)
       marker.renderOrder = 100 // Render on top
       marker.visible = false
+      marker.rotation.x = Math.PI / 12 // Tilt back for 3D perspective
 
       this.scene.add(marker)
       this.markers.push({
