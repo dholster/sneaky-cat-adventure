@@ -1170,19 +1170,33 @@ export class Game {
       console.log('🎉🎉🎉 LEVEL COMPLETE! 🎉🎉🎉')
       console.log('You successfully reached the goal!')
 
-      this.ui.showStatus('LEVEL COMPLETE!', '#44ff44', 5000)
-
       // Make goal marker brighter
       if (this.goalMarker) {
         this.goalMarker.material.opacity = 1.0
         this.goalMarker.scale.set(1.5, 1.5, 1.5)
       }
 
-      // Pause game after short delay
-      setTimeout(() => {
-        this.paused = true
-        console.log('🎊 Well done! Press P to continue or refresh to try again.')
-      }, 1000)
+      // Check if there's a next level
+      if (this.levelManager.hasNextLevel()) {
+        const nextLevelNum = this.levelManager.currentLevel + 1
+        this.ui.showStatus(`LEVEL ${this.levelManager.currentLevel} COMPLETE! Loading Level ${nextLevelNum}...`, '#44ff44', 3000)
+
+        // Load next level after short delay
+        setTimeout(() => {
+          this.levelManager.nextLevel()
+          this.loadLevel()
+          this.paused = false
+        }, 3000)
+      } else {
+        // No more levels - game complete!
+        this.ui.showStatus('🎊 GAME COMPLETE! ALL LEVELS FINISHED! 🎊', '#44ff44', 5000)
+
+        // Pause game after short delay
+        setTimeout(() => {
+          this.paused = true
+          console.log('🎊 Congratulations! You completed all levels!')
+        }, 3000)
+      }
     }
   }
 
