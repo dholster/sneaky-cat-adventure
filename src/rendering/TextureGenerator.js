@@ -557,267 +557,372 @@ export class TextureGenerator {
       const centerX = x + frameSize / 2
       const centerY = y + frameSize / 2
 
+      // Scale factor for 64x64 (2x from original 32x32)
+      const s = 2
+
+      ctx.save()
+
       // Back arm with gradient shading
-      const backArmGradient = ctx.createLinearGradient(centerX - 8 - armSwing, centerY + 2, centerX - 5 - armSwing, centerY + 2)
+      const backArmGradient = ctx.createLinearGradient(
+        centerX - 8 * s - armSwing * s, centerY + 2 * s,
+        centerX - 5 * s - armSwing * s, centerY + 2 * s
+      )
       backArmGradient.addColorStop(0, uniformDark)
       backArmGradient.addColorStop(1, uniformBlue)
       ctx.fillStyle = backArmGradient
-      ctx.fillRect(centerX - 8 - armSwing, centerY + 2, 3, 8)
+      ctx.fillRect(centerX - 8 * s - armSwing * s, centerY + 2 * s, 3 * s, 8 * s)
 
       // Arm shadow
       ctx.fillStyle = uniformDark
       ctx.globalAlpha = 0.3
-      ctx.fillRect(centerX - 8 - armSwing, centerY + 5, 1, 5)
+      ctx.fillRect(centerX - 8 * s - armSwing * s, centerY + 5 * s, 1 * s, 5 * s)
       ctx.globalAlpha = 1.0
 
       // Back hand
-      ctx.fillStyle = skinTone
-      ctx.fillRect(centerX - 8 - armSwing, centerY + 10, 3, 3)
+      const backHandGradient = ctx.createRadialGradient(
+        centerX - 6.5 * s - armSwing * s, centerY + 11 * s, 0.5 * s,
+        centerX - 6.5 * s - armSwing * s, centerY + 11 * s, 2 * s
+      )
+      backHandGradient.addColorStop(0, skinLight)
+      backHandGradient.addColorStop(0.6, skinTone)
+      backHandGradient.addColorStop(1, skinDark)
+      ctx.fillStyle = backHandGradient
+      ctx.fillRect(centerX - 8 * s - armSwing * s, centerY + 10 * s, 3 * s, 3 * s)
 
       // Hand shading
       ctx.fillStyle = skinDark
       ctx.globalAlpha = 0.4
-      ctx.fillRect(centerX - 8 - armSwing, centerY + 12, 3, 1)
+      ctx.fillRect(centerX - 8 * s - armSwing * s, centerY + 12 * s, 3 * s, 1 * s)
       ctx.globalAlpha = 1.0
 
       // Legs with gradient shading
-      const legGradient = ctx.createLinearGradient(centerX - 4, centerY + 10, centerX - 1, centerY + 10)
+      const legGradient = ctx.createLinearGradient(
+        centerX - 4 * s, centerY + 10 * s,
+        centerX - 1 * s, centerY + 10 * s
+      )
       legGradient.addColorStop(0, uniformDark)
       legGradient.addColorStop(0.6, uniformBlue)
       legGradient.addColorStop(1, uniformLight)
       ctx.fillStyle = legGradient
 
       // Left leg
-      ctx.fillRect(centerX - 4 + legOffset, centerY + 10, 3, 6)
+      ctx.fillRect(centerX - 4 * s + legOffset * s, centerY + 10 * s, 3 * s, 6 * s)
       // Right leg
-      ctx.fillRect(centerX + 1 - legOffset, centerY + 10, 3, 6)
+      ctx.fillRect(centerX + 1 * s - legOffset * s, centerY + 10 * s, 3 * s, 6 * s)
 
       // Leg highlights (fabric shine)
       ctx.fillStyle = uniformLight
       ctx.globalAlpha = 0.3
-      ctx.fillRect(centerX - 2 + legOffset, centerY + 11, 1, 4)
-      ctx.fillRect(centerX + 3 - legOffset, centerY + 11, 1, 4)
+      ctx.fillRect(centerX - 2 * s + legOffset * s, centerY + 11 * s, 1 * s, 4 * s)
+      ctx.fillRect(centerX + 3 * s - legOffset * s, centerY + 11 * s, 1 * s, 4 * s)
       ctx.globalAlpha = 1.0
 
       // Boots with gradient
-      const bootGradient = ctx.createLinearGradient(centerX - 4, centerY + 15, centerX, centerY + 15)
+      const bootGradient = ctx.createLinearGradient(
+        centerX - 4 * s, centerY + 15 * s,
+        centerX, centerY + 15 * s
+      )
       bootGradient.addColorStop(0, bootBlack)
       bootGradient.addColorStop(0.5, '#2a2a2a')
       bootGradient.addColorStop(1, bootBlack)
       ctx.fillStyle = bootGradient
-      ctx.fillRect(centerX - 4 + legOffset, centerY + 15, 4, 3)
-      ctx.fillRect(centerX + 1 - legOffset, centerY + 15, 4, 3)
+      ctx.fillRect(centerX - 4 * s + legOffset * s, centerY + 15 * s, 4 * s, 3 * s)
+      ctx.fillRect(centerX + 1 * s - legOffset * s, centerY + 15 * s, 4 * s, 3 * s)
 
       // Boot shine
       ctx.fillStyle = '#444444'
-      ctx.fillRect(centerX - 3 + legOffset, centerY + 15, 1, 2)
-      ctx.fillRect(centerX + 2 - legOffset, centerY + 15, 1, 2)
+      ctx.fillRect(centerX - 3 * s + legOffset * s, centerY + 15 * s, 1 * s, 2 * s)
+      ctx.fillRect(centerX + 2 * s - legOffset * s, centerY + 15 * s, 1 * s, 2 * s)
 
       // Body/torso with gradient for fabric depth
-      const bodyGradient = ctx.createRadialGradient(centerX - 2, centerY + 2, 2, centerX, centerY + 4, 10)
+      const bodyGradient = ctx.createRadialGradient(
+        centerX - 2 * s, centerY + 2 * s, 2 * s,
+        centerX, centerY + 4 * s, 10 * s
+      )
       bodyGradient.addColorStop(0, uniformLight)
       bodyGradient.addColorStop(0.5, uniformBlue)
       bodyGradient.addColorStop(1, uniformDark)
       ctx.fillStyle = bodyGradient
-      ctx.fillRect(centerX - 6, centerY - 2, 12, 12)
+      ctx.fillRect(centerX - 6 * s, centerY - 2 * s, 12 * s, 12 * s)
 
       // Uniform folds/shadows
       ctx.fillStyle = uniformDark
       ctx.globalAlpha = 0.4
       // Vertical fold
-      ctx.fillRect(centerX, centerY, 1, 10)
+      ctx.fillRect(centerX, centerY, 1 * s, 10 * s)
       // Side shadows
-      ctx.fillRect(centerX - 6, centerY + 2, 1, 8)
-      ctx.fillRect(centerX + 5, centerY + 2, 1, 8)
+      ctx.fillRect(centerX - 6 * s, centerY + 2 * s, 1 * s, 8 * s)
+      ctx.fillRect(centerX + 5 * s, centerY + 2 * s, 1 * s, 8 * s)
       ctx.globalAlpha = 1.0
 
       // Collar highlights
       ctx.fillStyle = uniformLight
       ctx.globalAlpha = 0.5
-      ctx.fillRect(centerX - 4, centerY - 2, 8, 1)
+      ctx.fillRect(centerX - 4 * s, centerY - 2 * s, 8 * s, 1 * s)
       ctx.globalAlpha = 1.0
 
       // Belt with buckle detail
       ctx.fillStyle = uniformDark
-      ctx.fillRect(centerX - 6, centerY + 8, 12, 2)
+      ctx.fillRect(centerX - 6 * s, centerY + 8 * s, 12 * s, 2 * s)
 
-      // Belt buckle
-      ctx.fillStyle = '#C0C0C0' // silver
-      ctx.fillRect(centerX - 1, centerY + 8, 2, 2)
+      // Belt buckle with gradient
+      const buckleGradient = ctx.createLinearGradient(
+        centerX - 1 * s, centerY + 8 * s,
+        centerX + 1 * s, centerY + 10 * s
+      )
+      buckleGradient.addColorStop(0, '#E0E0E0')
+      buckleGradient.addColorStop(0.5, '#C0C0C0')
+      buckleGradient.addColorStop(1, '#A0A0A0')
+      ctx.fillStyle = buckleGradient
+      ctx.fillRect(centerX - 1 * s, centerY + 8 * s, 2 * s, 2 * s)
+
+      // Buckle outline
       ctx.strokeStyle = '#888888'
       ctx.lineWidth = 1
-      ctx.strokeRect(centerX - 1, centerY + 8, 2, 2)
+      ctx.strokeRect(centerX - 1 * s, centerY + 8 * s, 2 * s, 2 * s)
 
-      // Badge/button with shine
-      ctx.fillStyle = '#FFD700' // gold
-      ctx.fillRect(centerX - 1, centerY + 2, 2, 2)
+      // Badge/button with gradient shine
+      const badgeGradient = ctx.createRadialGradient(
+        centerX - 0.5 * s, centerY + 2 * s, 0.5 * s,
+        centerX, centerY + 3 * s, 1.5 * s
+      )
+      badgeGradient.addColorStop(0, '#FFED4E')
+      badgeGradient.addColorStop(0.5, '#FFD700')
+      badgeGradient.addColorStop(1, '#CCA000')
+      ctx.fillStyle = badgeGradient
+      ctx.fillRect(centerX - 1 * s, centerY + 2 * s, 2 * s, 2 * s)
 
       // Badge shine
       ctx.fillStyle = '#FFED4E'
-      ctx.globalAlpha = 0.6
-      ctx.fillRect(centerX - 0.5, centerY + 2, 1, 1)
+      ctx.globalAlpha = 0.8
+      ctx.fillRect(centerX - 0.5 * s, centerY + 2 * s, 1 * s, 1 * s)
       ctx.globalAlpha = 1.0
 
       // Neck with gradient
-      const neckGradient = ctx.createLinearGradient(centerX - 2, centerY - 4, centerX + 2, centerY - 4)
+      const neckGradient = ctx.createLinearGradient(
+        centerX - 2 * s, centerY - 4 * s,
+        centerX + 2 * s, centerY - 4 * s
+      )
       neckGradient.addColorStop(0, skinDark)
       neckGradient.addColorStop(0.5, skinTone)
       neckGradient.addColorStop(1, skinDark)
       ctx.fillStyle = neckGradient
-      ctx.fillRect(centerX - 2, centerY - 4, 4, 3)
+      ctx.fillRect(centerX - 2 * s, centerY - 4 * s, 4 * s, 3 * s)
 
       // Neck shadow
       ctx.fillStyle = skinDark
       ctx.globalAlpha = 0.3
-      ctx.fillRect(centerX - 2, centerY - 2, 4, 1)
+      ctx.fillRect(centerX - 2 * s, centerY - 2 * s, 4 * s, 1 * s)
       ctx.globalAlpha = 1.0
 
       // Head with realistic skin gradient
-      const headGradient = ctx.createRadialGradient(centerX - 1, centerY - 9, 2, centerX, centerY - 7, 6)
+      const headGradient = ctx.createRadialGradient(
+        centerX - 1 * s, centerY - 9 * s, 2 * s,
+        centerX, centerY - 7 * s, 6 * s
+      )
       headGradient.addColorStop(0, skinLight)
       headGradient.addColorStop(0.5, skinTone)
       headGradient.addColorStop(1, skinDark)
       ctx.fillStyle = headGradient
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.2)'
+      ctx.shadowBlur = 4 * s
+      ctx.shadowOffsetY = 2 * s
       ctx.beginPath()
-      ctx.ellipse(centerX, centerY - 8, 5, 6, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX, centerY - 8 * s, 5 * s, 6 * s, 0, 0, Math.PI * 2)
       ctx.fill()
+      ctx.shadowColor = 'transparent'
 
       // Face shadow on side
       ctx.fillStyle = skinDark
       ctx.globalAlpha = 0.3
       ctx.beginPath()
-      ctx.ellipse(centerX + 3, centerY - 8, 2, 5, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX + 3 * s, centerY - 8 * s, 2 * s, 5 * s, 0, 0, Math.PI * 2)
       ctx.fill()
       ctx.globalAlpha = 1.0
 
       // Hair with gradient and texture
-      const hairGradient = ctx.createLinearGradient(centerX - 5, centerY - 13, centerX + 5, centerY - 13)
+      const hairGradient = ctx.createLinearGradient(
+        centerX - 5 * s, centerY - 13 * s,
+        centerX + 5 * s, centerY - 13 * s
+      )
       hairGradient.addColorStop(0, hairBrown)
       hairGradient.addColorStop(0.5, hairLight)
       hairGradient.addColorStop(1, hairBrown)
       ctx.fillStyle = hairGradient
-      ctx.fillRect(centerX - 5, centerY - 13, 10, 5)
+      ctx.fillRect(centerX - 5 * s, centerY - 13 * s, 10 * s, 5 * s)
 
       // Hair texture lines
       ctx.strokeStyle = hairBrown
-      ctx.lineWidth = 1
+      ctx.lineWidth = 1 * s
       ctx.globalAlpha = 0.5
       for (let i = 0; i < 5; i++) {
         ctx.beginPath()
-        ctx.moveTo(centerX - 4 + i * 2, centerY - 13)
-        ctx.lineTo(centerX - 3 + i * 2, centerY - 9)
+        ctx.moveTo(centerX - 4 * s + i * 2 * s, centerY - 13 * s)
+        ctx.lineTo(centerX - 3 * s + i * 2 * s, centerY - 9 * s)
         ctx.stroke()
       }
       ctx.globalAlpha = 1.0
 
       // Ears with shading
-      const earGradient = ctx.createLinearGradient(centerX - 6, centerY - 8, centerX - 4, centerY - 8)
+      const earGradient = ctx.createLinearGradient(
+        centerX - 6 * s, centerY - 8 * s,
+        centerX - 4 * s, centerY - 8 * s
+      )
       earGradient.addColorStop(0, skinDark)
       earGradient.addColorStop(1, skinTone)
       ctx.fillStyle = earGradient
-      ctx.fillRect(centerX - 6, centerY - 8, 2, 3)
+      ctx.fillRect(centerX - 6 * s, centerY - 8 * s, 2 * s, 3 * s)
 
-      const earGradient2 = ctx.createLinearGradient(centerX + 4, centerY - 8, centerX + 6, centerY - 8)
+      const earGradient2 = ctx.createLinearGradient(
+        centerX + 4 * s, centerY - 8 * s,
+        centerX + 6 * s, centerY - 8 * s
+      )
       earGradient2.addColorStop(0, skinTone)
       earGradient2.addColorStop(1, skinDark)
       ctx.fillStyle = earGradient2
-      ctx.fillRect(centerX + 4, centerY - 8, 2, 3)
+      ctx.fillRect(centerX + 4 * s, centerY - 8 * s, 2 * s, 3 * s)
 
       // Ear shadows
       ctx.fillStyle = skinDark
       ctx.globalAlpha = 0.4
-      ctx.fillRect(centerX - 5, centerY - 7, 1, 2)
-      ctx.fillRect(centerX + 4, centerY - 7, 1, 2)
+      ctx.fillRect(centerX - 5 * s, centerY - 7 * s, 1 * s, 2 * s)
+      ctx.fillRect(centerX + 4 * s, centerY - 7 * s, 1 * s, 2 * s)
       ctx.globalAlpha = 1.0
 
       // Eyes with detail
       // Eye whites
       ctx.fillStyle = white
-      ctx.fillRect(centerX - 3, centerY - 9, 2, 2)
-      ctx.fillRect(centerX + 1, centerY - 9, 2, 2)
+      ctx.beginPath()
+      ctx.ellipse(centerX - 2 * s, centerY - 9 * s, 1.5 * s, 2 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(centerX + 2 * s, centerY - 9 * s, 1.5 * s, 2 * s, 0, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Iris with gradient
+      const irisGradient = ctx.createRadialGradient(
+        centerX - 2 * s, centerY - 9 * s, 0.3 * s,
+        centerX - 2 * s, centerY - 9 * s, 1.2 * s
+      )
+      irisGradient.addColorStop(0, '#4A90E2')
+      irisGradient.addColorStop(0.7, '#2E5FA8')
+      irisGradient.addColorStop(1, '#1A3D6B')
+      ctx.fillStyle = irisGradient
+      ctx.beginPath()
+      ctx.arc(centerX - 2 * s, centerY - 9 * s, 1.2 * s, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(centerX + 2 * s, centerY - 9 * s, 1.2 * s, 0, Math.PI * 2)
+      ctx.fill()
 
       // Pupils
       ctx.fillStyle = black
-      ctx.fillRect(centerX - 2, centerY - 9, 2, 2)
-      ctx.fillRect(centerX + 2, centerY - 9, 2, 2)
+      ctx.beginPath()
+      ctx.arc(centerX - 2 * s, centerY - 9 * s, 0.8 * s, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(centerX + 2 * s, centerY - 9 * s, 0.8 * s, 0, Math.PI * 2)
+      ctx.fill()
 
       // Eye shine
       ctx.fillStyle = white
-      ctx.fillRect(centerX - 3, centerY - 9, 1, 1)
-      ctx.fillRect(centerX + 1, centerY - 9, 1, 1)
+      ctx.globalAlpha = 0.9
+      ctx.beginPath()
+      ctx.arc(centerX - 2.5 * s, centerY - 9.5 * s, 0.6 * s, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(centerX + 1.5 * s, centerY - 9.5 * s, 0.6 * s, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.globalAlpha = 1.0
 
       // Eyebrows
       ctx.strokeStyle = hairBrown
-      ctx.lineWidth = 1
+      ctx.lineWidth = 1.5 * s
+      ctx.lineCap = 'round'
       ctx.beginPath()
-      ctx.moveTo(centerX - 4, centerY - 10)
-      ctx.lineTo(centerX - 1, centerY - 10.5)
+      ctx.moveTo(centerX - 4 * s, centerY - 10 * s)
+      ctx.lineTo(centerX - 1 * s, centerY - 10.5 * s)
       ctx.stroke()
       ctx.beginPath()
-      ctx.moveTo(centerX + 1, centerY - 10.5)
-      ctx.lineTo(centerX + 4, centerY - 10)
+      ctx.moveTo(centerX + 1 * s, centerY - 10.5 * s)
+      ctx.lineTo(centerX + 4 * s, centerY - 10 * s)
       ctx.stroke()
 
       // Nose with shading
-      const noseGradient = ctx.createLinearGradient(centerX - 1, centerY - 6, centerX + 1, centerY - 6)
+      const noseGradient = ctx.createLinearGradient(
+        centerX - 1 * s, centerY - 6 * s,
+        centerX + 1 * s, centerY - 6 * s
+      )
       noseGradient.addColorStop(0, skinDark)
       noseGradient.addColorStop(0.5, '#FFBB88')
       noseGradient.addColorStop(1, skinTone)
       ctx.fillStyle = noseGradient
-      ctx.fillRect(centerX - 1, centerY - 6, 2, 3)
+      ctx.fillRect(centerX - 1 * s, centerY - 6 * s, 2 * s, 3 * s)
 
       // Nose shadow
       ctx.fillStyle = skinDark
       ctx.globalAlpha = 0.3
-      ctx.fillRect(centerX + 1, centerY - 6, 1, 3)
+      ctx.fillRect(centerX + 1 * s, centerY - 6 * s, 1 * s, 3 * s)
       ctx.globalAlpha = 1.0
 
       // Mouth with depth
       ctx.fillStyle = '#8B6F6F'
-      ctx.fillRect(centerX - 2, centerY - 4, 4, 1)
+      ctx.fillRect(centerX - 2 * s, centerY - 4 * s, 4 * s, 1 * s)
 
       // Mouth highlight (upper lip)
       ctx.fillStyle = skinTone
       ctx.globalAlpha = 0.6
-      ctx.fillRect(centerX - 2, centerY - 5, 4, 1)
+      ctx.fillRect(centerX - 2 * s, centerY - 5 * s, 4 * s, 1 * s)
       ctx.globalAlpha = 1.0
 
       // Front arm with gradient
-      const frontArmGradient = ctx.createLinearGradient(centerX + 5 + armSwing, centerY + 2, centerX + 8 + armSwing, centerY + 2)
+      const frontArmGradient = ctx.createLinearGradient(
+        centerX + 5 * s + armSwing * s, centerY + 2 * s,
+        centerX + 8 * s + armSwing * s, centerY + 2 * s
+      )
       frontArmGradient.addColorStop(0, uniformBlue)
       frontArmGradient.addColorStop(1, uniformLight)
       ctx.fillStyle = frontArmGradient
-      ctx.fillRect(centerX + 5 + armSwing, centerY + 2, 3, 8)
+      ctx.fillRect(centerX + 5 * s + armSwing * s, centerY + 2 * s, 3 * s, 8 * s)
 
       // Arm highlight
       ctx.fillStyle = uniformLight
       ctx.globalAlpha = 0.4
-      ctx.fillRect(centerX + 6 + armSwing, centerY + 3, 1, 6)
+      ctx.fillRect(centerX + 6 * s + armSwing * s, centerY + 3 * s, 1 * s, 6 * s)
       ctx.globalAlpha = 1.0
 
-      // Front hand
-      ctx.fillStyle = skinTone
-      ctx.fillRect(centerX + 5 + armSwing, centerY + 10, 3, 3)
+      // Front hand with gradient
+      const frontHandGradient = ctx.createRadialGradient(
+        centerX + 6.5 * s + armSwing * s, centerY + 11 * s, 0.5 * s,
+        centerX + 6.5 * s + armSwing * s, centerY + 11 * s, 2 * s
+      )
+      frontHandGradient.addColorStop(0, skinLight)
+      frontHandGradient.addColorStop(0.6, skinTone)
+      frontHandGradient.addColorStop(1, skinDark)
+      ctx.fillStyle = frontHandGradient
+      ctx.fillRect(centerX + 5 * s + armSwing * s, centerY + 10 * s, 3 * s, 3 * s)
 
       // Hand shading and fingers
       ctx.fillStyle = skinDark
       ctx.globalAlpha = 0.3
-      ctx.fillRect(centerX + 5 + armSwing, centerY + 12, 3, 1)
+      ctx.fillRect(centerX + 5 * s + armSwing * s, centerY + 12 * s, 3 * s, 1 * s)
       ctx.globalAlpha = 1.0
 
       // Finger lines
       ctx.strokeStyle = skinDark
-      ctx.lineWidth = 0.5
+      ctx.lineWidth = 0.8 * s
       ctx.globalAlpha = 0.5
       ctx.beginPath()
-      ctx.moveTo(centerX + 6 + armSwing, centerY + 10)
-      ctx.lineTo(centerX + 6 + armSwing, centerY + 13)
+      ctx.moveTo(centerX + 6 * s + armSwing * s, centerY + 10 * s)
+      ctx.lineTo(centerX + 6 * s + armSwing * s, centerY + 13 * s)
       ctx.stroke()
       ctx.beginPath()
-      ctx.moveTo(centerX + 7 + armSwing, centerY + 10)
-      ctx.lineTo(centerX + 7 + armSwing, centerY + 13)
+      ctx.moveTo(centerX + 7 * s + armSwing * s, centerY + 10 * s)
+      ctx.lineTo(centerX + 7 * s + armSwing * s, centerY + 13 * s)
       ctx.stroke()
       ctx.globalAlpha = 1.0
+
+      ctx.restore()
     }
 
     // Patrol animations with walking motion
@@ -830,13 +935,15 @@ export class TextureGenerator {
       drawGuardFrame(col, row, legOffset, armSwing)
     }
 
+    // Create texture with LINEAR filtering for smooth, anti-aliased appearance
     const texture = new THREE.CanvasTexture(canvas)
-    texture.magFilter = THREE.NearestFilter
-    texture.minFilter = THREE.NearestFilter
+    texture.magFilter = THREE.LinearFilter // Smooth scaling (upgraded from NearestFilter)
+    texture.minFilter = THREE.LinearMipmapLinearFilter // Smooth min with mipmaps
+    texture.generateMipmaps = true // Enable mipmaps for better quality at distance
     texture.flipY = false // Don't flip canvas texture
     texture.needsUpdate = true
 
-    console.log('🎨 Created guard sprite sheet')
+    console.log('🎨 Created HIGH-RES guard sprite sheet:', columns, 'x', rows, 'frames at', frameSize, 'x', frameSize, 'px')
 
     return { texture, frameSize, columns, rows }
   }
