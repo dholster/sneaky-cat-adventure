@@ -74,7 +74,7 @@ export class CameraController {
 
     this.camera.position.y = THREE.MathUtils.lerp(
       this.camera.position.y,
-      targetPos.y + 3, // Offset to keep view centered with tilt
+      targetPos.y + 1, // Lowered offset to bring view down 20%
       this.smoothness
     )
 

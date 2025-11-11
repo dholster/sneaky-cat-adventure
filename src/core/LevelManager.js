@@ -128,7 +128,8 @@ export class LevelManager {
 
       // More vertical platforms for climbing
       platforms: [
-        // Ground floor
+        // Ground floor - extended for spawn area
+        { x: -10, y: 0, width: 20, height: 1, type: 'tile' }, // Starting area
         { x: 30, y: 0, width: 80, height: 1, type: 'tile' },
 
         // First level platforms (y=4)
