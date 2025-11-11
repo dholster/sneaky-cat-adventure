@@ -179,7 +179,8 @@ export class VisionConeRenderer {
 
     // For each vertex in the cone, check if line of sight is blocked
     const vertexCount = positions.count
-    const enemyPos = new THREE.Vector3(enemy.position.x, enemy.position.y, 1)
+    // Use z=0.5 to match platform sprites
+    const enemyPos = new THREE.Vector3(enemy.position.x, enemy.position.y, 0.5)
 
     for (let i = 1; i < vertexCount; i++) { // Skip center vertex (index 0)
       // Get world position of this vertex
@@ -194,7 +195,7 @@ export class VisionConeRenderer {
       const vertexWorldPos = new THREE.Vector3(
         enemy.position.x + worldX,
         enemy.position.y + worldY,
-        1
+        0.5 // Match z-coordinate of platforms
       )
 
       // Cast ray from enemy to this vertex
