@@ -635,14 +635,15 @@ export class TextureGenerator {
     // Frame 17: Recovery (straightening up)
     drawCatFrame(5, 2, 0, 1, 0, 1, 0) // returning to normal stance
 
-    // Create texture
+    // Create texture with LINEAR filtering for smooth, anti-aliased appearance
     const texture = new THREE.CanvasTexture(canvas)
-    texture.magFilter = THREE.NearestFilter // Pixel-perfect scaling
-    texture.minFilter = THREE.NearestFilter
+    texture.magFilter = THREE.LinearFilter // Smooth scaling (upgraded from NearestFilter)
+    texture.minFilter = THREE.LinearMipmapLinearFilter // Smooth min with mipmaps
+    texture.generateMipmaps = true // Enable mipmaps for better quality at distance
     texture.flipY = false // Don't flip canvas texture
     texture.needsUpdate = true
 
-    console.log('🎨 Created cat sprite sheet:', columns, 'x', rows, 'frames')
+    console.log('🎨 Created HIGH-RES cat sprite sheet:', columns, 'x', rows, 'frames at', frameSize, 'x', frameSize, 'px')
 
     return { texture, frameSize, columns, rows }
   }
