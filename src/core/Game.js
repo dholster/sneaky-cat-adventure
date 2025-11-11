@@ -55,6 +55,7 @@ export class Game {
     this.glowEffect = null // Glow effects for objects
     this.particleSystem = null // Particle effects system
     this.outlines = [] // Store outline meshes for sprites
+    this.dynamicShadowSystem = null // Dynamic shadow casting system
 
     // Game entities
     this.player = null
@@ -150,6 +151,16 @@ export class Game {
     // Initialize visual effect systems
     this.glowEffect = new GlowEffect(this.scene)
     this.particleSystem = new ParticleSystem(this.scene)
+    this.dynamicShadowSystem = new DynamicShadowSystem(this.scene)
+
+    // Add overhead directional light (simulating room/warehouse lighting)
+    const overheadLight = new THREE.DirectionalLight(0xffffff, 0.6)
+    overheadLight.position.set(0.3, 10, 0.2) // Light from above at an angle
+    this.scene.add(overheadLight)
+
+    // Ambient light for base visibility
+    const ambientLight = new THREE.AmbientLight(0x6688aa, 0.4)
+    this.scene.add(ambientLight)
   }
 
   setupCamera() {
