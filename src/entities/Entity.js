@@ -119,21 +119,6 @@ export class Entity {
       // Flip sprite based on facing direction
       this.sprite.scale.x = Math.abs(this.sprite.scale.x) * this.facing
     }
-
-    // Update shadow position to follow entity
-    if (this.shadow) {
-      this.shadow.update(this.position, this.size.height)
-
-      // Fade shadow when entity is in the air (jumping)
-      if (this.isGrounded) {
-        this.shadow.setIntensity(1.0)
-      } else {
-        // Fade shadow based on height above ground
-        const heightAboveGround = Math.abs(this.velocity.y) * 0.1
-        const shadowIntensity = Math.max(0.3, 1.0 - heightAboveGround)
-        this.shadow.setIntensity(shadowIntensity)
-      }
-    }
   }
 
   /**
@@ -178,11 +163,6 @@ export class Entity {
       this.sprite.geometry.dispose()
       this.sprite.material.dispose()
       this.sprite = null
-    }
-
-    if (this.shadow) {
-      this.shadow.destroy()
-      this.shadow = null
     }
 
     this.active = false

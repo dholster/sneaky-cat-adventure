@@ -30,6 +30,7 @@ import { LevelManager } from './LevelManager.js'
 import { GlowEffect } from '../rendering/GlowEffect.js'
 import { ParticleSystem } from '../rendering/ParticleSystem.js'
 import { OutlineEffect } from '../rendering/OutlineEffect.js'
+import { DynamicShadowSystem } from '../rendering/DynamicShadowSystem.js'
 
 export class Game {
   constructor(canvas) {
