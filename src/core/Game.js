@@ -27,6 +27,9 @@ import { ProgressBar } from '../ui/ProgressBar.js'
 import { LightingSystem } from '../rendering/LightingSystem.js'
 import { ParallaxBackground } from '../rendering/ParallaxBackground.js'
 import { LevelManager } from './LevelManager.js'
+import { GlowEffect } from '../rendering/GlowEffect.js'
+import { ParticleSystem } from '../rendering/ParticleSystem.js'
+import { OutlineEffect } from '../rendering/OutlineEffect.js'
 
 export class Game {
   constructor(canvas) {
@@ -48,6 +51,9 @@ export class Game {
     this.progressBar = null // Progress bar showing distance to goal
     this.lightingSystem = null // Atmospheric lighting and effects
     this.parallaxBackground = null // Parallax background layers
+    this.glowEffect = null // Glow effects for objects
+    this.particleSystem = null // Particle effects system
+    this.outlines = [] // Store outline meshes for sprites
 
     // Game entities
     this.player = null
