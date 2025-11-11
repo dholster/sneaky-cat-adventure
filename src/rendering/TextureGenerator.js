@@ -15,7 +15,7 @@ export class TextureGenerator {
    * Row 3: jump (4 frames), land (2 frames)
    */
   static createCatSpriteSheet() {
-    const frameSize = 128 // Upgraded from 32 to 128
+    const frameSize = 64 // Increased from 32 to 64 (2x, more manageable)
     const columns = 6
     const rows = 3
     const canvas = document.createElement('canvas')
