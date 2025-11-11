@@ -62,8 +62,8 @@ export class Dog extends Entity {
     this.position.x += this.velocity.x * deltaTime
     this.position.y += this.velocity.y * deltaTime
 
-    // Update facing direction (but not if detecting player)
-    if (this.detectionLevel <= 0) {
+    // Update facing direction based on movement (but not if detecting player and stationary)
+    if (this.detectionLevel <= 0 || this.detectionState === 'alert' || this.detectionState === 'search') {
       if (this.velocity.x > 0.1) {
         this.facing = 1
       } else if (this.velocity.x < -0.1) {
@@ -72,8 +72,17 @@ export class Dog extends Entity {
     }
 
     // Decay detection level when not actively detecting
-    if (this.detectionLevel > 0 && this.detectionState === 'unaware') {
-      this.detectionLevel -= deltaTime * 0.3
+    if (this.detectionLevel > 0) {
+      if (this.detectionState === 'unaware' || this.detectionState === 'suspicious') {
+        this.detectionLevel -= deltaTime * 0.3
+      } else if (this.detectionState === 'search') {
+        // Decay faster during search (losing track of player)
+        this.detectionLevel -= deltaTime * 0.5
+      } else if (this.detectionState === 'alert' && this.chaseTarget && this.chaseTarget.isHiding) {
+        // Decay very fast if chasing but target is now hiding
+        this.detectionLevel -= deltaTime * 0.8
+      }
+
       if (this.detectionLevel < 0) this.detectionLevel = 0
     }
 
