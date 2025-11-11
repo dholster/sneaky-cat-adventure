@@ -687,6 +687,9 @@ export class Game {
     // Update enemies
     this.enemies.forEach(enemy => enemy.update(deltaTime))
 
+    // Update player alert markers based on nearby enemies
+    this.updatePlayerAlerts()
+
     // Update hiding spots (syncs sprite positions)
     this.hidingSpots.forEach(spot => spot.update(deltaTime))
 
