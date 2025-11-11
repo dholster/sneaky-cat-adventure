@@ -738,6 +738,11 @@ export class Game {
       32
     )
 
+    // Add glow effect to make it more visible
+    if (spot.sprite && this.glowEffect) {
+      spot.glowMesh = this.glowEffect.addGlow(spot.sprite, 0x44ff44, 1.2, 1.5)
+    }
+
     this.hidingSpots.push(spot)
     console.log(`📦 Created ${type} hiding spot at x=${x}, y=${y}`)
     return spot
