@@ -66,6 +66,10 @@ export class Game {
     this.lives = Config.GAME.LIVES
     this.isRestarting = false
 
+    // Level management
+    this.levelManager = new LevelManager()
+    this.currentLevelData = null
+
     // Store initial positions for restart
     this.initialPositions = {
       player: { x: -15, y: 1 },
@@ -102,17 +106,11 @@ export class Game {
       console.log('  → Setting up player...')
       this.setupPlayer()
 
-      console.log('  → Setting up stealth systems...')
-      this.setupStealthSystems()
+      console.log('  → Loading level...')
+      this.loadLevel()
 
       console.log('  → Setting up progress bar...')
       this.setupProgressBar()
-
-      console.log('  → Setting up lighting system...')
-      this.setupLighting()
-
-      console.log('  → Setting up environment...')
-      this.setupEnvironment()
 
       console.log('  → Setting up event listeners...')
       this.setupEventListeners()
