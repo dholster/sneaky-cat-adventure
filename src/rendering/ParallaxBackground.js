@@ -13,21 +13,67 @@ export class ParallaxBackground {
   }
 
   /**
-   * Add a parallax layer
+   * Add a parallax layer with enhanced visuals and gradient textures
    * @param {number} depth - Depth value (0-1, where 0 is far, 1 is near)
-   * @param {number} color - Hex color for this layer
+   * @param {number} baseColor - Hex color for this layer
    * @param {number} height - Height of the layer
    * @param {number} yOffset - Y position offset
    */
-  addLayer(depth, color, height = 20, yOffset = 5) {
+  addLayer(depth, baseColor, height = 20, yOffset = 5) {
     // Create a large repeating background
     const width = 300 // Extra wide to support scrolling
 
     const geometry = new THREE.PlaneGeometry(width, height)
+
+    // Create canvas for gradient texture
+    const canvas = document.createElement('canvas')
+    canvas.width = 512
+    canvas.height = 512
+    const ctx = canvas.getContext('2d')
+
+    // Enable smooth rendering
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+
+    // Extract RGB from hex color
+    const r = (baseColor >> 16) & 255
+    const g = (baseColor >> 8) & 255
+    const b = baseColor & 255
+
+    // Create sophisticated gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 0, 512)
+
+    // Lighter at top, darker at bottom for atmospheric depth
+    gradient.addColorStop(0, `rgb(${Math.min(r + 40, 255)}, ${Math.min(g + 40, 255)}, ${Math.min(b + 40, 255)})`)
+    gradient.addColorStop(0.3, `rgb(${Math.min(r + 20, 255)}, ${Math.min(g + 20, 255)}, ${Math.min(b + 20, 255)})`)
+    gradient.addColorStop(0.6, `rgb(${r}, ${g}, ${b})`)
+    gradient.addColorStop(1, `rgb(${Math.max(r - 30, 0)}, ${Math.max(g - 30, 0)}, ${Math.max(b - 30, 0)})`)
+
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, 512, 512)
+
+    // Add subtle noise texture for depth
+    ctx.globalAlpha = 0.08
+    for (let i = 0; i < 2000; i++) {
+      const x = Math.random() * 512
+      const y = Math.random() * 512
+      const brightness = Math.random() > 0.5 ? 255 : 0
+      ctx.fillStyle = `rgb(${brightness}, ${brightness}, ${brightness})`
+      ctx.fillRect(x, y, 1, 1)
+    }
+    ctx.globalAlpha = 1.0
+
+    // Create texture from canvas
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    texture.magFilter = THREE.LinearFilter
+    texture.minFilter = THREE.LinearMipmapLinearFilter
+
     const material = new THREE.MeshBasicMaterial({
-      color: color,
+      map: texture,
       transparent: true,
-      opacity: 0.3 + (depth * 0.4), // Farther layers are more transparent
+      opacity: 0.4 + (depth * 0.5), // Farther layers are more transparent
       side: THREE.DoubleSide
     })
 
@@ -46,7 +92,7 @@ export class ParallaxBackground {
       yOffset: yOffset
     })
 
-    console.log(`🎨 Added parallax layer (depth: ${depth}, z: ${zPosition.toFixed(1)})`)
+    console.log(`🎨 Added enhanced parallax layer (depth: ${depth}, z: ${zPosition.toFixed(1)})`)
   }
 
   /**
