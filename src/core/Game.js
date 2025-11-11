@@ -979,6 +979,40 @@ export class Game {
     }
   }
 
+  /**
+   * Update player alert markers based on nearby enemy detection
+   */
+  updatePlayerAlerts() {
+    if (!this.player) return
+
+    // Find maximum detection level from all enemies
+    let maxDetection = 0
+    let enemySearching = false
+    const searchRadius = 15 // Distance to consider enemy "nearby"
+
+    this.enemies.forEach(enemy => {
+      // Check if enemy is nearby
+      const distance = Math.abs(enemy.position.x - this.player.position.x)
+
+      // Check if enemy has detected player or is searching
+      if (enemy.detectionLevel > maxDetection) {
+        maxDetection = enemy.detectionLevel
+      }
+
+      // Check if enemy is close and searching (for dogs running, guards searching)
+      if (distance < searchRadius) {
+        // Dogs in CHASING state or guards in SEARCHING state
+        if (enemy.state === 'CHASING' || enemy.state === 'SEARCHING') {
+          enemySearching = true
+        }
+      }
+    })
+
+    // Update player's detection state for alert markers
+    this.player.detectionLevel = maxDetection
+    this.player.enemyNearby = enemySearching
+  }
+
   checkPlatformCollisions() {
     // Simple AABB collision detection with edge tolerance
     const playerBounds = this.player.getBounds()
