@@ -559,6 +559,7 @@ export class Game {
 
     this.goalMarker = new THREE.Mesh(geometry, material)
     this.goalMarker.position.set(x, y + 1.5, 1)
+    this.goalMarker.rotation.x = Math.PI / 12 // Tilt back for 3D perspective
     this.scene.add(this.goalMarker)
 
     // Add label
