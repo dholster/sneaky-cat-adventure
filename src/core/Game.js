@@ -444,6 +444,12 @@ export class Game {
       if (spot.label) {
         this.scene.remove(spot.label)
       }
+      if (spot.hidingShadow) {
+        this.scene.remove(spot.hidingShadow)
+        spot.hidingShadow.geometry?.dispose()
+        spot.hidingShadow.material?.map?.dispose()
+        spot.hidingShadow.material?.dispose()
+      }
     })
     this.hidingSpots = []
 
@@ -836,6 +842,11 @@ export class Game {
     // Add glow effect to make it more visible
     if (spot.sprite && this.glowEffect) {
       spot.glowMesh = this.glowEffect.addGlow(spot.sprite, 0x44ff44, 1.2, 1.5)
+    }
+
+    // Add hiding shadow cast by this obstacle
+    if (this.dynamicShadowSystem) {
+      spot.hidingShadow = this.dynamicShadowSystem.createHidingShadow(spot)
     }
 
     this.hidingSpots.push(spot)
