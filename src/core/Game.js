@@ -368,6 +368,11 @@ export class Game {
     // Register platforms as obstacles
     this.platforms.forEach(platform => {
       this.detectionSystem.registerObstacle(platform)
+
+      // Register platforms as obstacles for shadow system
+      if (this.dynamicShadowSystem) {
+        this.dynamicShadowSystem.registerObstacle(platform)
+      }
     })
 
     // Store initial enemy positions for restart
@@ -703,6 +708,11 @@ export class Game {
 
     dogSprite.play('walk')
     dog.createAnimatedSprite(dogSprite)
+
+    // Add dynamic shadow for dog
+    if (this.dynamicShadowSystem) {
+      this.dynamicShadowSystem.addShadowCaster(dog)
+    }
 
     // Add black outline to dog sprite
     if (dog.sprite) {
