@@ -26,6 +26,7 @@ import { Background } from '../entities/Background.js'
 import { ProgressBar } from '../ui/ProgressBar.js'
 import { LightingSystem } from '../rendering/LightingSystem.js'
 import { ParallaxBackground } from '../rendering/ParallaxBackground.js'
+import { LevelManager } from './LevelManager.js'
 
 export class Game {
   constructor(canvas) {
