@@ -3,12 +3,14 @@
  */
 
 import * as THREE from 'three'
+import { Shadow } from '../rendering/Shadow.js'
 
 export class Entity {
   constructor(scene) {
     this.scene = scene
     this.sprite = null // For simple colored sprites
     this.animatedSprite = null // For animated sprite sheets
+    this.shadow = null // Realistic cast shadow
     this.position = new THREE.Vector3(0, 0, 0)
     this.velocity = new THREE.Vector3(0, 0, 0)
     this.size = { width: 1, height: 1 }
@@ -43,6 +45,13 @@ export class Entity {
     }
 
     this.animatedSprite = animatedSprite
+
+    // Create realistic cast shadow for the entity
+    if (!this.shadow) {
+      this.shadow = new Shadow(this.scene)
+      this.shadow.create(this.size.width, this.size.height, 0.35)
+    }
+
     return animatedSprite
   }
 
