@@ -80,6 +80,7 @@ export class Platform extends Entity {
 
     this.sprite = new THREE.Mesh(geometry, material)
     this.sprite.position.z = 0.5
+    this.sprite.rotation.x = Math.PI / 12 // Tilt back for 3D perspective
     this.scene.add(this.sprite)
 
     console.log(`🎨 Created ${tileType} platform (${width}x${height})`)
