@@ -22,6 +22,7 @@ export class AnimatedSprite {
     // Create mesh
     this.mesh = new THREE.Mesh(this.geometry, this.material)
     this.mesh.position.z = 1
+    this.mesh.rotation.x = Math.PI / 12 // Tilt back for 3D perspective
     this.scene.add(this.mesh)
 
     this.width = width
