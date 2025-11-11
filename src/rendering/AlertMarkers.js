@@ -67,17 +67,17 @@ export class AlertMarkers {
 
     // Outer glow (light blue/white watery effect)
     const outerGlow = ctx.createRadialGradient(centerX, centerY - 4, 0, centerX, centerY - 4, 28)
-    outerGlow.addColorStop(0, 'rgba(200, 230, 255, 0.6)')
-    outerGlow.addColorStop(0.5, 'rgba(180, 220, 255, 0.3)')
-    outerGlow.addColorStop(1, 'rgba(150, 200, 255, 0)')
+    outerGlow.addColorStop(0, 'rgba(180, 220, 255, 0.6)')
+    outerGlow.addColorStop(0.5, 'rgba(150, 200, 255, 0.3)')
+    outerGlow.addColorStop(1, 'rgba(120, 180, 255, 0)')
     ctx.fillStyle = outerGlow
     ctx.fillRect(0, 0, size, size)
 
-    // Main exclamation mark body (red/orange)
+    // Main exclamation mark body (blue instead of red)
     const bodyGradient = ctx.createLinearGradient(centerX - 6, 10, centerX + 6, 10)
-    bodyGradient.addColorStop(0, '#FF4444')
-    bodyGradient.addColorStop(0.5, '#FF6666')
-    bodyGradient.addColorStop(1, '#FF4444')
+    bodyGradient.addColorStop(0, '#4488FF')
+    bodyGradient.addColorStop(0.5, '#66AAFF')
+    bodyGradient.addColorStop(1, '#4488FF')
     ctx.fillStyle = bodyGradient
 
     // Exclamation vertical bar
