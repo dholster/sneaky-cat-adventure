@@ -197,14 +197,23 @@ export class AlertMarkers {
   setFromState(isMoving, isRunning, enemyNearby, detectionLevel = 0) {
     let level = 0
 
-    // Base level on movement
+    // Only show marks if there's actual danger
+    // Base level on movement BUT only if enemy is nearby or detecting
+    const inDanger = enemyNearby || detectionLevel > 0.1
+
+    if (!inDanger) {
+      // No marks if no enemies nearby
+      return 0
+    }
+
+    // Show marks based on noise level when in danger
     if (isMoving && !isRunning) {
-      level = 1 // Walking = 1 mark
+      level = 1 // Walking = 1 mark (only when enemy nearby)
     } else if (isRunning) {
       level = 2 // Running = 2 marks
     }
 
-    // Add mark if enemy is actively searching nearby
+    // Add mark if enemy is actively searching nearby or high detection
     if (enemyNearby || detectionLevel > 0.3) {
       level = Math.min(3, level + 1)
     }
