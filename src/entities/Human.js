@@ -68,6 +68,12 @@ export class Human extends Entity {
     // Decay detection level when not seeing player
     if (this.detectionState === 'unaware' || this.detectionState === 'suspicious') {
       this.detectionLevel = Math.max(0, this.detectionLevel - deltaTime * 0.3)
+    } else if (this.detectionState === 'search') {
+      // Decay detection faster during search (losing track of player)
+      this.detectionLevel = Math.max(0, this.detectionLevel - deltaTime * 0.5)
+    } else if (this.detectionState === 'alert' && this.chaseTarget && this.chaseTarget.isHiding) {
+      // Decay very fast if chasing but target is now hiding
+      this.detectionLevel = Math.max(0, this.detectionLevel - deltaTime * 0.8)
     }
 
     super.update(deltaTime)
