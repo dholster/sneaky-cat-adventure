@@ -155,8 +155,8 @@ export class Game {
       1000
     )
 
-    // Position camera further back and higher up for 3D perspective
-    this.camera.position.set(0, 3, 20)
+    // Position camera further back and slightly up for 3D perspective (lowered for better view)
+    this.camera.position.set(0, 1, 20)
 
     // Tilt camera down to look at the scene at an angle (creates pseudo-3D effect)
     this.camera.rotation.x = -Math.PI / 12 // Tilt down ~15 degrees
