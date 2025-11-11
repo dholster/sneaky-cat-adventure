@@ -25,8 +25,8 @@ export const Config = {
 
   // Detection Settings
   DETECTION: {
-    VISION_RANGE: 10,
-    VISION_ANGLE: Math.PI * 2 / 3, // 120 degrees
+    VISION_RANGE: 7, // Reduced by 30% from 10
+    VISION_ANGLE: Math.PI * 7 / 12, // 105 degrees (reduced by 15 degrees from 120)
     SOUND_RADIUS_WALK: 0,
     SOUND_RADIUS_RUN: 5,
     DETECTION_SPEED: 1.0, // Base detection speed (100% per second)
