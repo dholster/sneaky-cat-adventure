@@ -60,7 +60,7 @@ export class VisionConeRenderer {
       mesh: cone,
       enemy: enemy,
       originalPositions: originalPositions,
-      targetRotation: Math.PI / 2 // Current target rotation
+      targetRotation: 0 // Start facing right (angle 0)
     })
 
     return cone
@@ -82,8 +82,8 @@ export class VisionConeRenderer {
       let targetRotation
 
       if (enemy.getVisionAngle && typeof enemy.getVisionAngle === 'function') {
-        // Camera - use custom rotation angle
-        targetRotation = enemy.getVisionAngle() + Math.PI / 2
+        // Camera - use custom rotation angle (already in correct coordinate space)
+        targetRotation = enemy.getVisionAngle()
       } else {
         // Human/Dog - determine if tracking player or using facing direction
         const isDetecting = enemy.detectionLevel > 0 || enemy.detectionState === 'suspicious' || enemy.detectionState === 'alert'
@@ -93,10 +93,10 @@ export class VisionConeRenderer {
           const dx = this.player.position.x - enemy.position.x
           const dy = this.player.position.y - enemy.position.y
           const angleToPlayer = Math.atan2(dy, dx)
-          targetRotation = angleToPlayer + Math.PI / 2
+          targetRotation = angleToPlayer // No offset needed - matches detection system
         } else {
-          // Use facing direction when not detecting
-          targetRotation = enemy.facing === 1 ? Math.PI / 2 : -Math.PI / 2
+          // Use facing direction when not detecting (matches detection system: 0=right, PI=left)
+          targetRotation = enemy.facing === 1 ? 0 : Math.PI
         }
       }
 
@@ -186,8 +186,8 @@ export class VisionConeRenderer {
       const localX = originalPositions[i * 3]
       const localY = originalPositions[i * 3 + 1]
 
-      // Transform by cone rotation
-      const angle = mesh.rotation.z - Math.PI / 2
+      // Transform by cone rotation (rotation.z is now in correct world space)
+      const angle = mesh.rotation.z
       const worldX = localX * Math.cos(angle) - localY * Math.sin(angle)
       const worldY = localX * Math.sin(angle) + localY * Math.cos(angle)
 
