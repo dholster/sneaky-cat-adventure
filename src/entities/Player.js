@@ -4,6 +4,7 @@
 
 import { Entity } from './Entity.js'
 import { Config } from '../utils/Config.js'
+import { AlertMarkers } from '../rendering/AlertMarkers.js'
 
 export class Player extends Entity {
   constructor(scene, inputManager) {
@@ -27,6 +28,14 @@ export class Player extends Entity {
 
     // Sound detection radius (changes based on movement)
     this.soundRadius = 0
+
+    // Detection state
+    this.detectionLevel = 0 // 0-1, how close to being detected
+    this.enemyNearby = false // Is an enemy actively searching nearby
+
+    // Alert markers (exclamation marks above head)
+    this.alertMarkers = new AlertMarkers(scene)
+    this.alertMarkers.create()
 
     // Set collider size
     this.collider.size.x = Config.PLAYER.SIZE.width
@@ -116,6 +125,26 @@ export class Player extends Entity {
 
     // Call parent update to sync sprite
     super.update(deltaTime)
+
+    // Update alert markers based on player state
+    const isMoving = this.velocity.x !== 0
+    const isRunning = Math.abs(this.velocity.x) > this.walkSpeed + 1
+
+    // Calculate alert level
+    const alertLevel = this.alertMarkers.setFromState(
+      isMoving,
+      isRunning,
+      this.enemyNearby,
+      this.detectionLevel
+    )
+
+    // Update marker positions and visibility
+    this.alertMarkers.update(
+      alertLevel,
+      this.position,
+      this.size.height,
+      deltaTime
+    )
   }
 
   updateAnimation() {
