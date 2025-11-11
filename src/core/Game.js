@@ -254,6 +254,11 @@ export class Game {
     // Attach to player
     this.player.createAnimatedSprite(catSprite)
 
+    // Add dynamic shadow for player
+    if (this.dynamicShadowSystem) {
+      this.dynamicShadowSystem.addShadowCaster(this.player)
+    }
+
     // Add black outline to player sprite for cartoon look
     if (this.player.sprite) {
       const playerOutline = OutlineEffect.addOutline(this.player.sprite, 0.08, 0x000000)
@@ -642,6 +647,11 @@ export class Game {
 
     guardSprite.play('walk')
     human.createAnimatedSprite(guardSprite)
+
+    // Add dynamic shadow for guard
+    if (this.dynamicShadowSystem) {
+      this.dynamicShadowSystem.addShadowCaster(human)
+    }
 
     // Add black outline to guard sprite
     if (human.sprite) {
