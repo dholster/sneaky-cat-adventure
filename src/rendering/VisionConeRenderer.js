@@ -8,9 +8,12 @@ import visionFragmentShader from '../../shaders/visionCone/fragment.glsl'
 import { Config } from '../utils/Config.js'
 
 export class VisionConeRenderer {
-  constructor(scene) {
+  constructor(scene, detectionSystem = null, player = null) {
     this.scene = scene
     this.cones = []
+    this.detectionSystem = detectionSystem // For occlusion checks
+    this.player = player // For tracking player position
+    this.raycaster = new THREE.Raycaster() // For occlusion
   }
 
   /**
@@ -23,6 +26,9 @@ export class VisionConeRenderer {
     // Create cone geometry (using CircleGeometry with custom parameters)
     const segments = 32
     const geometry = new THREE.CircleGeometry(range, segments, -angle / 2, angle)
+
+    // Store original positions for occlusion
+    const originalPositions = geometry.attributes.position.array.slice()
 
     // Create shader material
     const material = new THREE.ShaderMaterial({
@@ -50,7 +56,12 @@ export class VisionConeRenderer {
 
     this.scene.add(cone)
 
-    this.cones.push({ mesh: cone, enemy: enemy })
+    this.cones.push({
+      mesh: cone,
+      enemy: enemy,
+      originalPositions: originalPositions,
+      targetRotation: Math.PI / 2 // Current target rotation
+    })
 
     return cone
   }
