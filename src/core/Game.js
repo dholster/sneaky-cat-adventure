@@ -143,7 +143,7 @@ export class Game {
   }
 
   setupCamera() {
-    // Create orthographic camera (replaces perspective)
+    // Create orthographic camera with slight 3D perspective
     const aspect = window.innerWidth / window.innerHeight
     const frustumSize = Config.CAMERA.FRUSTUM_SIZE
 
@@ -156,7 +156,11 @@ export class Game {
       1000
     )
 
-    this.camera.position.z = 10
+    // Position camera further back and higher up for 3D perspective
+    this.camera.position.set(0, 3, 20)
+
+    // Tilt camera down to look at the scene at an angle (creates pseudo-3D effect)
+    this.camera.rotation.x = -Math.PI / 12 // Tilt down ~15 degrees
   }
 
   setupRenderer() {
