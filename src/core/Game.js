@@ -931,6 +931,14 @@ export class Game {
     // Update camera
     this.cameraController.update(deltaTime)
 
+    // Update visual effects
+    if (this.glowEffect) {
+      this.glowEffect.update(deltaTime)
+    }
+    if (this.particleSystem) {
+      this.particleSystem.update(deltaTime)
+    }
+
     // Update parallax background
     if (this.parallaxBackground) {
       this.parallaxBackground.update(deltaTime)
