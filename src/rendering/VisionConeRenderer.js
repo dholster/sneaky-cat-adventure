@@ -70,21 +70,51 @@ export class VisionConeRenderer {
    * Update all vision cones
    */
   update(time) {
-    this.cones.forEach(({ mesh, enemy }) => {
+    this.cones.forEach(coneData => {
+      const { mesh, enemy, originalPositions } = coneData
       if (!enemy.active) return
 
       // Update position to follow enemy
       mesh.position.x = enemy.position.x
       mesh.position.y = enemy.position.y
 
-      // Update rotation based on enemy type
+      // Calculate target rotation
+      let targetRotation
+
       if (enemy.getVisionAngle && typeof enemy.getVisionAngle === 'function') {
         // Camera - use custom rotation angle
-        mesh.rotation.z = enemy.getVisionAngle() + Math.PI / 2
+        targetRotation = enemy.getVisionAngle() + Math.PI / 2
       } else {
-        // Human/Dog - use facing direction
-        // facing = 1 (right), facing = -1 (left)
-        mesh.rotation.z = enemy.facing === 1 ? Math.PI / 2 : -Math.PI / 2
+        // Human/Dog - determine if tracking player or using facing direction
+        const isDetecting = enemy.detectionLevel > 0 || enemy.detectionState === 'suspicious' || enemy.detectionState === 'alert'
+
+        if (isDetecting && this.player) {
+          // Aim toward player when detecting
+          const dx = this.player.position.x - enemy.position.x
+          const dy = this.player.position.y - enemy.position.y
+          const angleToPlayer = Math.atan2(dy, dx)
+          targetRotation = angleToPlayer + Math.PI / 2
+        } else {
+          // Use facing direction when not detecting
+          targetRotation = enemy.facing === 1 ? Math.PI / 2 : -Math.PI / 2
+        }
+      }
+
+      // Smooth rotation toward target
+      const currentRotation = mesh.rotation.z
+      let rotationDiff = targetRotation - currentRotation
+
+      // Normalize to shortest path
+      while (rotationDiff > Math.PI) rotationDiff -= 2 * Math.PI
+      while (rotationDiff < -Math.PI) rotationDiff += 2 * Math.PI
+
+      // Lerp rotation (faster when detecting)
+      const rotationSpeed = enemy.detectionLevel > 0 ? 0.15 : 0.08
+      mesh.rotation.z = currentRotation + rotationDiff * rotationSpeed
+
+      // Apply occlusion (trim vision cone based on obstacles)
+      if (this.detectionSystem && this.detectionSystem.obstacles.length > 0) {
+        this.applyOcclusion(mesh, enemy, originalPositions)
       }
 
       // Update shader uniforms
@@ -122,6 +152,76 @@ export class VisionConeRenderer {
       mesh.material.uniforms.uConeColor.value = color
       mesh.material.uniforms.uDetectionState.value = detectionState
     })
+  }
+
+  /**
+   * Apply occlusion to vision cone based on obstacles
+   * Modifies geometry to create "shadow" areas where vision is blocked
+   */
+  applyOcclusion(mesh, enemy, originalPositions) {
+    const geometry = mesh.geometry
+    const positions = geometry.attributes.position
+    const posArray = positions.array
+
+    // Get obstacles that can block vision
+    const obstacles = this.detectionSystem.obstacles
+      .filter(obs => obs.sprite && !obs.sprite.userData.isVisionCone)
+      .map(obs => obs.sprite)
+
+    if (obstacles.length === 0) {
+      // No obstacles, restore original geometry
+      for (let i = 0; i < originalPositions.length; i++) {
+        posArray[i] = originalPositions[i]
+      }
+      positions.needsUpdate = true
+      return
+    }
+
+    // For each vertex in the cone, check if line of sight is blocked
+    const vertexCount = positions.count
+    const enemyPos = new THREE.Vector3(enemy.position.x, enemy.position.y, 1)
+
+    for (let i = 1; i < vertexCount; i++) { // Skip center vertex (index 0)
+      // Get world position of this vertex
+      const localX = originalPositions[i * 3]
+      const localY = originalPositions[i * 3 + 1]
+
+      // Transform by cone rotation
+      const angle = mesh.rotation.z - Math.PI / 2
+      const worldX = localX * Math.cos(angle) - localY * Math.sin(angle)
+      const worldY = localX * Math.sin(angle) + localY * Math.cos(angle)
+
+      const vertexWorldPos = new THREE.Vector3(
+        enemy.position.x + worldX,
+        enemy.position.y + worldY,
+        1
+      )
+
+      // Cast ray from enemy to this vertex
+      const direction = vertexWorldPos.clone().sub(enemyPos).normalize()
+      const distance = enemyPos.distanceTo(vertexWorldPos)
+
+      this.raycaster.set(enemyPos, direction)
+      this.raycaster.far = distance
+
+      const intersects = this.raycaster.intersectObjects(obstacles, false)
+
+      // If blocked, pull vertex closer (create shadow)
+      if (intersects.length > 0 && intersects[0].distance < distance - 0.1) {
+        const hitDistance = intersects[0].distance
+        const ratio = hitDistance / distance
+
+        // Scale vertex position toward center
+        posArray[i * 3] = originalPositions[i * 3] * ratio
+        posArray[i * 3 + 1] = originalPositions[i * 3 + 1] * ratio
+      } else {
+        // Not blocked, use original position
+        posArray[i * 3] = originalPositions[i * 3]
+        posArray[i * 3 + 1] = originalPositions[i * 3 + 1]
+      }
+    }
+
+    positions.needsUpdate = true
   }
 
   /**
