@@ -621,6 +621,14 @@ export class Game {
     guardSprite.play('walk')
     human.createAnimatedSprite(guardSprite)
 
+    // Add black outline to guard sprite
+    if (human.sprite) {
+      const guardOutline = OutlineEffect.addOutline(human.sprite, 0.08, 0x000000)
+      this.scene.add(guardOutline)
+      human.outlineMesh = guardOutline
+      this.outlines.push({ mesh: guardOutline, parent: human.sprite })
+    }
+
     console.log('🎨 Guard now using animated sprite!')
 
     // Add label
@@ -664,6 +672,14 @@ export class Game {
     dogSprite.play('walk')
     dog.createAnimatedSprite(dogSprite)
 
+    // Add black outline to dog sprite
+    if (dog.sprite) {
+      const dogOutline = OutlineEffect.addOutline(dog.sprite, 0.08, 0x000000)
+      this.scene.add(dogOutline)
+      dog.outlineMesh = dogOutline
+      this.outlines.push({ mesh: dogOutline, parent: dog.sprite })
+    }
+
     console.log('🎨 Dog now using animated sprite!')
 
     // Add label
@@ -689,6 +705,14 @@ export class Game {
 
     // Create visual representation (dark gray box for camera)
     camera.createColorSprite(0x333333, camera.size.width, camera.size.height)
+
+    // Add black outline to camera sprite
+    if (camera.sprite) {
+      const cameraOutline = OutlineEffect.addOutline(camera.sprite, 0.08, 0x000000)
+      this.scene.add(cameraOutline)
+      camera.outlineMesh = cameraOutline
+      this.outlines.push({ mesh: cameraOutline, parent: camera.sprite })
+    }
 
     // Add spotlight effect if lighting system is available
     if (this.lightingSystem) {
