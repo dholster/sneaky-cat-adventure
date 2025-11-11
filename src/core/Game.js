@@ -874,6 +874,9 @@ export class Game {
     // Check platform collisions
     this.checkPlatformCollisions()
 
+    // Check if player fell off the map
+    this.checkFallDeath()
+
     // Update enemies
     this.enemies.forEach(enemy => enemy.update(deltaTime))
 
